@@ -16,7 +16,7 @@
 import { useMemo } from "react";
 
 import { cn } from "@/lib/cn";
-import { IconPhoto, IconStar, IconStarFilled } from "@/lib/ods-icons";
+import { IconPhoto, IconStar, IconStarFilled } from "@bucketplace/icons";
 import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import type {
   CardCell,
@@ -89,9 +89,10 @@ export default function Card({ usage, layout, cells, viewport, previewAsset }: C
 // ---------------------------------------------------------------------------
 // Grid layout — Figma 31:777 (Lead 태블릿) 스펙
 //
-// 규칙: 2×2 full-width, 카드 사이 간격 8px 고정.
-// - settings.columns / settings.gap 은 schema 호환을 위해 유지되나
-//   렌더는 항상 2 col / gap 8 로 강제 (Lead UI spec).
+// 규칙: 카드 사이 간격 8px 고정.
+// - `usage === "service"`: 모바일 뷰포트 `grid-cols-1`, 태블릿·데스크톱 `grid-cols-2`.
+// - 그 외: 항상 `grid-cols-2` (Lead UI spec).
+// - settings.columns / settings.gap 은 schema 호환을 위해 유지되나 service 가 아니면 2 col 고정.
 // ---------------------------------------------------------------------------
 
 const GRID_FIXED_GAP_PX = 8;
@@ -99,6 +100,8 @@ const GRID_FIXED_GAP_PX = 8;
 function GridLayout({
   usage,
   cells,
+  viewport,
+  settings: _settings,
   previewAsset,
 }: {
   usage: CardUsagePresetId;
@@ -107,14 +110,26 @@ function GridLayout({
   settings: Extract<CardLayoutSettings, { type: "grid" }>["settings"];
   previewAsset?: CardPreviewAssetBinding;
 }) {
+  const gridCols =
+    usage === "service"
+      ? viewport === "mobile"
+        ? "grid-cols-1"
+        : "grid-cols-2"
+      : "grid-cols-2";
+
   return (
     <div
-      className="grid w-full grid-cols-2"
+      className={cn("grid w-full", gridCols)}
       style={{ gap: `${GRID_FIXED_GAP_PX}px` }}
     >
       {cells.map((cell) => (
-        <div key={cell.id} className="w-full">
-          <CellRenderer cell={cell} usage={usage} previewAsset={previewAsset} />
+        <div key={cell.id} className="min-w-0 w-full">
+          <CellRenderer
+            cell={cell}
+            usage={usage}
+            viewport={viewport}
+            previewAsset={previewAsset}
+          />
         </div>
       ))}
     </div>
@@ -176,7 +191,12 @@ function CarouselLayout({
             className="p-0"
             style={{ width: `${cardWidth}px`, flexShrink: 0 }}
           >
-            <CellRenderer cell={cell} usage={usage} previewAsset={previewAsset} />
+            <CellRenderer
+              cell={cell}
+              usage={usage}
+              viewport={viewport}
+              previewAsset={previewAsset}
+            />
           </div>
         ))}
       </div>
@@ -211,9 +231,8 @@ function CarouselLayout({
 // Row layout — Figma 31:777 (Lead 태블릿) 스펙
 //
 // 규칙: 카드 full width(100%) + 위→아래 세로 스택 + 간격 8px 고정.
-// - 기존의 수평 row 배치(align/wrap/horizontal flex) 는 Lead UI spec 에서
-//   vertical stack 으로 재정의됨. align/wrap/responsive 는 schema 호환을 위해
-//   유지되나 렌더에는 반영되지 않는다.
+// - `usage === "service"` (크로스셀): 모바일 뷰포트는 1열 flex, 태블릿·데스크톱은 2×2 grid.
+// - 그 외: 기존과 동일하게 세로 스택만 사용.
 // ---------------------------------------------------------------------------
 
 const ROW_FIXED_GAP_PX = 8;
@@ -221,6 +240,8 @@ const ROW_FIXED_GAP_PX = 8;
 function RowLayout({
   usage,
   cells,
+  viewport,
+  settings: _settings,
   previewAsset,
 }: {
   usage: CardUsagePresetId;
@@ -229,6 +250,30 @@ function RowLayout({
   settings: Extract<CardLayoutSettings, { type: "row" }>["settings"];
   previewAsset?: CardPreviewAssetBinding;
 }) {
+  if (usage === "service") {
+    const isMobile = viewport === "mobile";
+    return (
+      <div
+        className={cn(
+          "w-full",
+          isMobile ? "flex flex-col" : "grid grid-cols-2"
+        )}
+        style={{ gap: `${ROW_FIXED_GAP_PX}px` }}
+      >
+        {cells.map((cell) => (
+          <div key={cell.id} className="min-w-0 w-full">
+            <CellRenderer
+              cell={cell}
+              usage={usage}
+              viewport={viewport}
+              previewAsset={previewAsset}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div
       className="flex w-full flex-col"
@@ -236,7 +281,12 @@ function RowLayout({
     >
       {cells.map((cell) => (
         <div key={cell.id} className="w-full">
-          <CellRenderer cell={cell} usage={usage} previewAsset={previewAsset} />
+          <CellRenderer
+            cell={cell}
+            usage={usage}
+            viewport={viewport}
+            previewAsset={previewAsset}
+          />
         </div>
       ))}
     </div>
@@ -250,10 +300,12 @@ function RowLayout({
 function CellRenderer({
   cell,
   usage,
+  viewport: _viewport,
   previewAsset,
 }: {
   cell: CardCell;
   usage: CardUsagePresetId;
+  viewport: Viewport;
   previewAsset?: CardPreviewAssetBinding;
 }) {
   const openSlot = (slot: CardSlotName) => {
@@ -516,8 +568,8 @@ function CardReviewCell({
 
 /**
  * 프로세스 스텝 — Figma `card_process/md` (node 34:2983) 스펙 적용.
- * - 컨테이너 260px 높이 그라데이션 배경, px-20 pb-20 rounded-12.
- * - imgGraphic 영역 : 240×160. media 가 있으면 이미지, 없으면 placeholder chip 표시.
+ * - 컨테이너 260px 높이 그라데이션 배경, `px-5 pb-5` rounded-12. `justify-between` 으로 그래픽·텍스트를 카드 안에서 위·아래 배치.
+ * - imgGraphic 영역 : `max-w-[240px]` 래퍼에 `pt-2`(8px), 내부 `240×160` 박스. media 가 있으면 이미지, 없으면 placeholder chip 표시.
  * - title  : Heading20 SemiBold 20/28 -0.3 #141414 opacity-80, 1줄 ellipsis.
  *            stepNumber 가 별도로 있으면 "{n}. {title}" 으로 prefix.
  * - body   : Body15 Regular 15/24 -0.3 #141414 opacity-80, 2줄 ellipsis (whitespace-pre-line).
@@ -536,34 +588,36 @@ function CardStepCell({
   const displayTitle = stepNumber && title ? `${stepNumber}. ${title}` : title;
   return (
     <div
-      className="flex h-[260px] w-full flex-col items-center justify-end gap-4 rounded-ods-12 px-5 pb-5"
+      className="flex h-[260px] w-full flex-col items-center justify-between gap-4 rounded-ods-12 px-5 pb-5"
       style={{
         backgroundImage:
           "linear-gradient(173.759deg, rgba(239,239,239,0.2) 1.5877%, rgba(139,195,235,0.2) 92.346%), linear-gradient(90deg, rgb(245,245,245) 0%, rgb(245,245,245) 100%)",
       }}
     >
-      <div className="relative h-[160px] w-full max-w-[240px] shrink-0 overflow-hidden">
-        {media ? (
-          <OdsAssetRenderer
-            asset={media}
-            className="absolute inset-0 flex h-full w-full items-center justify-center object-contain"
-            onRequestSlotEdit={onRequestSlotEdit}
-          />
-        ) : onRequestSlotEdit ? (
-          <OdsAssetRenderer
-            asset={{ type: "image", alt: "그래픽 슬롯" }}
-            className="absolute inset-0 flex h-full w-full items-center justify-center object-contain"
-            onRequestSlotEdit={onRequestSlotEdit}
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <span className="rounded-ods-12 bg-ods-primary px-8 py-4 font-pretendard text-[16px] font-semibold leading-6 tracking-[-0.3px] text-white">
-              {title ?? "상담 신청하기"}
-            </span>
-          </div>
-        )}
+      <div className="flex w-full max-w-[240px] shrink-0 flex-col items-center pt-2">
+        <div className="relative h-[160px] w-full overflow-hidden">
+          {media ? (
+            <OdsAssetRenderer
+              asset={media}
+              className="absolute inset-0 flex h-full w-full items-center justify-center object-contain"
+              onRequestSlotEdit={onRequestSlotEdit}
+            />
+          ) : onRequestSlotEdit ? (
+            <OdsAssetRenderer
+              asset={{ type: "image", alt: "그래픽 슬롯" }}
+              className="absolute inset-0 flex h-full w-full items-center justify-center object-contain"
+              onRequestSlotEdit={onRequestSlotEdit}
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              <span className="rounded-ods-12 bg-ods-primary px-8 py-4 font-pretendard text-[16px] font-semibold leading-6 tracking-[-0.3px] text-white">
+                {title ?? "상담 신청하기"}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="flex w-full flex-col gap-1 tracking-[-0.3px] text-ods-text-primary">
+      <div className="flex w-full shrink-0 flex-col gap-1 tracking-[-0.3px] text-ods-text-primary">
         {displayTitle && (
           <h3 className="overflow-hidden text-ellipsis whitespace-nowrap font-pretendard text-[20px] font-semibold leading-7 opacity-80">
             {displayTitle}
@@ -584,6 +638,8 @@ function CardStepCell({
  * - 96px 높이 가로 카드, `rounded-ods-8`, 좌 96×96 이미지 + 우측 타이틀/설명
  * - 타이틀 18px Semibold / 본문 15px Regular 70% opacity (피그마 Body15)
  * - 카드 전체 링크; 별도 "보러가기" 텍스트는 시안에 없음 (`aria-label`에 CTA 반영)
+ * - 모바일 뷰포트: `RowLayout` 1열 + 카드 `w-full` (360px 캡 없음)
+ * - 태블릿·데스크톱: `RowLayout` 2×2 `grid`, 셀 너비에 맞춤
  */
 function ListCell({
   cell,
@@ -600,7 +656,7 @@ function ListCell({
     [title, cta?.label].filter(Boolean).join(" — ") || "서비스 카드";
 
   return (
-    <div className="flex h-[96px] w-full min-w-0 max-w-[360px] flex-row items-stretch overflow-hidden rounded-ods-8 bg-white text-left shadow-none transition-shadow hover:shadow-sm">
+    <div className="flex h-[96px] w-full min-w-0 flex-row items-stretch overflow-hidden rounded-ods-8 bg-white text-left shadow-none transition-shadow hover:shadow-sm">
       <div className="relative h-full w-24 shrink-0 bg-ods-surface-light">
         {iconAsset || onRequestSlotEdit ? (
           <OdsAssetRenderer

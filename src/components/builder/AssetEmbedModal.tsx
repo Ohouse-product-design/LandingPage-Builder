@@ -4,10 +4,12 @@
  * 에셋 임베드 모달.
  * - `src/catalog/ods-assets.json` 기반 ODS Asset Library(image / lottie) 검색·선택
  * - 선택 시 `AssetRef.assetId` 에 ODS 컴포넌트명이 저장되고, 프리뷰는 `OdsAssetRenderer` 가 해석
+ * - 썸네일: 스크롤 영역에 들어올 때만 `OdsAssetRenderer` 로 StillImage / Lottie 렌더 (다수 Lottie fetch 완화), 원본 비율 유지(`object-contain` 등)
  */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 
+import OdsAssetRenderer from "@/components/preview/OdsAssetRenderer";
 import { cn } from "@/lib/cn";
 import { searchOdsLibrary } from "@/lib/ods-asset-library";
 import type { AssetRef } from "@/schema/doc";
@@ -24,11 +26,67 @@ function entryToAssetRef(entry: {
   };
 }
 
+function LazyEmbedAssetThumbnail({
+  asset,
+  scrollRootRef,
+}: {
+  asset: AssetRef;
+  scrollRootRef: RefObject<HTMLDivElement | null>;
+}) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const root = scrollRootRef.current;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries.some((e) => e.isIntersecting);
+        if (hit) {
+          setShow(true);
+          io.disconnect();
+        }
+      },
+      { root: root ?? undefined, rootMargin: "120px 0px", threshold: 0.01 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [scrollRootRef]);
+
+  return (
+    <div
+      ref={wrapRef}
+      className="mb-2 flex h-24 w-full items-center justify-center overflow-hidden rounded-ods-4 bg-builder-panel-2"
+    >
+      {show ? (
+        <div className="pointer-events-none flex size-full min-h-0 min-w-0 items-center justify-center p-1">
+          <OdsAssetRenderer
+            asset={asset}
+            className={
+              asset.type === "lottie"
+                ? "flex h-full w-full max-h-full max-w-full items-center justify-center [&_.lottie-react]:max-h-full [&_.lottie-react]:max-w-full"
+                : "h-auto w-auto max-h-full max-w-full object-contain"
+            }
+          />
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-0.5 text-[9px] text-builder-muted">
+          <span className="rounded px-1 py-px uppercase tracking-wide opacity-80">
+            {asset.type}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AssetEmbedModal() {
   const modal = useBuilderStore((s) => s.assetModal);
   const close = useBuilderStore((s) => s.closeAssetModal);
   const embed = useBuilderStore((s) => s.embedAsset);
   const [query, setQuery] = useState("");
+  const scrollRootRef = useRef<HTMLDivElement>(null);
 
   const filtered = useMemo(() => {
     const list = searchOdsLibrary(query, { category: "asset" }).filter(
@@ -81,7 +139,10 @@ export default function AssetEmbedModal() {
           />
         </div>
 
-        <div className="builder-scroll max-h-[420px] overflow-y-auto p-3">
+        <div
+          ref={scrollRootRef}
+          className="builder-scroll max-h-[420px] overflow-y-auto p-3"
+        >
           <div className="grid grid-cols-3 gap-2">
             {filtered.map((asset) => (
               <button
@@ -94,9 +155,7 @@ export default function AssetEmbedModal() {
                   "rounded-ods-8 border border-builder-border bg-builder-bg p-2 text-left hover:border-builder-accent"
                 )}
               >
-                <div className="mb-2 flex h-24 items-center justify-center rounded-ods-4 bg-builder-panel-2 text-[10px] text-builder-muted">
-                  {asset.type.toUpperCase()}
-                </div>
+                <LazyEmbedAssetThumbnail asset={asset} scrollRootRef={scrollRootRef} />
                 <div className="truncate text-[11px] text-builder-text">{asset.alt}</div>
                 <div className="truncate text-[10px] text-builder-muted">{asset.assetId}</div>
               </button>

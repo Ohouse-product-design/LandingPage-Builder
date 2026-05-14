@@ -163,9 +163,9 @@ export interface CardUsagePreset {
 
 export const CARD_USAGE_PRESETS: Record<CardUsagePresetId, CardUsagePreset> = {
   usp: {
-    id: "usp",
-    label: "USP 카드",
-    description: "태그 + 헤드라인(2줄) + 설명(2줄) + 이미지",
+    id: "CardContents",
+    label: "콘텐츠 카드",
+    description: "키메시지와 이미지로 구성된 콘텐츠 카드",
     slotSpec: {
       tag: { maxChar: 12, maxLine: 1, allowedKinds: ["text"], label: "태그" },
       title: { maxChar: 20, maxLine: 2, required: true, allowedKinds: ["text"], label: "헤드라인" },
@@ -180,9 +180,9 @@ export const CARD_USAGE_PRESETS: Record<CardUsagePresetId, CardUsagePreset> = {
   },
 
   review: {
-    id: "review",
+    id: "CardReview",
     label: "리뷰 카드",
-    description: "별점 + 제목(2줄) + 본문(5줄) + 메타",
+    description: "리뷰 항목으로 구성된 카드",
     slotSpec: {
       rating: { allowedKinds: ["rating"], label: "별점" },
       title: { maxChar: 24, maxLine: 2, required: true, allowedKinds: ["text"], label: "제목" },
@@ -198,8 +198,8 @@ export const CARD_USAGE_PRESETS: Record<CardUsagePresetId, CardUsagePreset> = {
   },
 
   step: {
-    id: "step",
-    label: "프로세스 스텝",
+    id: "CardStep",
+    label: "스텝",
     description: "스텝 번호 + 타이틀 + 설명 + 이미지",
     slotSpec: {
       stepNumber: { maxChar: 4, maxLine: 1, allowedKinds: ["text"], label: "스텝 번호" },

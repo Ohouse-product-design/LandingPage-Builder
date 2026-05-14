@@ -18,7 +18,7 @@ import {
 } from "@bucketplace/assets/image";
 
 import { cn } from "@/lib/cn";
-import * as OdsIcons from "@/lib/ods-icons";
+import * as OdsIcons from "@bucketplace/icons";
 import {
   getOdsLibraryAssetByAssetId,
   getOdsLibraryIconByAssetId,
@@ -73,7 +73,7 @@ function withSlotEdit(node: ReactNode, onRequestSlotEdit: (() => void) | undefin
         "hover:outline-blue-500/35 focus-visible:outline-blue-500/60"
       )}
     >
-      <span className="pointer-events-none flex size-full min-h-0 min-w-0 [&>img]:size-full [&>img]:max-h-none [&>img]:max-w-none [&>svg]:size-full">
+      <span className="pointer-events-none flex size-full min-h-0 min-w-0 [&>img]:min-h-0 [&>img]:min-w-0 [&>img]:max-h-full [&>img]:max-w-full [&>svg]:size-full">
         {node}
       </span>
     </button>

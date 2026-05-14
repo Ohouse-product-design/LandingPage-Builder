@@ -2,8 +2,7 @@
  * Lead 컴포넌트가 사용하는 아이콘 — ODS 카탈로그(`@bucketplace/icons`) 이름을
  * 그대로 re-export. 실제 구현은 `src/lib/ods-icons.tsx` 의 로컬 어댑터를 따른다.
  *
- * 사내 패키지가 사용 가능해지면 `from "@/lib/ods-icons"` 부분을
- * `from "@bucketplace/icons"` 로 교체하면 된다.
+ * 구현은 `tsconfig` paths 로 `@bucketplace/icons` → 로컬 shim → `ods-icons` 어댑터.
  */
 
 export {
@@ -14,7 +13,7 @@ export {
   IconBubbleRight,
   IconCheck,
   IconPhoto,
-} from "@/lib/ods-icons";
+} from "@bucketplace/icons";
 
 // ODS 카탈로그에는 별도 로고 아이콘이 없으므로 텍스트 마크로 유지.
 import type { SVGProps } from "react";

@@ -6,7 +6,7 @@
  * - Coverage   → Card { layout: grid    cols=2, usage=usp }
  * - Review     → Card { layout: carousel autoScroll=true, usage=review }
  * - Process    → Card { layout: grid    cols=4, usage=step }
- * - Cross-sell → Card { layout: row     wrap=true, usage=service }
+ * - Cross-sell → Card { layout: row, usage=service } — 뷰포트별 1열 / 2×2 그리드
  */
 
 import type {

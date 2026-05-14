@@ -7,7 +7,7 @@ import placeholderAnimation from "@/lib/preview-placeholder-lottie.json";
 import { PREVIEW_FALLBACK_LOTTIE_JSON_URL } from "@/lib/preview-asset-url";
 
 type Props = {
-  /** Lottie JSON URL (https … .json). 비어 있으면 공개 폴백 URL 시도 후 로컬 애니메이션 */
+  /** Lottie JSON URL (https … .json). 비어 있으면 design-assets CDN 폴백 후 로컬 애니메이션 */
   src?: string | null;
   className?: string;
 };

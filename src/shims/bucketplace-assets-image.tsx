@@ -4,11 +4,18 @@
  * `@bucketplace/assets/image` 대체 구현.
  * 사내 패키지가 설치되면 tsconfig paths 에서 이 파일 대신 패키지를 가리키면 된다.
  *
- * 카탈로그 StillImage 컴포넌트명은 `preview-asset-url` 의 결정적 플레이스홀더와 동일 규칙으로 미리보기한다.
+ * StillImage 프리뷰: design-assets CDN(`asset.ohousecdn.com/static/…`) 우선,
+ * webp 실패 시 `image_480.png`, 그다음 picsum (`preview-asset-url`).
  */
 
-import { resolvePreviewRasterImageSrc } from "@/lib/preview-asset-url";
+import type { SyntheticEvent } from "react";
+
 import type { AssetRef } from "@/schema/doc";
+import {
+  resolveOdsCatalogStillImagePreviewFallbackPng,
+  resolvePreviewPlaceholderRasterSrc,
+  resolvePreviewRasterImageSrc,
+} from "@/lib/preview-asset-url";
 
 function rasterSrcForComponentName(name: string): string {
   const asset: AssetRef = {
@@ -19,13 +26,35 @@ function rasterSrcForComponentName(name: string): string {
   return resolvePreviewRasterImageSrc(asset);
 }
 
+function handleCatalogStillImageError(
+  e: SyntheticEvent<HTMLImageElement>,
+  assetId: string
+): void {
+  const el = e.currentTarget;
+  if (el.dataset.odsFallback === "png") {
+    el.onerror = null;
+    el.src = resolvePreviewPlaceholderRasterSrc(assetId, 960, 540);
+    return;
+  }
+  const png = resolveOdsCatalogStillImagePreviewFallbackPng(assetId);
+  if (png) {
+    el.dataset.odsFallback = "png";
+    el.src = png;
+    return;
+  }
+  el.onerror = null;
+  el.src = resolvePreviewPlaceholderRasterSrc(assetId, 960, 540);
+}
+
 export function AssetGiftLargeStillImage({ className }: { className?: string }) {
+  const id = "AssetGiftLargeStillImage";
   return (
     <img
-      src={rasterSrcForComponentName("AssetGiftLargeStillImage")}
+      src={rasterSrcForComponentName(id)}
       alt=""
       className={className}
       draggable={false}
+      onError={(e) => handleCatalogStillImageError(e, id)}
     />
   );
 }
@@ -38,12 +67,14 @@ export function BucketplaceCatalogStillImage({
   assetId: string;
   className?: string;
 }) {
+  const id = assetId.trim();
   return (
     <img
-      src={rasterSrcForComponentName(assetId.trim())}
+      src={rasterSrcForComponentName(id)}
       alt=""
       className={className}
       draggable={false}
+      onError={(e) => handleCatalogStillImageError(e, id)}
     />
   );
 }

@@ -1,10 +1,11 @@
 /**
  * ODS Icons — Bucketplace 디자인 시스템의 `@bucketplace/icons` 패키지에 대응하는
- * 로컬 어댑터.
+ * 로컬 어댑터. 카탈로그 이름·import 문은 `design-assets`(및 product-design catalog)와
+ * 맞추는 것이 목표다.
  *
  * 카탈로그 출처:
- *   github.com/bucketplace/product-design/blob/main/mcp-servers/
- *     ods-prototype-mcp-server/src/catalog/icons.json
+ *   - https://github.com/bucketplace/design-assets (사내) 및
+ *     github.com/bucketplace/product-design/.../catalog/icons.json
  *   (프로젝트 내 미러 사본: src/catalog/ods-icons.json)
  *
  * `@bucketplace/icons` npm 패키지는 현재 사내 registry 에 있어 직접 설치할 수

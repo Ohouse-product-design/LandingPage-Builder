@@ -3,14 +3,14 @@
 /**
  * 히어로 — Figma `이사-프로덕트` 모바일 히어로 (node 436:357368, dev mode) 정합.
  * - 배경: 상단 스카이 블루 → 투명 그라데이션 + 하단 그레이 필
- * - 세로 스택 중앙 정렬: eyebrow → headline → 3:2 비주얼 → Primary CTA → 스크롤 쉐브론
+ * - 세로 스택 중앙 정렬: eyebrow → headline → 비주얼(고정 프레임, object-contain 으로 잘림 없음) → Primary CTA → 스크롤 쉐브론
  * - 데스크톱은 동일 리듬에 타이포·최대 폭만 확대
  */
 
 import type { CSSProperties } from "react";
 
 import { cn } from "@/lib/cn";
-import { IconChevronDown } from "@/lib/ods-icons";
+import { IconChevronDown } from "@bucketplace/icons";
 import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import type { Section, Viewport } from "@/schema/doc";
 import OdsAssetRenderer from "../OdsAssetRenderer";
@@ -82,17 +82,17 @@ export default function HeroTemplate({
             ) : null}
           </div>
 
-          <div className="relative h-[200px] w-full max-w-[300px] shrink-0 overflow-hidden">
+          <div className="relative h-[150px] w-full max-w-[225px] shrink-0 overflow-hidden">
             {bgAsset ? (
               <OdsAssetRenderer
                 asset={bgAsset}
-                className="absolute inset-0 size-full max-w-none object-cover"
+                className="absolute inset-0 flex size-full items-center justify-center object-contain"
                 onRequestSlotEdit={onHeroBgEdit}
               />
             ) : onHeroBgEdit ? (
               <OdsAssetRenderer
                 asset={{ type: "image", alt: "히어로 배경" }}
-                className="absolute inset-0 size-full max-w-none object-cover"
+                className="absolute inset-0 flex size-full items-center justify-center object-contain"
                 onRequestSlotEdit={onHeroBgEdit}
               />
             ) : (
