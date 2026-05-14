@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title><?= (doc.meta && doc.meta.title) ? doc.meta.title : 'Landing Page' ?></title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link
+    rel="stylesheet"
+    as="style"
+    crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+  />
+  <style>
+    /* ============================================================
+     * ODS 토큰 — Tailwind 의 tailwind.config.ts 와 1:1 정합 유지
+     * 빌더의 React 미리보기와 동일한 시각 결과를 노린다.
+     * ============================================================ */
+    :root {
+      --ods-primary: #00A1FF;
+      --ods-responsibility-green: #05A558;
+      --ods-star-yellow: #FFC300;
+      --text-primary: #141414;
+      --text-secondary: #2F3438;
+      --text-tertiary: #8C8C8C;
+      --border: #E0E0E0;
+      --border-light: #EDEDED;
+      --surface-gray: #F5F5F5;
+      --surface-light: #F7F9FA;
+      --gradient-responsibility: linear-gradient(90deg, #59D99B 0%, #0AB261 100%);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      color: var(--text-primary);
+      background: #fff;
+    }
+
+    /* Header */
+    .lp-header { display:flex; align-items:center; justify-content:space-between;
+      height:56px; padding:0 16px; border-bottom:1px solid var(--border); }
+    .lp-logo { font-weight:600; font-size:17px; }
+    .lp-nav span { margin-left:16px; color:var(--text-secondary); font-size:12px; }
+
+    /* Hero */
+    .lp-hero { background:var(--surface-gray); padding:40px 20px; }
+    .lp-hero-inner { display:flex; flex-direction:column; gap:24px; max-width:1280px; margin:0 auto; }
+    @media (min-width: 1024px) { .lp-hero-inner { flex-direction:row; align-items:center; gap:48px; padding:60px 120px; } }
+    .lp-hero-title { font-size:24px; line-height:32px; font-weight:600; letter-spacing:-0.3px; }
+    @media (min-width: 768px) { .lp-hero-title { font-size:32px; line-height:42px; } }
+    .lp-hero-sub { margin-top:12px; color:var(--text-secondary); font-size:15px; line-height:24px; }
+    .lp-hero-cta { margin-top:24px; display:flex; gap:8px; }
+    .lp-hero-image { flex:1; height:180px; background:var(--surface-light); border-radius:12px;
+      display:flex; align-items:center; justify-content:center; color:var(--text-tertiary); font-size:11px; }
+    @media (min-width: 768px) { .lp-hero-image { height:280px; } }
+
+    /* Buttons */
+    .lp-btn { border-radius:8px; padding:12px 20px; font-size:14px; font-weight:600; cursor:pointer; border:0; }
+    .lp-btn-primary { background:var(--ods-primary); color:white; }
+    .lp-btn-secondary { background:white; color:var(--text-primary); border:1px solid var(--border); }
+
+    /* Section title */
+    .lp-section { padding:40px 20px; }
+    @media (min-width: 768px) { .lp-section { padding:60px 40px; } }
+    @media (min-width: 1024px) { .lp-section { padding:60px 120px; } }
+    .lp-section-title { margin-bottom:24px; }
+    @media (min-width: 768px) { .lp-section-title { margin-bottom:40px; } }
+    .lp-section-title .lp-sub { color:var(--text-tertiary); font-size:15px; line-height:24px; margin-bottom:4px; }
+    .lp-section-title .lp-main { font-size:24px; line-height:32px; font-weight:600; }
+    @media (min-width: 768px) { .lp-section-title .lp-main { font-size:32px; line-height:42px; } }
+
+    /* Card layouts */
+    .lp-grid { display:grid; }
+    .lp-grid { grid-template-columns: repeat(var(--cols-mobile, 1), minmax(0, 1fr)); }
+    @media (min-width: 768px)  { .lp-grid { grid-template-columns: repeat(var(--cols-tablet, 2),  minmax(0, 1fr)); } }
+    @media (min-width: 1024px) { .lp-grid { grid-template-columns: repeat(var(--cols-desktop, 4), minmax(0, 1fr)); } }
+
+    .lp-carousel { position:relative; overflow:hidden; }
+    .lp-carousel-track { display:flex; width:max-content; }
+    .lp-carousel-track:not(.lp-marquee) { overflow-x:auto; width:auto; }
+    .lp-carousel-item { flex-shrink:0; }
+    .lp-marquee { animation: lp-marquee var(--marquee-duration, 30s) linear infinite; }
+    @keyframes lp-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .lp-row { display:flex; }
+
+    /* Cards */
+    .lp-card { background:white; border-radius:12px; padding:16px; }
+    .lp-card-usp { border:1px solid var(--border); }
+    .lp-card-review { box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .lp-card-step { background:var(--surface-light); }
+    .lp-card-service { display:flex; flex-direction:column; align-items:center; text-align:center; text-decoration:none; color:inherit; }
+
+    .lp-tag { display:inline-block; background:var(--surface-gray); color:var(--text-secondary);
+      font-size:12px; padding:2px 8px; border-radius:4px; margin-bottom:8px; }
+    .lp-card-title { font-size:17px; line-height:22px; font-weight:600; color:var(--text-primary); }
+    .lp-card-body { font-size:14px; line-height:20px; color:var(--text-tertiary); margin-top:4px; }
+    .lp-card-media { margin-top:12px; height:80px; background:var(--surface-light); border-radius:8px;
+      display:flex; align-items:center; justify-content:center; color:var(--text-tertiary); font-size:10px; }
+    .lp-card-icon { width:64px; height:64px; border-radius:50%; background:var(--surface-light);
+      display:flex; align-items:center; justify-content:center; color:var(--text-tertiary); font-size:10px; margin-bottom:8px; }
+    .lp-card-cta { color:var(--ods-primary); font-size:12px; margin-top:8px; }
+    .lp-rating { color:var(--ods-star-yellow); letter-spacing:1px; }
+    .lp-meta { margin-top:12px; color:var(--text-tertiary); font-size:12px; }
+    .lp-step-num { color:var(--ods-primary); font-weight:600; font-size:12px; }
+    .lp-clamp-5 { display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
+
+    /* Badge */
+    .lp-badge { display:inline-flex; align-items:center; gap:6px; background:var(--gradient-responsibility);
+      color:white; font-size:12px; font-weight:600; padding:4px 12px; border-radius:16px; margin-bottom:16px; }
+
+    /* Table */
+    .lp-section-table { background:var(--surface-light); }
+    .lp-table { border:1px solid var(--border); border-radius:12px; overflow:hidden; background:white; }
+    .lp-thead, .lp-trow { display:grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; }
+    .lp-thead { background:var(--surface-gray); font-size:12px; font-weight:600; }
+    .lp-thead > div, .lp-trow > div { padding:12px; text-align:center; }
+    .lp-thead > div:first-child, .lp-tcell-label { text-align:left; }
+    .lp-trow { border-bottom:1px solid var(--border-light); font-size:14px; }
+    .lp-trow:last-child { border-bottom:0; }
+    .lp-accent-blue { color:var(--ods-primary); font-weight:600; }
+    .lp-accent-green { color:var(--ods-responsibility-green); font-weight:600; }
+
+    /* Form */
+    .lp-section-form { background:var(--surface-light); }
+    .lp-form { background:white; border-radius:12px; padding:20px; max-width:560px; }
+    .lp-field { display:block; margin-bottom:12px; }
+    .lp-field > span { display:block; font-size:12px; color:var(--text-secondary); margin-bottom:4px; }
+    .lp-field input { width:100%; height:40px; padding:0 12px; border:1px solid var(--border); border-radius:8px; font-size:14px; }
+    .lp-form .lp-btn { width:100%; margin-top:8px; }
+
+    /* Sticky CTA */
+    .lp-sticky-cta { position:sticky; bottom:0; background:white; border-top:1px solid var(--border);
+      padding:12px 16px; z-index:10; }
+    .lp-sticky-cta .lp-btn { width:100%; }
+
+    /* Footer */
+    .lp-footer { background:#1A1A1A; color:rgba(255,255,255,0.6); padding:32px 20px; font-size:11px; }
+    .lp-footer-nav span { margin-right:16px; color:rgba(255,255,255,0.8); }
+    .lp-footer-nav { margin-bottom:12px; }
+
+    .lp-empty { border:1px dashed var(--border); border-radius:8px; padding:24px;
+      text-align:center; color:var(--text-tertiary); font-size:14px; }
+  </style>
+</head>
+<body>
+  <?!= renderDocument(doc) ?>
+</body>
+</html>

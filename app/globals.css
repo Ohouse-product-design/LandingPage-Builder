@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+  background: #0f1115;
+  color: #e6e8ee;
+  font-family: var(--font-pretendard, "Pretendard"), -apple-system, BlinkMacSystemFont,
+    system-ui, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar for builder panels */
+.builder-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.builder-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.builder-scroll::-webkit-scrollbar-thumb {
+  background: #262b36;
+  border-radius: 4px;
+}
+.builder-scroll::-webkit-scrollbar-thumb:hover {
+  background: #3a4150;
+}
