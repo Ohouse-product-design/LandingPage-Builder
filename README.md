@@ -1,66 +1,83 @@
 # Landing Page Builder
 
-오늘의집 서비스 랜딩페이지 빌더 어드민 — Next.js 14 + TypeScript + Tailwind 기반.
+오늘의집 랜딩페이지 **빌더 어드민** — Next.js 14 + TypeScript + Tailwind.  
+`LandingPageDoc` JSON을 편집하고, 섹션·카드 프리뷰에서 ODS 스타일·에셋에 가깝게 보이도록 맞춘 프로젝트입니다.
 
-1차 산출물 범위는 **JSON 스키마 + 핵심 컴포넌트 골격** 입니다.
-실제 데이터(Jira/Slack MCP, design-assets 레포)와의 통합은 다음 단계에서 진행됩니다.
+- **빌더**: `/` — 섹션 트리, 반응형 프리뷰, 인스펙터(타이틀 / 콘텐츠 슬롯 / 이미지).
+- **프리뷰**: `/preview/[slug]` — 동일 문서를 프리텐다드 기준으로 렌더.
+- **Lead 데모**: `/lead` — 마케팅용 정적 섹션 데모(별도 스토리/에셋).
+- **에셋**: `src/catalog/ods-assets.json` · `ods-icons.json` 로컬 미러 + 프리뷰 시 **`asset.ohousecdn.com`** 정적 URL( design-assets 와 동일 규칙 ). 사내 패키지 대신 **`tsconfig` path shim** 으로 `@bucketplace/assets/image` · `@bucketplace/icons` 를 연결합니다.
 
 ## 시작하기
 
 ```bash
-pnpm install   # 또는 npm/yarn
-pnpm dev
+npm install
+npm run dev
 ```
 
-브라우저에서 `http://localhost:3000` 접속하면 빌더가 열립니다.
+프리뷰 Lottie 는 코드에서 `lottie-react` 를 import 합니다. 설치 오류가 나면 `npm install lottie-react` 로 추가하세요.
 
-타입체크: `pnpm typecheck`
-빌드: `pnpm build`
+- 빌더: **http://localhost:3000**
+- 시드 프리뷰 예: **http://localhost:3000/preview/moving** (`npm run open:preview` — macOS `open`)
+- 타입체크: `npm run typecheck`
+- 프로덕션 빌드: `npm run build` / `npm run start`
+- Storybook: `npm run storybook` (기본 포트 6006)
 
-## 폴더 구조
+## 앱 라우트 (`app/`)
+
+| 경로 | 설명 |
+|------|------|
+| `page.tsx` | 빌더 진입 — `BuilderShell` |
+| `preview/[slug]/page.tsx` | 문서 slug 기반 풀 프리뷰 |
+| `lead/page.tsx` | Lead 랜딩 데모 페이지 |
+
+## ODS · 에셋 프리뷰
+
+| 구분 | 설명 |
+|------|------|
+| **카탈로그** | `src/catalog/ods-assets.json`, `src/catalog/ods-icons.json` — 컴포넌트명·타입·import 문자열 ( design-assets / product-design 카탈로그 규칙과 정렬 ). |
+| **라이브러리 헬퍼** | `src/lib/ods-asset-library.ts` — 검색·타입 조회. |
+| **StillImage URL** | `src/lib/preview-asset-url.ts` — `*StillImage` → `https://asset.ohousecdn.com/static/{Base}/image_480.webp` 등, 실패 시 png·picsum 폴백. `src/shims/bucketplace-assets-image.tsx` 가 `<img>` 에 적용. |
+| **Lottie URL** | 동 파일에서 카탈로그에 등록된 `*Lottie` 컴포넌트명 → ohousecdn JSON URL 매핑. `LottieAssetView` + `lottie-react` 로 재생. |
+| **렌더** | `OdsAssetRenderer` — image / lottie / `Icon*`(shim 아이콘) 분기. 슬롯 편집 시 `onRequestSlotEdit` 로 버튼 래핑. |
+| **에셋 임베드 모달** | `AssetEmbedModal` — 카탈로그 검색, **IntersectionObserver** 로 썸네일 지연 로드, **원본 비율**(`object-contain` 등). |
+| **푸터 래스터** | `footer-mcp-assets.ts` — Figma MCP에서 받은 URL(만료 가능). 상용 시 CDN·정적 파일로 교체 권장. |
+
+## 폴더 구조 (요약)
 
 ```
 app/
-  layout.tsx              # 루트 레이아웃 (다크 테마)
-  page.tsx                # 빌더 진입점 → <BuilderShell />
-  preview/[slug]/page.tsx # 프리뷰 페이지 (iframe 통합 시 사용)
-  globals.css             # Tailwind + 스크롤바 스타일
+  layout.tsx, globals.css
+  page.tsx                 # 빌더
+  preview/[slug]/page.tsx
+  lead/                    # Lead 데모 layout · page · css
 
 src/
-  schema/                 # 모든 타입 정의 — 빌더의 single source of truth
-    doc.ts                # LandingPageDoc, Section, ComponentInstance, AssetSlot, TokenBinding
-    section-presets.ts    # 11종 섹션 프리셋 (Hero/Usp/Table/Coverage/Review/Process/...)
-    component-presets.ts  # 8종 컴포넌트 프리셋 (UspCard/ReviewCard/StepCard/...)
-    ods-tokens.ts         # ODS 토큰 카탈로그 (Color/Typography/Radius/Spacing/Gradient)
-    ui-spec.ts            # FieldSpec / UISpec — 글자수·줄수·필수 제약
-
-  store/
-    builder-store.ts      # zustand — doc, selection, viewport, modal, actions
-
+  schema/                  # doc, section/card presets, asset-modal-context, …
+  store/builder-store.ts   # zustand — doc, selection, viewport, asset modal, embedAsset
+  catalog/
+    ods-assets.json
+    ods-icons.json
   lib/
-    seed.ts               # /moving 페이지 기반 시드 LandingPageDoc
-    preview-asset-url.ts  # 프리뷰용 이미지 URL·Lottie URL 판별
-    validate.ts           # UI Spec 검증 유틸 (validateField/validateProps/countChars/countLines)
-    cn.ts                 # clsx 래퍼
-
+    seed.ts
+    preview-asset-url.ts   # CDN / picsum / Lottie 매핑
+    ods-asset-library.ts
+    ods-icons.tsx, ods-prototype.tsx
+    validate.ts, cn.ts
+  shims/
+    bucketplace-assets-image.tsx
+    bucketplace-icons.tsx
   components/
-    builder/              # 어드민 UI
-      BuilderShell.tsx    # 3-pane 레이아웃 (Tree / Preview / Inspector, 상단 앱 헤더 없음)
-      SectionTree.tsx     # 좌측 섹션 트리 (DnD + 잠금 + 추가/삭제)
-      section-add-menu.ts # 「+ 섹션 추가」드롭다운: 기본 7 프리셋 + 마케팅 7항목 (라벨 규칙 단일 소스)
-      PreviewStage.tsx    # 가운데 반응형 프리뷰 + 뷰포트 토글·검수 요청(상단 보조 줄)
-      Inspector.tsx       # 우측 인스펙터 3탭 (타이틀 / 콘텐츠 슬롯 / 이미지)
-      tabs/
-        PropsTab.tsx      # 입력 + 실시간 UI Spec 검증
-        SlotsTab.tsx      # 슬롯 내 컴포넌트 선택/삭제
-        AssetsTab.tsx     # 에셋 슬롯 + 임베드 진입
-      AssetEmbedModal.tsx # design-assets 검색 모달 (mock)
-      ReviewModal.tsx     # 검수 요청 모달 (Jira/Slack 시뮬레이션)
+    builder/
+      BuilderShell, SectionTree, PreviewStage, Inspector
+      section-add-menu.ts, AssetEmbedModal, ReviewModal, CellUsageSelect
+      tabs/PropsTab, SlotsTab, AssetsTab
     preview/
-      PreviewRenderer.tsx  # doc → Section 셸 + 선택 outline
-      OdsAssetRenderer.tsx   # AssetRef → 이미지 `<img>` / Lottie `lottie-react` / Icon*
-      LottieAssetView.tsx    # Lottie JSON fetch + 폴백
-      Section.tsx            # preset dispatch → *Template
+      PreviewRenderer, Section, OdsAssetRenderer, LottieAssetView, Card
+      sections/*Template, footer-mcp-assets.ts, __fixtures__/
+    lead/                    # Lead 전용 블록·스토리
+
+apps-script/                 # GAS 퍼블리시 골격 (README 참고)
 ```
 
 ## 데이터 모델 한눈에 보기
@@ -70,84 +87,67 @@ LandingPageDoc
 ├─ meta          { slug, title, category, owners }
 ├─ sections[]
 │  └─ Section
-│     ├─ preset    : SectionPresetId  (hero | usp | review | ...)
-│     ├─ locked    : boolean          (true 면 순서 변경/삭제 불가)
-│     ├─ props     : { [key]: any }   (sectionTitle, subtitle, ...)
+│     ├─ preset    : SectionPresetId
+│     ├─ locked    : boolean
+│     ├─ props     : { [key]: any }
 │     ├─ slots     : { [name]: ComponentInstance[] }
-│     │              cards / reviews / steps / rows / services / fields
-│     ├─ assets[]  : AssetSlot        (slotName + AssetRef)
-│     ├─ tokens[]  : TokenBinding     (propPath ↔ ODS tokenRef)
+│     ├─ assets[]  : AssetSlot (slotName + AssetRef)
+│     ├─ tokens[]  : TokenBinding
 │     └─ visibility: { mobile, tablet, desktop }
-├─ globalTokens[]  : 전역 토큰 오버라이드
-└─ audit           : 감사 로그
+├─ globalTokens[]
+└─ audit
 ```
 
-### 섹션 프리셋 카탈로그 (11종)
+### 섹션 프리셋 (요약)
 
-| 카테고리 | 프리셋 | 기본 잠금 | 슬롯 |
-|---|---|---|---|
-| fixed | `header`, `hero`, `sticky-cta`, `footer` | ✓ | — |
-| content | `usp`, `table`, `coverage`, `review`, `process`, `cross-sell` | ✗ | cards/rows/items/reviews/steps/services |
-| cta | `cta-form` | ✗ | fields |
+`header`, `hero`, `sticky-cta`, `footer` 는 기본 잠금; `usp`, `table`, `coverage`, `review`, `process`, `cross-sell`, `cta-form` 등 가변 섹션은 `section-presets.ts` · `SectionTree` / `section-add-menu.ts` 와 연동됩니다.
 
-각 프리셋의 `uiSpec` 가 어드민 입력 단계에서 글자수/줄수 제약을 강제합니다.
+### 컴포넌트 프리셋
 
-### 컴포넌트 프리셋 카탈로그 (8종)
+카드·행·탭·뱃지·폼 필드 등은 `component-presets.ts` 와 `Card` 프리뷰 셀(예: `CardStepCell`, 리뷰·USP 등)에서 소비됩니다.
 
-`usp-card`, `review-card`, `step-card`, `service-card`, `table-row`, `tab`, `badge`, `form-field`
+## 좌측 SectionTree · 섹션 추가
 
-각 컴포넌트는 `uiSpec`(prop 제약) + `assetSlots`(에셋 슬롯) 을 정의합니다.
-
-## 좌측 SectionTree와 섹션 추가 메뉴
-
-- **트리 한 줄 라벨**: 각 행은 `SECTION_PRESETS[preset].label` 만 표시한다 (`sectionTitle` / `section.name` 미사용).
-- **삭제 확인** 등에는 여전히 `Section.name` 이 쓰인다 (`builder-store.addSection` 이 부여한 이름·접미사).
-- **드롭다운 옵션**은 `section-add-menu.ts` 가 단일 소스다.
-  - **기본**: `usp`, `table`, `coverage`, `review`, `process`, `cross-sell`, `cta-form` — 라벨은 각 프리셋의 `label`.
-  - **마케팅 풀페이지 UI**: `hero`·`usp`·`process`·`review`·`sticky-cta` 는 `variant: "marketing"`; `cta-form` 은 `marketing-form` / `marketing-contact` 두 종. `cta-form` 변형만 라벨에 ` · 상담 필드` / ` · 문의 박스` 접미사 (`sectionAddMenuLabel` = `builder-store` 새 섹션 `name` 과 동일 규칙).
-- Storybook `SectionPresetMenu` 스토리 `AsInSectionTree` / `WithMarketingLayouts` 는 위 구성과 동일한 데이터를 쓴다.
+- 트리 라벨은 `SECTION_PRESETS[preset].label` 기준.
+- 추가 메뉴 단일 소스: `section-add-menu.ts` (기본 세트 + 마케팅 변형).
+- Storybook `SectionPresetMenu` 스토리가 동일 규칙을 따릅니다.
 
 ## 핵심 동작 매핑
 
-| 요구 기능 | 구현 위치 |
-|---|---|
-| 섹션 순서 변경 (잠긴 영역 제외) | `SectionTree` (HTML5 native drag) + `builder-store.reorderSections` |
-| 섹션 추가 (기본·마케팅) | `SectionTree` → `section-add-menu.ts` + `builder-store.addSection` |
-| 프리뷰 이미지·Lottie | `OdsAssetRenderer` — `url` / `type` 으로 `<img>` 또는 `lottie-react` (`preview-asset-url.ts` 결정적 이미지 플레이스홀더) |
-| 에셋 임베드 | `AssetsTab` → `AssetEmbedModal` → `builder-store.embedAsset` |
-| Responsive Preview 패널 | `PreviewStage` + `VIEWPORT_WIDTH` (375/768/1280) |
-| 검수 요청 → 티켓/Slack | `PreviewStage` 상단 보조 줄 → `ReviewModal` (Jira/Slack 통합은 다음 단계) |
-| UI Spec 자동 검증 | `PropsTab` 실시간 카운터 + `ReviewModal` 의 전체 검증 패널 |
-| ODS 토큰 바인딩 (데이터만) | `doc` 의 `tokens` / `globalTokens` + `builder-store.bindSectionToken` — 우측 전용 탭 없음 |
+| 기능 | 위치 |
+|------|------|
+| 섹션 순서 (잠금 제외) | `SectionTree` + `builder-store.reorderSections` |
+| 섹션 추가 | `section-add-menu.ts` + `builder-store.addSection` |
+| 프리뷰 에셋 | `OdsAssetRenderer` + `preview-asset-url.ts` + image shim |
+| 에셋 슬롯 교체 | 프리뷰 클릭 → `openAssetModal` / `AssetEmbedModal` → `embedAsset` |
+| 뷰포트 | `PreviewStage` + 고정 폭 (375 / 768 / 1280) |
+| 검수 요청 UI | `ReviewModal` (Jira/Slack 실연동은 추후) |
+| UI Spec 검증 | `PropsTab` · `validate.ts` |
+| 토큰 바인딩 데이터 | `doc.tokens` / `globalTokens` — 전용 인스펙터 탭은 없음 |
 
-## ODS 토큰 매핑
+## 섹션 프리뷰 메모
 
-`tailwind.config.ts` 의 색상/타이포/radius/spacing 토큰은 `src/schema/ods-tokens.ts` 카탈로그와 **반드시 1:1 정합** 을 유지해야 합니다.
-실제 ods 레포 연동 시 두 파일을 동시에 마이그레이션하세요.
+- **Hero** (`HeroTemplate`): 배경 그라데이션, 배경 에셋 프레임(예: 225×150), **`object-contain`** 으로 잘림 최소화.
+- **Footer** (`FooterTemplate`): 오늘의집 푸터형 **3단 그리드**(고객센터 | 링크 | 회사·인증·소셜), 회사정보 **토글**, 소셜은 인라인 SVG, 인증 이미지는 `footer-mcp-assets`.
+- **Process 카드** (`CardStepCell`): 그라데이션 카드, 그래픽 영역 + `justify-between` 레이아웃 등.
 
-## 배포 — Google Apps Script Web App
+## ODS 토큰 (Tailwind)
 
-`apps-script/` 하위 폴더에 GAS Web App 으로 LandingPageDoc 을 퍼블리시하는 골격이 있습니다.
+`tailwind.config.ts` 의 색·타이포·radius·spacing 은 `src/schema/ods-tokens.ts` 와 맞춥니다. 토큰 대규모 변경 시 두 곳을 함께 조정하세요.
 
-```bash
-cd apps-script
-bash install.sh                                # Homebrew / Node / clasp / clasp login
-clasp create --type webapp --title "LP Publisher" --rootDir ./
-clasp push
-clasp deploy
-```
+## 배포 — Google Apps Script
 
-자세한 흐름은 [apps-script/README.md](./apps-script/README.md) 참고. 핵심 동작은:
-- `POST {webappUrl}` — 빌더에서 LandingPageDoc JSON push (X-Build-Token 인증)
-- `GET  {webappUrl}?slug=moving` — Properties 에 저장된 doc 으로 HTML 렌더
-- 빌더 React 미리보기와 **동일한 ODS 토큰 CSS** 사용 (Index.html `:root` 참고)
+`apps-script/` 에 Web App 퍼블리시 골격이 있습니다. 자세한 절차는 [apps-script/README.md](./apps-script/README.md) 를 참고하세요.
 
-## 다음 단계
+## 다음 단계 (아이디어)
 
-1. **실 컴포넌트 연결** — `PreviewRenderer` 의 미니 wireframe 을 첨부한 20개 tsx (UspCards, ReviewCarousel, SectionProcess 등) 실제 컴포넌트로 교체.
-2. **DnD 라이브러리 도입** — 1차 골격은 HTML5 native drag. dnd-kit 으로 교체해 키보드 접근성/스크롤 동기화 개선.
-3. **에셋 레포 통합** — `AssetEmbedModal` 의 mock 카탈로그를 design-assets GraphQL/REST API 로 교체.
-4. **검수 자동화** — `ReviewModal` 의 시뮬레이션 코드를 Jira / Slack MCP 커넥터 호출로 교체.
-5. **배포 파이프라인** — `LandingPageDoc` JSON 을 CDN/CMS 로 publish + SSR 단에서 실 페이지 렌더.
-6. **히스토리 / undo** — zustand 미들웨어(`zundo`) 추가.
-7. **iframe 프리뷰** — 1차는 동일 프로세스 렌더. iframe + postMessage 로 격리 + 디바이스 프레임 적용.
+1. **사내 패키지** — `@bucketplace/assets/image` 실패 시 shim 대신 workspace 패키지 연결.
+2. **푸터 MCP URL** — 만료 시 design-assets 정적 경로 또는 `public/` 으로 교체.
+3. **DnD 고도화** — 필요 시 `@dnd-kit` 등으로 키보드·스크롤 동기화.
+4. **검수 연동** — `ReviewModal` 을 Jira / Slack API 로 교체.
+5. **undo** — `zundo` 등 zustand 미들웨어.
+6. **iframe 프리뷰** — 디바이스 프레임·격리가 필요할 때 `postMessage` 설계.
+
+## design-assets 레포
+
+아이콘·래스터·Lottie 메타의 소스 오브 트루스는 사내 **design-assets** 저장소입니다. 카탈로그 JSON 은 수동으로 동기화하거나, 클론 후 경로를 참고해 `src/catalog/` 을 갱신할 수 있습니다.
