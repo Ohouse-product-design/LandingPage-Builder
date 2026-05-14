@@ -4,6 +4,16 @@ import "../app/globals.css";
 
 const preview: Preview = {
   parameters: {
+    options: {
+      storySort: {
+        order: [
+          "Catalog",
+          ["Section presets", "Component presets"],
+          "Preview",
+          ["Builder", "ODS", "Lead", "Marketing"],
+        ],
+      },
+    },
     layout: "fullscreen",
     controls: {
       matchers: {

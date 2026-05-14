@@ -163,7 +163,7 @@ export interface CardUsagePreset {
 
 export const CARD_USAGE_PRESETS: Record<CardUsagePresetId, CardUsagePreset> = {
   usp: {
-    id: "CardContents",
+    id: "usp",
     label: "콘텐츠 카드",
     description: "키메시지와 이미지로 구성된 콘텐츠 카드",
     slotSpec: {
@@ -180,7 +180,7 @@ export const CARD_USAGE_PRESETS: Record<CardUsagePresetId, CardUsagePreset> = {
   },
 
   review: {
-    id: "CardReview",
+    id: "review",
     label: "리뷰 카드",
     description: "리뷰 항목으로 구성된 카드",
     slotSpec: {
@@ -198,7 +198,7 @@ export const CARD_USAGE_PRESETS: Record<CardUsagePresetId, CardUsagePreset> = {
   },
 
   step: {
-    id: "CardStep",
+    id: "step",
     label: "스텝",
     description: "스텝 번호 + 타이틀 + 설명 + 이미지",
     slotSpec: {
