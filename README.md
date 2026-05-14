@@ -1,7 +1,6 @@
 # Landing Page Builder
 
 오늘의집 랜딩페이지 **빌더 어드민** — Next.js 14 + TypeScript + Tailwind.  
-`LandingPageDoc` JSON을 편집하고, 섹션·카드 프리뷰에서 ODS 스타일·에셋에 가깝게 보이도록 맞춘 프로젝트입니다.
 
 - **빌더**: `/` — 섹션 트리, 반응형 프리뷰, 인스펙터(타이틀 / 콘텐츠 슬롯 / 이미지).
 - **프리뷰**: `/preview/[slug]` — 동일 문서를 프리텐다드 기준으로 렌더.
