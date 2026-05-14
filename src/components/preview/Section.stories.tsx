@@ -66,7 +66,7 @@ const meta: Meta<StoryArgs> = {
     preset: "usp",
     viewport: "desktop",
     cardLayout: "grid",
-    cardUsage: "CardContents",
+    cardUsage: "usp",
   },
   argTypes: {
     preset: {
@@ -99,8 +99,9 @@ const meta: Meta<StoryArgs> = {
     },
     cardUsage: {
       control: "select",
-      options: ["CardContents", "CardReview", "CardStep", "List"] as CardUsagePresetId[],
-      description: "카드형 섹션의 cell 모양 — CardContentsCell/CardReviewCell/CardStepCell/ListCell",
+      options: ["usp", "review", "step", "service", "custom"] satisfies CardUsagePresetId[],
+      description:
+        "카드형 섹션의 사용 패턴 — usp/review/step/service/custom (Card.tsx CellRenderer 와 CARD_USAGE_PRESETS 정합)",
       if: { arg: "preset", neq: "header" },
     },
   },
@@ -122,13 +123,13 @@ export const Usp: Story = { args: { preset: "usp" } };
 export const Table: Story = { args: { preset: "table" } };
 export const Coverage: Story = { args: { preset: "coverage" } };
 export const Review: Story = {
-  args: { preset: "review", cardLayout: "carousel", cardUsage: "CardReview" },
+  args: { preset: "review", cardLayout: "carousel", cardUsage: "review" },
 };
 export const Process: Story = {
-  args: { preset: "process", cardLayout: "grid", cardUsage: "CardStep" },
+  args: { preset: "process", cardLayout: "grid", cardUsage: "step" },
 };
 export const CrossSell: Story = {
-  args: { preset: "cross-sell", cardLayout: "row", cardUsage: "List" },
+  args: { preset: "cross-sell", cardLayout: "row", cardUsage: "service" },
 };
 export const CtaForm: Story = { args: { preset: "cta-form" } };
 export const StickyCta: Story = { args: { preset: "sticky-cta" } };
@@ -148,8 +149,8 @@ export const UspRow: Story = {
   args: { preset: "usp", cardLayout: "row" },
 };
 
-// ───── usage 스왑 시연 — 같은 process 섹션이 CardStep/List cell 로 ─────
+// ───── usage 스왑 시연 — 같은 process 섹션이 step / service cell 로 ─────
 export const ProcessAsList: Story = {
-  name: "Process · Cell Usage: List",
-  args: { preset: "process", cardLayout: "row", cardUsage: "List" },
+  name: "Process · Cell Usage: service",
+  args: { preset: "process", cardLayout: "row", cardUsage: "service" },
 };

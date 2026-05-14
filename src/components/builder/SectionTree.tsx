@@ -14,7 +14,7 @@ import {
 
 /**
  * 좌측 섹션 트리.
- * - 잠긴 섹션(Hero/Header/Footer/StickyCta) 은 드래그 핸들 숨김.
+ * - 잠긴 섹션(Hero/Footer/StickyCta 등) 은 드래그 핸들 숨김.
  * - 드래그앤드롭 — HTML5 native drag events 로 구현. 1차 골격이므로 단순화.
  * - "+ 섹션 추가" 메뉴 — 옵션 목록은 `section-add-menu.ts` 와 공유.
  */
@@ -32,15 +32,6 @@ export default function SectionTree() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-12 items-center justify-between border-b border-builder-border px-4">
-        <span className="text-xs font-semibold uppercase tracking-wider text-builder-muted">
-          섹션
-        </span>
-        <span className="text-[11px] text-builder-muted">
-          {sections.length}개
-        </span>
-      </div>
-
       <div className="builder-scroll flex-1 overflow-y-auto py-2">
         {sections.map((section) => {
           const preset = SECTION_PRESETS[section.preset];

@@ -67,9 +67,6 @@ function SectionShell({
           : "hover:outline hover:outline-1 hover:outline-builder-accent/50"
       )}
     >
-      <span className="pointer-events-none absolute left-2 top-2 z-10 rounded bg-builder-panel/90 px-1.5 py-0.5 text-[10px] text-builder-text">
-        {section.name}
-      </span>
       <Section section={section} viewport={viewport} />
     </section>
   );

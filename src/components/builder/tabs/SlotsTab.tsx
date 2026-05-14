@@ -10,6 +10,7 @@
  */
 
 import { cn } from "@/lib/cn";
+import { IconChevronDown } from "@/lib/ods-icons";
 import { COMPONENT_PRESETS } from "@/schema/component-presets";
 import { SECTION_PRESETS } from "@/schema/section-presets";
 import {
@@ -17,10 +18,11 @@ import {
   type CardCell,
   type CardLayout,
   type CardProps,
+  type CardSlotName,
   type CardUsagePresetId,
 } from "@/schema/card";
+import type { AssetRef, AssetType } from "@/schema/doc";
 import {
-  selectSelectedComponent,
   selectSelectedSection,
   useBuilderStore,
 } from "@/store/builder-store";
@@ -34,8 +36,8 @@ export default function SlotsTab() {
   const addCardCell = useBuilderStore((s) => s.addCardCell);
   const removeCardCell = useBuilderStore((s) => s.removeCardCell);
   const setSelectedCell = useBuilderStore((s) => s.setSelectedCell);
+  const selectCardCell = useBuilderStore((s) => s.selectCardCell);
   const selectedCellId = useBuilderStore((s) => s.selection.cellId);
-  const selectedComponent = useBuilderStore(selectSelectedComponent);
 
   if (!section) return null;
 
@@ -127,34 +129,72 @@ export default function SlotsTab() {
               return (
                 <div
                   key={cell.id}
-                  onClick={() => {
-                    selectComponent(section.id, cardInstance.id);
-                    setSelectedCell(cell.id);
-                  }}
                   className={cn(
-                    "group flex cursor-pointer items-center gap-2 rounded-ods-8 border px-2 py-1.5",
+                    "overflow-hidden rounded-ods-8 border transition-colors",
                     isSelected
-                      ? "border-builder-accent bg-builder-accent/10"
-                      : "border-builder-border bg-builder-bg hover:border-builder-accent/60"
+                      ? "border-builder-accent bg-builder-accent/5"
+                      : "border-builder-border bg-builder-bg"
                   )}
                 >
-                  <span className="text-[10px] text-builder-muted">#{idx + 1}</span>
-                  <span className="flex-1 truncate text-[12px] text-builder-text">
-                    {previewLabel}
-                  </span>
-                  <span className="text-[10px] text-builder-muted">
-                    {filledCount} slots
-                  </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeCardCell(section.id, cardInstance.id, cell.id);
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => {
+                      if (selectedCellId === cell.id) {
+                        setSelectedCell(null);
+                      } else {
+                        selectCardCell(section.id, cardInstance.id, cell.id);
+                      }
                     }}
-                    className="hidden text-[10px] text-builder-muted hover:text-builder-danger group-hover:inline"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        if (selectedCellId === cell.id) setSelectedCell(null);
+                        else selectCardCell(section.id, cardInstance.id, cell.id);
+                      }
+                    }}
+                    className={cn(
+                      "group flex cursor-pointer items-center gap-2 px-2 py-1.5 hover:bg-builder-panel-2/80",
+                      isSelected && "bg-builder-accent/10"
+                    )}
                   >
-                    ×
-                  </button>
+                    <IconChevronDown
+                      size={14}
+                      className={cn(
+                        "shrink-0 text-builder-muted transition-transform",
+                        isSelected && "rotate-180"
+                      )}
+                    />
+                    <span className="text-[10px] text-builder-muted">#{idx + 1}</span>
+                    <span className="flex-1 truncate text-[12px] text-builder-text">
+                      {previewLabel}
+                    </span>
+                    <span className="text-[10px] text-builder-muted">
+                      {filledCount} slots
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeCardCell(section.id, cardInstance.id, cell.id);
+                      }}
+                      className="hidden text-[10px] text-builder-muted hover:text-builder-danger group-hover:inline"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  {isSelected && (
+                    <div className="border-t border-builder-border bg-builder-panel-2 px-2 py-3">
+                      <CellSlotEditor
+                        cellId={cell.id}
+                        cells={cardProps.cells}
+                        sectionId={section.id}
+                        componentId={cardInstance.id}
+                        usage={cardProps.usage}
+                        cellIndex={idx}
+                      />
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -168,15 +208,6 @@ export default function SlotsTab() {
           </div>
         </div>
 
-        {selectedComponent?.id === cardInstance.id && selectedCellId && (
-          <CellSlotEditor
-            cellId={selectedCellId}
-            cells={cardProps.cells}
-            sectionId={section.id}
-            componentId={cardInstance.id}
-            usage={cardProps.usage}
-          />
-        )}
       </div>
     );
   }
@@ -255,40 +286,46 @@ export default function SlotsTab() {
 // 선택된 cell 의 slot 편집기
 // ---------------------------------------------------------------------------
 
+const ASSET_TYPES: AssetType[] = ["image", "svg", "video", "lottie"];
+
 function CellSlotEditor({
   cellId,
   cells,
   sectionId,
   componentId,
   usage,
+  cellIndex,
 }: {
   cellId: string;
   cells: CardCell[];
   sectionId: string;
   componentId: string;
   usage: CardProps["usage"];
+  cellIndex: number;
 }) {
   const cell = cells.find((c) => c.id === cellId);
   const updateCellSlot = useBuilderStore((s) => s.updateCardCellSlot);
+  const openAssetModal = useBuilderStore((s) => s.openAssetModal);
   if (!cell) return null;
 
-  // usage 별 활성 슬롯 — card.ts CARD_USAGE_PRESETS 에서 가져오지만 여기서는 간단히 cell.slots 키 사용
+  const slotSpec = CARD_USAGE_PRESETS[usage].slotSpec;
   const activeKeys = Object.keys(cell.slots);
-  void usage;
 
   return (
     <div>
       <div className="mb-1 text-[11px] uppercase tracking-wider text-builder-muted">
-        Cell Slots — #{cell.id.slice(-3)}
+        Cell #{cellIndex + 1} · 슬롯 편집
       </div>
       <div className="space-y-2">
         {activeKeys.map((k) => {
           const content = cell.slots[k as keyof typeof cell.slots];
           if (!content) return null;
+          const slotLabel =
+            slotSpec[k as CardSlotName]?.label ?? k;
           return (
             <div key={k} className="rounded-ods-8 border border-builder-border bg-builder-bg p-2">
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-[11px] font-medium text-builder-text">{k}</span>
+                <span className="text-[11px] font-medium text-builder-text">{slotLabel}</span>
                 <span className="text-[10px] text-builder-muted">{content.kind}</span>
               </div>
               {content.kind === "text" && (
@@ -335,8 +372,82 @@ function CellSlotEditor({
                 />
               )}
               {content.kind === "asset" && (
-                <div className="text-[11px] text-builder-muted">
-                  Asset: {content.asset.assetId ?? content.asset.url ?? "—"} ({content.asset.alt})
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={content.asset.alt}
+                    onChange={(e) =>
+                      updateCellSlot(sectionId, componentId, cellId, k as CardSlotName, {
+                        kind: "asset",
+                        asset: { ...content.asset, alt: e.target.value },
+                      })
+                    }
+                    placeholder="alt (접근성)"
+                    className="w-full rounded-ods-4 border border-builder-border bg-builder-bg px-2 py-1 text-[11px] outline-none focus:border-builder-accent"
+                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={content.asset.assetId ?? ""}
+                      onChange={(e) =>
+                        updateCellSlot(sectionId, componentId, cellId, k as CardSlotName, {
+                          kind: "asset",
+                          asset: { ...content.asset, assetId: e.target.value || undefined },
+                        })
+                      }
+                      placeholder="assetId"
+                      className="min-w-0 flex-1 rounded-ods-4 border border-builder-border bg-builder-bg px-2 py-1 text-[11px] outline-none focus:border-builder-accent"
+                    />
+                    <select
+                      value={content.asset.type}
+                      onChange={(e) =>
+                        updateCellSlot(sectionId, componentId, cellId, k as CardSlotName, {
+                          kind: "asset",
+                          asset: {
+                            ...content.asset,
+                            type: e.target.value as AssetType,
+                          },
+                        })
+                      }
+                      className="w-[100px] shrink-0 rounded-ods-4 border border-builder-border bg-builder-bg px-1 py-1 text-[11px] outline-none focus:border-builder-accent"
+                    >
+                      {ASSET_TYPES.map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <input
+                    type="text"
+                    value={content.asset.url ?? ""}
+                    onChange={(e) =>
+                      updateCellSlot(sectionId, componentId, cellId, k as CardSlotName, {
+                        kind: "asset",
+                        asset: {
+                          ...content.asset,
+                          url: e.target.value || undefined,
+                        },
+                      })
+                    }
+                    placeholder="직접 URL (선택)"
+                    className="w-full rounded-ods-4 border border-builder-border bg-builder-bg px-2 py-1 text-[11px] outline-none focus:border-builder-accent"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openAssetModal({
+                        sectionId,
+                        componentId,
+                        slotName: k,
+                        cellId,
+                        cardSlotName: k as CardSlotName,
+                      })
+                    }
+                    className="w-full rounded-ods-4 border border-builder-border bg-builder-panel-2 px-2 py-1.5 text-[11px] text-builder-text hover:border-builder-accent"
+                  >
+                    카탈로그에서 선택…
+                  </button>
                 </div>
               )}
               {content.kind === "cta" && (

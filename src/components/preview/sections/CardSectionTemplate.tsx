@@ -17,12 +17,10 @@ export default function CardSectionTemplate({
   section,
   viewport,
   bg,
-  badge = false,
 }: {
   section: Section;
   viewport: Viewport;
   bg: CardSectionBg;
-  badge?: boolean;
 }) {
   const cardInstance = (section.slots["content"] ?? [])[0];
   const cardProps = getCardProps(cardInstance);
@@ -32,18 +30,10 @@ export default function CardSectionTemplate({
       : bg === "gray"
         ? "bg-ods-surface-gray"
         : "bg-ods-surface-light";
-  const badgeLabel = badge
-    ? ((section.props["badgeLabel"] as string) ?? "책임보장")
-    : null;
 
   return (
     <div className={cn(containerPad, bgClass)}>
       <SectionTitleBlock section={section} />
-      {badgeLabel && (
-        <div className="mb-4 inline-flex items-center gap-1.5 rounded-ods-16 bg-ods-gradient-responsibility px-3 py-1 text-ods-caption font-semibold text-white">
-          ✓ {badgeLabel}
-        </div>
-      )}
       {cardProps ? (
         <Card
           usage={cardProps.usage}

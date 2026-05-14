@@ -16,11 +16,10 @@ import {
 const meta: Meta<typeof CardSectionTemplate> = {
   title: "Preview/Sections/CardSection",
   component: CardSectionTemplate,
-  args: { viewport: "desktop", bg: "white", badge: false },
+  args: { viewport: "desktop", bg: "white" },
   argTypes: {
     viewport: { control: "inline-radio", options: ["mobile", "tablet", "desktop"] },
     bg: { control: "inline-radio", options: ["white", "gray", "light"] },
-    badge: { control: "boolean" },
   },
 };
 
@@ -29,7 +28,7 @@ type Story = StoryObj<typeof CardSectionTemplate>;
 
 // ───── usage 별 ─────
 export const Usp: Story = { args: { section: uspFixture } };
-export const Coverage: Story = { args: { section: coverageFixture, badge: true } };
+export const Coverage: Story = { args: { section: coverageFixture } };
 export const Review: Story = { args: { section: reviewFixture, bg: "gray" } };
 export const Process: Story = { args: { section: processFixture } };
 export const CrossSell: Story = { args: { section: crossSellFixture, bg: "gray" } };

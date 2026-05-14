@@ -37,7 +37,7 @@ import {
   type SectionPresetId,
 } from "@/schema/section-presets";
 
-export type InspectorTab = "props" | "slots" | "assets" | "tokens";
+export type InspectorTab = "props" | "slots" | "assets";
 
 export interface Selection {
   sectionId: string | null;
@@ -59,11 +59,16 @@ export interface BuilderState {
         sectionId: string;
         componentId: string | null;
         slotName: string;
+        /** Card 셀 슬롯에 임베드할 때 — embedAsset 이 updateCardCellSlot 으로 라우팅 */
+        cellId?: string;
+        cardSlotName?: CardSlotName;
       };
 
   // -------- Selection --------
   selectSection: (sectionId: string | null) => void;
   selectComponent: (sectionId: string, componentId: string) => void;
+  /** Card 셀 선택 — Slots 탭 유지, cellId 보존 */
+  selectCardCell: (sectionId: string, componentId: string, cellId: string) => void;
   setSelectedCell: (cellId: string | null) => void;
   setInspectorTab: (tab: InspectorTab) => void;
 
@@ -129,6 +134,8 @@ export interface BuilderState {
     sectionId: string;
     componentId: string | null;
     slotName: string;
+    cellId?: string;
+    cardSlotName?: CardSlotName;
   }) => void;
   closeAssetModal: () => void;
   embedAsset: (
@@ -219,6 +226,12 @@ export const useBuilderStore = create<BuilderState>((set) => ({
     set({
       selection: { sectionId, componentId, cellId: null },
       inspectorTab: "props",
+    }),
+
+  selectCardCell: (sectionId, componentId, cellId) =>
+    set({
+      selection: { sectionId, componentId, cellId },
+      inspectorTab: "slots",
     }),
 
   setSelectedCell: (cellId) =>
@@ -468,20 +481,28 @@ export const useBuilderStore = create<BuilderState>((set) => ({
     })),
 
   removeCardCell: (sectionId, componentId, cellId) =>
-    set((state) => ({
-      doc: bumpAudit({
-        ...state.doc,
-        sections: state.doc.sections.map((s) => {
-          if (s.id !== sectionId) return s;
-          return mapCardInstance(s, componentId, (inst, props) => {
-            return setCardProps(inst, {
-              ...props,
-              cells: props.cells.filter((c) => c.id !== cellId),
+    set((state) => {
+      const sel = state.selection;
+      const clearCell =
+        sel.sectionId === sectionId &&
+        sel.componentId === componentId &&
+        sel.cellId === cellId;
+      return {
+        ...(clearCell ? { selection: { ...sel, cellId: null } } : {}),
+        doc: bumpAudit({
+          ...state.doc,
+          sections: state.doc.sections.map((s) => {
+            if (s.id !== sectionId) return s;
+            return mapCardInstance(s, componentId, (inst, props) => {
+              return setCardProps(inst, {
+                ...props,
+                cells: props.cells.filter((c) => c.id !== cellId),
+              });
             });
-          });
+          }),
         }),
-      }),
-    })),
+      };
+    }),
 
   updateCardCellSlot: (sectionId, componentId, cellId, slotName, content) =>
     set((state) => ({
@@ -508,28 +529,67 @@ export const useBuilderStore = create<BuilderState>((set) => ({
   closeAssetModal: () => set({ assetModal: null }),
 
   embedAsset: (sectionId, componentId, slotName, asset) =>
-    set((state) => ({
-      assetModal: null,
-      doc: bumpAudit({
-        ...state.doc,
-        sections: state.doc.sections.map((s) => {
-          if (s.id !== sectionId) return s;
-          if (componentId === null) {
-            const existing = s.assets.filter((a) => a.slotName !== slotName);
-            return { ...s, assets: [...existing, { slotName, asset }] };
-          }
-          const slots: Record<string, ComponentInstance[]> = {};
-          for (const [k, list] of Object.entries(s.slots)) {
-            slots[k] = list.map((c) => {
-              if (c.id !== componentId) return c;
-              const existing = c.assets.filter((a) => a.slotName !== slotName);
-              return { ...c, assets: [...existing, { slotName, asset }] };
-            });
-          }
-          return { ...s, slots };
+    set((state) => {
+      const ctx = state.assetModal;
+      if (
+        ctx?.cellId &&
+        ctx.cardSlotName &&
+        ctx.sectionId === sectionId &&
+        ctx.componentId === componentId &&
+        componentId
+      ) {
+        const cellId = ctx.cellId;
+        const slotKey = ctx.cardSlotName;
+        return {
+          assetModal: null,
+          doc: bumpAudit({
+            ...state.doc,
+            sections: state.doc.sections.map((s) => {
+              if (s.id !== sectionId) return s;
+              return mapCardInstance(s, componentId, (inst, props) =>
+                setCardProps(inst, {
+                  ...props,
+                  cells: props.cells.map((c) =>
+                    c.id === cellId
+                      ? {
+                          ...c,
+                          slots: {
+                            ...c.slots,
+                            [slotKey]: { kind: "asset", asset },
+                          },
+                        }
+                      : c
+                  ),
+                })
+              );
+            }),
+          }),
+        };
+      }
+
+      return {
+        assetModal: null,
+        doc: bumpAudit({
+          ...state.doc,
+          sections: state.doc.sections.map((s) => {
+            if (s.id !== sectionId) return s;
+            if (componentId === null) {
+              const existing = s.assets.filter((a) => a.slotName !== slotName);
+              return { ...s, assets: [...existing, { slotName, asset }] };
+            }
+            const slots: Record<string, ComponentInstance[]> = {};
+            for (const [k, list] of Object.entries(s.slots)) {
+              slots[k] = list.map((c) => {
+                if (c.id !== componentId) return c;
+                const existing = c.assets.filter((a) => a.slotName !== slotName);
+                return { ...c, assets: [...existing, { slotName, asset }] };
+              });
+            }
+            return { ...s, slots };
+          }),
         }),
-      }),
-    })),
+      };
+    }),
 
   // ----- Review -----
   openReviewModal: () => set({ reviewModalOpen: true }),

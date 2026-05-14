@@ -1,0 +1,1712 @@
+[
+  {
+    "name": "AssetArtSettingDeliveryHorizontalStillImage",
+    "import": "import { AssetArtSettingDeliveryHorizontalStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetAwardStarLargeStillImage",
+    "import": "import { AssetAwardStarLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetBannerMailO2OOhouseInteriorStillImage",
+    "import": "import { AssetBannerMailO2OOhouseInteriorStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetBannerMailO2OOhouseStandardStillImage",
+    "import": "import { AssetBannerMailO2OOhouseStandardStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetBellLargeStillImage",
+    "import": "import { AssetBellLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetBenefitCollabMarketStillImage",
+    "import": "import { AssetBenefitCollabMarketStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetBenefitPointRewardStillImage",
+    "import": "import { AssetBenefitPointRewardStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetBoltTruckLargeStillImage",
+    "import": "import { AssetBoltTruckLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetBoltTruckLargeView2StillImage",
+    "import": "import { AssetBoltTruckLargeView2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetBoltTruckLargeView3StillImage",
+    "import": "import { AssetBoltTruckLargeView3StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetCameraLargeStillImage",
+    "import": "import { AssetCameraLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetCameraLargeView2StillImage",
+    "import": "import { AssetCameraLargeView2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetCameraLargeView3StillImage",
+    "import": "import { AssetCameraLargeView3StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetCartLargeStillImage",
+    "import": "import { AssetCartLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetCartLargeView2StillImage",
+    "import": "import { AssetCartLargeView2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetClockLargeStillImage",
+    "import": "import { AssetClockLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetClockLargeView2StillImage",
+    "import": "import { AssetClockLargeView2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaceSmilingCapHeadsetLargeStillImage",
+    "import": "import { AssetFaceSmilingCapHeadsetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaceSmilingCapHeadsetLargeView2StillImage",
+    "import": "import { AssetFaceSmilingCapHeadsetLargeView2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaceSmilingCapHeadsetLargeView3StillImage",
+    "import": "import { AssetFaceSmilingCapHeadsetLargeView3StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaceSmilingCapLargeStillImage",
+    "import": "import { AssetFaceSmilingCapLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaceSmilingCapLargeView2StillImage",
+    "import": "import { AssetFaceSmilingCapLargeView2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaceSmilingCapLargeView3StillImage",
+    "import": "import { AssetFaceSmilingCapLargeView3StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaceSmilingSafetyHelmetLargeStillImage",
+    "import": "import { AssetFaceSmilingSafetyHelmetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaceSmilingSafetyHelmetLargeView2StillImage",
+    "import": "import { AssetFaceSmilingSafetyHelmetLargeView2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaceSmilingSafetyHelmetLargeView3StillImage",
+    "import": "import { AssetFaceSmilingSafetyHelmetLargeView3StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaviconOhouseSymbolOnSquareStillImage",
+    "import": "import { AssetFaviconOhouseSymbolOnSquareStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetFaviconOhouseSymbolStillImage",
+    "import": "import { AssetFaviconOhouseSymbolStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetGiftLargeStillImage",
+    "import": "import { AssetGiftLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetGiftLargeView2StillImage",
+    "import": "import { AssetGiftLargeView2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetGiftLargeView3StillImage",
+    "import": "import { AssetGiftLargeView3StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetGlossyIdCardLargeShadowStillImage",
+    "import": "import { AssetGlossyIdCardLargeShadowStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetGlossyIdCardLargeStillImage",
+    "import": "import { AssetGlossyIdCardLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetGroceryShoppingBagLargeStillImage",
+    "import": "import { AssetGroceryShoppingBagLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetGroceryShoppingBagLargeView2StillImage",
+    "import": "import { AssetGroceryShoppingBagLargeView2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetHouseWithDrillLargeStillImage",
+    "import": "import { AssetHouseWithDrillLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetIconBookmarkFilledBrandStillImage",
+    "import": "import { AssetIconBookmarkFilledBrandStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetIconBookmarkFilledWeakStillImage",
+    "import": "import { AssetIconBookmarkFilledWeakStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetLineBathroomTapRepairRequestStillImage",
+    "import": "import { AssetLineBathroomTapRepairRequestStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetLineOhouseAppAndMobileStillImage",
+    "import": "import { AssetLineOhouseAppAndMobileStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetLuckyCheckLargeStillImage",
+    "import": "import { AssetLuckyCheckLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionBellLargeAnimatedImage",
+    "import": "import { AssetMotionBellLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionBoltTruckLargeAnimatedImage",
+    "import": "import { AssetMotionBoltTruckLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionCameraLargeAnimatedImage",
+    "import": "import { AssetMotionCameraLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionCartLargeAnimatedImage",
+    "import": "import { AssetMotionCartLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionClockLargeAnimatedImage",
+    "import": "import { AssetMotionClockLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionFaceSmilingCapHeadsetLargeAnimatedImage",
+    "import": "import { AssetMotionFaceSmilingCapHeadsetLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionFaceSmilingCapLargeAnimatedImage",
+    "import": "import { AssetMotionFaceSmilingCapLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionFaceSmilingSafetyHelmetLargeAnimatedImage",
+    "import": "import { AssetMotionFaceSmilingSafetyHelmetLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionGetPointPCircleAnimatedImage",
+    "import": "import { AssetMotionGetPointPCircleAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionGiftLargeAnimatedImage",
+    "import": "import { AssetMotionGiftLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionGroceryShoppingBagLargeAnimatedImage",
+    "import": "import { AssetMotionGroceryShoppingBagLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionLuckyCheckLargeAnimatedImage",
+    "import": "import { AssetMotionLuckyCheckLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionMovingBoxesOnDollyLargeAnimatedImage",
+    "import": "import { AssetMotionMovingBoxesOnDollyLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionOsenseLargeAnimatedImage",
+    "import": "import { AssetMotionOsenseLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionPCircleLargeAnimatedImage",
+    "import": "import { AssetMotionPCircleLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionPackageSurpriseIconsAnimatedImage",
+    "import": "import { AssetMotionPackageSurpriseIconsAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionSpinnerAnimatedImage",
+    "import": "import { AssetMotionSpinnerAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionWonSignCircleLargeAnimatedImage",
+    "import": "import { AssetMotionWonSignCircleLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMovingBoxesOnDollyLargeStillImage",
+    "import": "import { AssetMovingBoxesOnDollyLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOhouseHorizontalEnStillImage",
+    "import": "import { AssetOhouseHorizontalEnStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOhouseHorizontalGrayAlphaStillImage",
+    "import": "import { AssetOhouseHorizontalGrayAlphaStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOhouseHorizontalStillImage",
+    "import": "import { AssetOhouseHorizontalStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOhouseStoreManagementCenterHorizontalStillImage",
+    "import": "import { AssetOhouseStoreManagementCenterHorizontalStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOhouseSymbol3dAltStillImage",
+    "import": "import { AssetOhouseSymbol3dAltStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOhouseSymbolStillImage",
+    "import": "import { AssetOhouseSymbolStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOpenGraphO2OHomeStillImage",
+    "import": "import { AssetOpenGraphO2OHomeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOpenGraphO2OMovingStillImage",
+    "import": "import { AssetOpenGraphO2OMovingStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOpenGraphO2ORemodelingGoodsRankingStillImage",
+    "import": "import { AssetOpenGraphO2ORemodelingGoodsRankingStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOpenGraphO2OReportCautionStillImage",
+    "import": "import { AssetOpenGraphO2OReportCautionStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOpenGraphO2OReportQuestionMarkStillImage",
+    "import": "import { AssetOpenGraphO2OReportQuestionMarkStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOpenGraphOhouseCareersStillImage",
+    "import": "import { AssetOpenGraphOhouseCareersStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOpenGraphOhouseHorizontalEnStillImage",
+    "import": "import { AssetOpenGraphOhouseHorizontalEnStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOpenGraphOhouseHorizontalStillImage",
+    "import": "import { AssetOpenGraphOhouseHorizontalStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetOsenseLargeStillImage",
+    "import": "import { AssetOsenseLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPCircleLargeStillImage",
+    "import": "import { AssetPCircleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPackageSurpriseIconsNoLightStillImage",
+    "import": "import { AssetPackageSurpriseIconsNoLightStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPackageSurpriseIconsStillImage",
+    "import": "import { AssetPackageSurpriseIconsStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPercentTicketLargeStillImage",
+    "import": "import { AssetPercentTicketLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPercentTicketOnTicketLargeStillImage",
+    "import": "import { AssetPercentTicketOnTicketLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoBathroomTilesIsometricStillImage",
+    "import": "import { AssetPhotoBathroomTilesIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoBathroomTilesLargeStillImage",
+    "import": "import { AssetPhotoBathroomTilesLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoContactFilmIsometricStillImage",
+    "import": "import { AssetPhotoContactFilmIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoDoorIsometricStillImage",
+    "import": "import { AssetPhotoDoorIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoDoorLargeStillImage",
+    "import": "import { AssetPhotoDoorLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoHardwoodFlooringIsometricStillImage",
+    "import": "import { AssetPhotoHardwoodFlooringIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoKitchenBaseCabinetSinkIsometricStillImage",
+    "import": "import { AssetPhotoKitchenBaseCabinetSinkIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoKitchenSinkLargeStillImage",
+    "import": "import { AssetPhotoKitchenSinkLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoO2OPartnersInspectionVar1StillImage",
+    "import": "import { AssetPhotoO2OPartnersInspectionVar1StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoO2OPartnersVinylFlooringVar1StillImage",
+    "import": "import { AssetPhotoO2OPartnersVinylFlooringVar1StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoO2OPartnersVinylFlooringVar2StillImage",
+    "import": "import { AssetPhotoO2OPartnersVinylFlooringVar2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoO2OPartnersWallpaperInstallationVar1StillImage",
+    "import": "import { AssetPhotoO2OPartnersWallpaperInstallationVar1StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoO2OPartnersWallpaperInstallationVar2StillImage",
+    "import": "import { AssetPhotoO2OPartnersWallpaperInstallationVar2StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoO2OPartnersWallpaperInstallationVar3StillImage",
+    "import": "import { AssetPhotoO2OPartnersWallpaperInstallationVar3StillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoPaintCanIsometricStillImage",
+    "import": "import { AssetPhotoPaintCanIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoPendantLampIsometricStillImage",
+    "import": "import { AssetPhotoPendantLampIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoVenetianBlindIsometricStillImage",
+    "import": "import { AssetPhotoVenetianBlindIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoWallpaperIsometricStillImage",
+    "import": "import { AssetPhotoWallpaperIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoWashBasinIsometricStillImage",
+    "import": "import { AssetPhotoWashBasinIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoWashBasinLargeStillImage",
+    "import": "import { AssetPhotoWashBasinLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoWhiteWallpaperLargeStillImage",
+    "import": "import { AssetPhotoWhiteWallpaperLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoWindowChassisIsometricStillImage",
+    "import": "import { AssetPhotoWindowChassisIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoWindowLargeStillImage",
+    "import": "import { AssetPhotoWindowLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoWoodFlooringLargeStillImage",
+    "import": "import { AssetPhotoWoodFlooringLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoWoodPatternVinylFlooringIsometricStillImage",
+    "import": "import { AssetPhotoWoodPatternVinylFlooringIsometricStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotoWoodPatternVinylLargeStillImage",
+    "import": "import { AssetPhotoWoodPatternVinylLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBabyDiapersPackWithStackedPadsLargeStillImage",
+    "import": "import { AssetPhotographicBabyDiapersPackWithStackedPadsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBagOfPotatoChipsLargeStillImage",
+    "import": "import { AssetPhotographicBagOfPotatoChipsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBirdShapedWoodenSculptureLargeStillImage",
+    "import": "import { AssetPhotographicBirdShapedWoodenSculptureLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlackAdjustableDeskLampLargeStillImage",
+    "import": "import { AssetPhotographicBlackAdjustableDeskLampLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlackCompactDishRackWithTablewareLargeStillImage",
+    "import": "import { AssetPhotographicBlackCompactDishRackWithTablewareLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlackKitchenUtensilSetLargeStillImage",
+    "import": "import { AssetPhotographicBlackKitchenUtensilSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlackMatteCutlerySetLargeStillImage",
+    "import": "import { AssetPhotographicBlackMatteCutlerySetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlackMinimalistClothingRackLargeStillImage",
+    "import": "import { AssetPhotographicBlackMinimalistClothingRackLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlackMinimalistClothingRackWithShirtLargeStillImage",
+    "import": "import { AssetPhotographicBlackMinimalistClothingRackWithShirtLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlackMinimalistReedDiffuserLargeStillImage",
+    "import": "import { AssetPhotographicBlackMinimalistReedDiffuserLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlackWireDishDrainerWithPlatesLargeStillImage",
+    "import": "import { AssetPhotographicBlackWireDishDrainerWithPlatesLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueAbstractFramedArtLargeStillImage",
+    "import": "import { AssetPhotographicBlueAbstractFramedArtLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueAndWhiteMilkCartonLargeStillImage",
+    "import": "import { AssetPhotographicBlueAndWhiteMilkCartonLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueBabyBodyWashBottleLargeStillImage",
+    "import": "import { AssetPhotographicBlueBabyBodyWashBottleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueBabyFeedingBottleLargeStillImage",
+    "import": "import { AssetPhotographicBlueBabyFeedingBottleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueBeddingSetLargeStillImage",
+    "import": "import { AssetPhotographicBlueBeddingSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueCeramicPotLargeStillImage",
+    "import": "import { AssetPhotographicBlueCeramicPotLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueConeWallMountedSconceLargeStillImage",
+    "import": "import { AssetPhotographicBlueConeWallMountedSconceLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueElectricPowerDrillLargeStillImage",
+    "import": "import { AssetPhotographicBlueElectricPowerDrillLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueElectricalWallOutletLargeStillImage",
+    "import": "import { AssetPhotographicBlueElectricalWallOutletLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueGlassCleanerSprayLargeStillImage",
+    "import": "import { AssetPhotographicBlueGlassCleanerSprayLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueLaundryBasketWithRolledTowelsLargeStillImage",
+    "import": "import { AssetPhotographicBlueLaundryBasketWithRolledTowelsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueLiquidLaundryDetergentLargeStillImage",
+    "import": "import { AssetPhotographicBlueLiquidLaundryDetergentLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueMinimalistMetalShelfLargeStillImage",
+    "import": "import { AssetPhotographicBlueMinimalistMetalShelfLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueMinimalistTwoTierMetalShelfLargeStillImage",
+    "import": "import { AssetPhotographicBlueMinimalistTwoTierMetalShelfLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueMoisturizingCreamJarLargeStillImage",
+    "import": "import { AssetPhotographicBlueMoisturizingCreamJarLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueNitrileGloveHoldingAGreenSpongeLargeStillImage",
+    "import": "import { AssetPhotographicBlueNitrileGloveHoldingAGreenSpongeLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBluePaintCanWithBrushLargeStillImage",
+    "import": "import { AssetPhotographicBluePaintCanWithBrushLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBluePlugInLiquidMosquitoRepellentLargeStillImage",
+    "import": "import { AssetPhotographicBluePlugInLiquidMosquitoRepellentLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueRubberCleaningGlovesLargeStillImage",
+    "import": "import { AssetPhotographicBlueRubberCleaningGlovesLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueScallopedPlacematWithTablewareLargeStillImage",
+    "import": "import { AssetPhotographicBlueScallopedPlacematWithTablewareLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueStripedBathMatWithWhiteSlippersLargeStillImage",
+    "import": "import { AssetPhotographicBlueStripedBathMatWithWhiteSlippersLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueStripedPillowCaseLargeStillImage",
+    "import": "import { AssetPhotographicBlueStripedPillowCaseLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBlueToothbrushAndToothpasteSetLargeStillImage",
+    "import": "import { AssetPhotographicBlueToothbrushAndToothpasteSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBrightOrangeStepTrashCanLargeStillImage",
+    "import": "import { AssetPhotographicBrightOrangeStepTrashCanLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBrownAmberGlassPumpBottleLargeStillImage",
+    "import": "import { AssetPhotographicBrownAmberGlassPumpBottleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBrownCheckeredRugWithWhiteSlippersLargeStillImage",
+    "import": "import { AssetPhotographicBrownCheckeredRugWithWhiteSlippersLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBrownMaryJaneBabyShoesLargeStillImage",
+    "import": "import { AssetPhotographicBrownMaryJaneBabyShoesLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBrownStripedPajamaShirtLargeStillImage",
+    "import": "import { AssetPhotographicBrownStripedPajamaShirtLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicBuiltInCabinetLargeStillImage",
+    "import": "import { AssetPhotographicBuiltInCabinetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicCannedFoodAnd5PackNoodlesLargeStillImage",
+    "import": "import { AssetPhotographicCannedFoodAnd5PackNoodlesLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicCarPatternedBabyBeddingSetLargeStillImage",
+    "import": "import { AssetPhotographicCarPatternedBabyBeddingSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicCatWithScratcherLargeStillImage",
+    "import": "import { AssetPhotographicCatWithScratcherLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicCircularBlackFramedCeilingLightLargeStillImage",
+    "import": "import { AssetPhotographicCircularBlackFramedCeilingLightLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicClassicSilverWineCorkscrewLargeStillImage",
+    "import": "import { AssetPhotographicClassicSilverWineCorkscrewLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicClassicWhiteLedLightBulbLargeStillImage",
+    "import": "import { AssetPhotographicClassicWhiteLedLightBulbLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicClearPlasticWaterBottleLargeStillImage",
+    "import": "import { AssetPhotographicClearPlasticWaterBottleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicCoffeeBeanBagAndBlueCupLargeStillImage",
+    "import": "import { AssetPhotographicCoffeeBeanBagAndBlueCupLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicColorfulBallWallMountedCoatRackLargeStillImage",
+    "import": "import { AssetPhotographicColorfulBallWallMountedCoatRackLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicColorfulFlowersInBeigeVaseLargeStillImage",
+    "import": "import { AssetPhotographicColorfulFlowersInBeigeVaseLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicColorfulSoftBuildingBlocksLargeStillImage",
+    "import": "import { AssetPhotographicColorfulSoftBuildingBlocksLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicCompactDishwasherLargeStillImage",
+    "import": "import { AssetPhotographicCompactDishwasherLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicCompactHomeProjectorLargeStillImage",
+    "import": "import { AssetPhotographicCompactHomeProjectorLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicCuttingBoardSetWithChefsKnifeLargeStillImage",
+    "import": "import { AssetPhotographicCuttingBoardSetWithChefsKnifeLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicCylinderAirPurifierLargeStillImage",
+    "import": "import { AssetPhotographicCylinderAirPurifierLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDarkGrayBeddingSetLargeStillImage",
+    "import": "import { AssetPhotographicDarkGrayBeddingSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDarkGrayLivingRoomCurtainsLargeStillImage",
+    "import": "import { AssetPhotographicDarkGrayLivingRoomCurtainsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDarkGreenRibbedGlassLampLargeStillImage",
+    "import": "import { AssetPhotographicDarkGreenRibbedGlassLampLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDarkRedMushroomTableLampLargeStillImage",
+    "import": "import { AssetPhotographicDarkRedMushroomTableLampLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDayBedJpStillImage",
+    "import": "import { AssetPhotographicDayBedJpStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDecoratedMiniChristmasTreeLargeStillImage",
+    "import": "import { AssetPhotographicDecoratedMiniChristmasTreeLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDesignerWoodenChairWithMetalLegsLargeStillImage",
+    "import": "import { AssetPhotographicDesignerWoodenChairWithMetalLegsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDeskCalendarLargeStillImage",
+    "import": "import { AssetPhotographicDeskCalendarLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDesktopComputerMonitorLargeStillImage",
+    "import": "import { AssetPhotographicDesktopComputerMonitorLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDogWithHouseLargeStillImage",
+    "import": "import { AssetPhotographicDogWithHouseLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicDoubleBedJpStillImage",
+    "import": "import { AssetPhotographicDoubleBedJpStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicElectricRiceCookerLargeStillImage",
+    "import": "import { AssetPhotographicElectricRiceCookerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicFishBowlLargeStillImage",
+    "import": "import { AssetPhotographicFishBowlLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicFoldedGrayQuiltSetLargeStillImage",
+    "import": "import { AssetPhotographicFoldedGrayQuiltSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicFourPackAaAlkalineBatteriesLargeStillImage",
+    "import": "import { AssetPhotographicFourPackAaAlkalineBatteriesLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicFourPackToiletPaperRollsLargeStillImage",
+    "import": "import { AssetPhotographicFourPackToiletPaperRollsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicFreshBeefAndBananasPackLargeStillImage",
+    "import": "import { AssetPhotographicFreshBeefAndBananasPackLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicFrontLoadWashingMachineLargeStillImage",
+    "import": "import { AssetPhotographicFrontLoadWashingMachineLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGlassBabyFoodJarWithPinkLidLargeStillImage",
+    "import": "import { AssetPhotographicGlassBabyFoodJarWithPinkLidLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGlossyBlueDeliveryBoxLargeStillImage",
+    "import": "import { AssetPhotographicGlossyBlueDeliveryBoxLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGlossyBlueDeliveryBoxShadowLargeStillImage",
+    "import": "import { AssetPhotographicGlossyBlueDeliveryBoxShadowLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGlossyPinkOpenGiftBoxLargeStillImage",
+    "import": "import { AssetPhotographicGlossyPinkOpenGiftBoxLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGlossyPinkOpenGiftBoxShadowLargeStillImage",
+    "import": "import { AssetPhotographicGlossyPinkOpenGiftBoxShadowLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGlossyWaterPurifierGrayLargeStillImage",
+    "import": "import { AssetPhotographicGlossyWaterPurifierGrayLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGlossyWaterPurifierGrayShadowLargeStillImage",
+    "import": "import { AssetPhotographicGlossyWaterPurifierGrayShadowLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGlossyWiFiRouterBlueLargeStillImage",
+    "import": "import { AssetPhotographicGlossyWiFiRouterBlueLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGlossyWiFiRouterBlueShadowLargeStillImage",
+    "import": "import { AssetPhotographicGlossyWiFiRouterBlueShadowLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGolfBallLargeStillImage",
+    "import": "import { AssetPhotographicGolfBallLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGrayFabricSofaLargeStillImage",
+    "import": "import { AssetPhotographicGrayFabricSofaLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGrayHorizontalWindowBlindsLargeStillImage",
+    "import": "import { AssetPhotographicGrayHorizontalWindowBlindsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGrayLowModularCabinetLargeStillImage",
+    "import": "import { AssetPhotographicGrayLowModularCabinetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGreenAndBlueStripedDoormatLargeStillImage",
+    "import": "import { AssetPhotographicGreenAndBlueStripedDoormatLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGreenCeramicCookingPotLargeStillImage",
+    "import": "import { AssetPhotographicGreenCeramicCookingPotLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGreenDishwashingLiquidBottleLargeStillImage",
+    "import": "import { AssetPhotographicGreenDishwashingLiquidBottleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicGreenFabricSofaLargeStillImage",
+    "import": "import { AssetPhotographicGreenFabricSofaLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicHangingFishOrnamentLargeStillImage",
+    "import": "import { AssetPhotographicHangingFishOrnamentLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicHomeSecurityIpCameraLargeStillImage",
+    "import": "import { AssetPhotographicHomeSecurityIpCameraLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicIndoorStationaryExerciseBikeLargeStillImage",
+    "import": "import { AssetPhotographicIndoorStationaryExerciseBikeLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicInkjetPrinterWithPaperLargeStillImage",
+    "import": "import { AssetPhotographicInkjetPrinterWithPaperLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicIsometricGridLargeStillImage",
+    "import": "import { AssetPhotographicIsometricGridLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicLaptopComputerLargeStillImage",
+    "import": "import { AssetPhotographicLaptopComputerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicLightBlueFoldedDuvetLargeStillImage",
+    "import": "import { AssetPhotographicLightBlueFoldedDuvetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicLightBlueModernBabyStrollerLargeStillImage",
+    "import": "import { AssetPhotographicLightBlueModernBabyStrollerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicLightBlueQuiltedMattressLargeStillImage",
+    "import": "import { AssetPhotographicLightBlueQuiltedMattressLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicLightBlueTwoTierShoeRackLargeStillImage",
+    "import": "import { AssetPhotographicLightBlueTwoTierShoeRackLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicLightGreenUpholsteredDiningChairLargeStillImage",
+    "import": "import { AssetPhotographicLightGreenUpholsteredDiningChairLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicLoafOfPlainBreadLargeStillImage",
+    "import": "import { AssetPhotographicLoafOfPlainBreadLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicMacrameWallHangingDecorLargeStillImage",
+    "import": "import { AssetPhotographicMacrameWallHangingDecorLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicMatteBlackKitchenFaucetLargeStillImage",
+    "import": "import { AssetPhotographicMatteBlackKitchenFaucetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicMinimalistBlackFloorLampLargeStillImage",
+    "import": "import { AssetPhotographicMinimalistBlackFloorLampLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicMintGreenCityBicycleWithBasketLargeStillImage",
+    "import": "import { AssetPhotographicMintGreenCityBicycleWithBasketLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicMintGreenInstantCameraLargeStillImage",
+    "import": "import { AssetPhotographicMintGreenInstantCameraLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicModernCarTireAndAlloyWheelLargeStillImage",
+    "import": "import { AssetPhotographicModernCarTireAndAlloyWheelLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicModernDoubleSquareCeilingLightLargeStillImage",
+    "import": "import { AssetPhotographicModernDoubleSquareCeilingLightLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicModernSmartphoneLargeStillImage",
+    "import": "import { AssetPhotographicModernSmartphoneLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicModernWhiteMassageChairLargeStillImage",
+    "import": "import { AssetPhotographicModernWhiteMassageChairLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicModularShelvingUnitLargeStillImage",
+    "import": "import { AssetPhotographicModularShelvingUnitLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicMultiColoredModularStorageBinsLargeStillImage",
+    "import": "import { AssetPhotographicMultiColoredModularStorageBinsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicNavyBlueDomeTableLampLargeStillImage",
+    "import": "import { AssetPhotographicNavyBlueDomeTableLampLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicNavyBlueHairDryerLargeStillImage",
+    "import": "import { AssetPhotographicNavyBlueHairDryerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicNavyBlueHardshellCarryOnSuitcaseLargeStillImage",
+    "import": "import { AssetPhotographicNavyBlueHardshellCarryOnSuitcaseLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOliveGreenDesktopElectricFanLargeStillImage",
+    "import": "import { AssetPhotographicOliveGreenDesktopElectricFanLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOliveGreenPedestalServingBowlLargeStillImage",
+    "import": "import { AssetPhotographicOliveGreenPedestalServingBowlLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOliveGreenSlattedOutdoorChairLargeStillImage",
+    "import": "import { AssetPhotographicOliveGreenSlattedOutdoorChairLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOrange10kgKettlebellLargeStillImage",
+    "import": "import { AssetPhotographicOrange10kgKettlebellLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOrangeAndGreenCheckeredRugLargeStillImage",
+    "import": "import { AssetPhotographicOrangeAndGreenCheckeredRugLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOrangeArmchairWithFabricThrowLargeStillImage",
+    "import": "import { AssetPhotographicOrangeArmchairWithFabricThrowLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOrangeCeramicMugLargeStillImage",
+    "import": "import { AssetPhotographicOrangeCeramicMugLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOrangeGinghamCheckeredApronLargeStillImage",
+    "import": "import { AssetPhotographicOrangeGinghamCheckeredApronLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOrangeLiquidDetergentBottleLargeStillImage",
+    "import": "import { AssetPhotographicOrangeLiquidDetergentBottleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOrangeModernArmchairLargeStillImage",
+    "import": "import { AssetPhotographicOrangeModernArmchairLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOrangePumpSoapBottleLargeStillImage",
+    "import": "import { AssetPhotographicOrangePumpSoapBottleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOrangeWoodenRockingHorseLargeStillImage",
+    "import": "import { AssetPhotographicOrangeWoodenRockingHorseLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicOutdoorCampingTentLargeStillImage",
+    "import": "import { AssetPhotographicOutdoorCampingTentLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPairOfWoodenClothesHangerLargeStillImage",
+    "import": "import { AssetPhotographicPairOfWoodenClothesHangerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPeachShapedDecorativeTableLampLargeStillImage",
+    "import": "import { AssetPhotographicPeachShapedDecorativeTableLampLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPetFoodBowlLargeStillImage",
+    "import": "import { AssetPhotographicPetFoodBowlLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkBabyWetWipesPackLargeStillImage",
+    "import": "import { AssetPhotographicPinkBabyWetWipesPackLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkCheckeredPuzzlePlayMatLargeStillImage",
+    "import": "import { AssetPhotographicPinkCheckeredPuzzlePlayMatLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkDomePendantLightLargeStillImage",
+    "import": "import { AssetPhotographicPinkDomePendantLightLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkFoamSoapDispenserLargeStillImage",
+    "import": "import { AssetPhotographicPinkFoamSoapDispenserLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkGamingControllerLargeStillImage",
+    "import": "import { AssetPhotographicPinkGamingControllerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkHeartPatternDessertBowlLargeStillImage",
+    "import": "import { AssetPhotographicPinkHeartPatternDessertBowlLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkModernLightingLargeStillImage",
+    "import": "import { AssetPhotographicPinkModernLightingLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkPlushBunnyToyLargeStillImage",
+    "import": "import { AssetPhotographicPinkPlushBunnyToyLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkSanitaryPadPackagingLargeStillImage",
+    "import": "import { AssetPhotographicPinkSanitaryPadPackagingLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkSkinCareGiftSetLargeStillImage",
+    "import": "import { AssetPhotographicPinkSkinCareGiftSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkTwoDrawerSideCabinetLargeStillImage",
+    "import": "import { AssetPhotographicPinkTwoDrawerSideCabinetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkVerticalStripedPillowCaseLargeStillImage",
+    "import": "import { AssetPhotographicPinkVerticalStripedPillowCaseLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPinkYarnBallWithKnittingNeedleLargeStillImage",
+    "import": "import { AssetPhotographicPinkYarnBallWithKnittingNeedleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPottedGreenPlantLargeStillImage",
+    "import": "import { AssetPhotographicPottedGreenPlantLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPowderedMilkStorageContainerLargeStillImage",
+    "import": "import { AssetPhotographicPowderedMilkStorageContainerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPurpleGinghamCheckTableRunnerLargeStillImage",
+    "import": "import { AssetPhotographicPurpleGinghamCheckTableRunnerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicPurpleTexturedSquareRugLargeStillImage",
+    "import": "import { AssetPhotographicPurpleTexturedSquareRugLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicRazorAndShavingFoamSetLargeStillImage",
+    "import": "import { AssetPhotographicRazorAndShavingFoamSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicRedAndBlueBoldStripedCushionLargeStillImage",
+    "import": "import { AssetPhotographicRedAndBlueBoldStripedCushionLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicRedAndBlueStripedPartyHatLargeStillImage",
+    "import": "import { AssetPhotographicRedAndBlueStripedPartyHatLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicRedHouseholdFireExtinguisherLargeStillImage",
+    "import": "import { AssetPhotographicRedHouseholdFireExtinguisherLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicRedModernVanityTableWithMirrorLargeStillImage",
+    "import": "import { AssetPhotographicRedModernVanityTableWithMirrorLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicRedTomatoKetchupBottleLargeStillImage",
+    "import": "import { AssetPhotographicRedTomatoKetchupBottleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicRefrigeratorAndWashingMachineSetLargeStillImage",
+    "import": "import { AssetPhotographicRefrigeratorAndWashingMachineSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicRoboticVacuumCleanerLargeStillImage",
+    "import": "import { AssetPhotographicRoboticVacuumCleanerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicRoundWoodenPedestalTableLargeStillImage",
+    "import": "import { AssetPhotographicRoundWoodenPedestalTableLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSageGreenReversibleQuiltLargeStillImage",
+    "import": "import { AssetPhotographicSageGreenReversibleQuiltLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSiliconeDividedPlateWithSpoonsLargeStillImage",
+    "import": "import { AssetPhotographicSiliconeDividedPlateWithSpoonsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSilverLeverDoorHandleLargeStillImage",
+    "import": "import { AssetPhotographicSilverLeverDoorHandleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSingleBedFrameJpStillImage",
+    "import": "import { AssetPhotographicSingleBedFrameJpStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSingleLoftBedJpStillImage",
+    "import": "import { AssetPhotographicSingleLoftBedJpStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSlimSmartTvLargeStillImage",
+    "import": "import { AssetPhotographicSlimSmartTvLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSmallBottleOfSuperGlueLargeStillImage",
+    "import": "import { AssetPhotographicSmallBottleOfSuperGlueLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSmartBidetToiletSeatLargeStillImage",
+    "import": "import { AssetPhotographicSmartBidetToiletSeatLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSmartRefrigeratorLargeStillImage",
+    "import": "import { AssetPhotographicSmartRefrigeratorLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSmartwatchWithBlackBandLargeStillImage",
+    "import": "import { AssetPhotographicSmartwatchWithBlackBandLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicSnailShapedPlushToyLargeStillImage",
+    "import": "import { AssetPhotographicSnailShapedPlushToyLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicStackableStorageBoxesLargeStillImage",
+    "import": "import { AssetPhotographicStackableStorageBoxesLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicStackedBrownPaperCupsLargeStillImage",
+    "import": "import { AssetPhotographicStackedBrownPaperCupsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicStackedCottonTowelsLargeStillImage",
+    "import": "import { AssetPhotographicStackedCottonTowelsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicStackedCreamAndOliveGreenTowelsLargeStillImage",
+    "import": "import { AssetPhotographicStackedCreamAndOliveGreenTowelsLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicStackedEcoFriendlyLunchBoxesLargeStillImage",
+    "import": "import { AssetPhotographicStackedEcoFriendlyLunchBoxesLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicStackedWhiteStorageContainersLargeStillImage",
+    "import": "import { AssetPhotographicStackedWhiteStorageContainersLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicStainlessSteelDoorHingeLargeStillImage",
+    "import": "import { AssetPhotographicStainlessSteelDoorHingeLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicStainlessSteelMokaPotLargeStillImage",
+    "import": "import { AssetPhotographicStainlessSteelMokaPotLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicStorageDoubleBedJpStillImage",
+    "import": "import { AssetPhotographicStorageDoubleBedJpStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicTabletWithStylusPenLargeStillImage",
+    "import": "import { AssetPhotographicTabletWithStylusPenLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicTransparentStorageBagLargeStillImage",
+    "import": "import { AssetPhotographicTransparentStorageBagLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicTwoTierColorfulPlateStandLargeStillImage",
+    "import": "import { AssetPhotographicTwoTierColorfulPlateStandLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicVintageStyleDigitalCameraLargeStillImage",
+    "import": "import { AssetPhotographicVintageStyleDigitalCameraLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWallMountedAirConditionerLargeStillImage",
+    "import": "import { AssetPhotographicWallMountedAirConditionerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWallMountedAirConditionerUnitLargeStillImage",
+    "import": "import { AssetPhotographicWallMountedAirConditionerUnitLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWaterPurifierWithGlassLargeStillImage",
+    "import": "import { AssetPhotographicWaterPurifierWithGlassLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWetWipesPackLargeStillImage",
+    "import": "import { AssetPhotographicWetWipesPackLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWhiteCosmeticOrganizerWithMirrorLargeStillImage",
+    "import": "import { AssetPhotographicWhiteCosmeticOrganizerWithMirrorLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWhiteDecorativeWallMoldingLargeStillImage",
+    "import": "import { AssetPhotographicWhiteDecorativeWallMoldingLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWhiteDesktopDrawerLargeStillImage",
+    "import": "import { AssetPhotographicWhiteDesktopDrawerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWhiteMetalDishRackLargeStillImage",
+    "import": "import { AssetPhotographicWhiteMetalDishRackLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWhiteMoistureAbsorberContainerLargeStillImage",
+    "import": "import { AssetPhotographicWhiteMoistureAbsorberContainerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWhitePedestalBowlWithTomatoLargeStillImage",
+    "import": "import { AssetPhotographicWhitePedestalBowlWithTomatoLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWhiteStripedBeddingSetLargeStillImage",
+    "import": "import { AssetPhotographicWhiteStripedBeddingSetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWhiteVitaminSupplementBottleLargeStillImage",
+    "import": "import { AssetPhotographicWhiteVitaminSupplementBottleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWhiteWirelessKeyboardLargeStillImage",
+    "import": "import { AssetPhotographicWhiteWirelessKeyboardLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWiFiRouterLargeStillImage",
+    "import": "import { AssetPhotographicWiFiRouterLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWirelessOverEarHeadphonesLargeStillImage",
+    "import": "import { AssetPhotographicWirelessOverEarHeadphonesLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWoodenBabyRockingCribLargeStillImage",
+    "import": "import { AssetPhotographicWoodenBabyRockingCribLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWoodenBedFrameWithWhiteLinenLargeStillImage",
+    "import": "import { AssetPhotographicWoodenBedFrameWithWhiteLinenLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWoodenDeskOrganizerWithStationeryLargeStillImage",
+    "import": "import { AssetPhotographicWoodenDeskOrganizerWithStationeryLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWoodenFoldingXFrameLaundryRackLargeStillImage",
+    "import": "import { AssetPhotographicWoodenFoldingXFrameLaundryRackLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWoodenKitchenSinkCabinetLargeStillImage",
+    "import": "import { AssetPhotographicWoodenKitchenSinkCabinetLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWoodenOpenBookshelfLargeStillImage",
+    "import": "import { AssetPhotographicWoodenOpenBookshelfLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicWoodenWavyScreenDividerLargeStillImage",
+    "import": "import { AssetPhotographicWoodenWavyScreenDividerLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicYellowRectangularRoundedMirrorLargeStillImage",
+    "import": "import { AssetPhotographicYellowRectangularRoundedMirrorLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicYellowRoundWallClockLargeStillImage",
+    "import": "import { AssetPhotographicYellowRoundWallClockLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPhotographicYellowSwirlGlassVaseLargeStillImage",
+    "import": "import { AssetPhotographicYellowSwirlGlassVaseLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetPlaceholderOhouseSymbolStillImage",
+    "import": "import { AssetPlaceholderOhouseSymbolStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetProfileOhouseSymbolStillImage",
+    "import": "import { AssetProfileOhouseSymbolStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetRankBookmarkBrandStillImage",
+    "import": "import { AssetRankBookmarkBrandStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetRankBookmarkGrayStillImage",
+    "import": "import { AssetRankBookmarkGrayStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetScreenshotMobileFacebookProfileOhouseStillImage",
+    "import": "import { AssetScreenshotMobileFacebookProfileOhouseStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetScreenshotMobileInstagramProfileTodayhouseStillImage",
+    "import": "import { AssetScreenshotMobileInstagramProfileTodayhouseStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetScreenshotMobileTiktokProfileOhouseOfficialStillImage",
+    "import": "import { AssetScreenshotMobileTiktokProfileOhouseOfficialStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetScreenshotMobileXProfileTodayinteriorStillImage",
+    "import": "import { AssetScreenshotMobileXProfileTodayinteriorStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetScreenshotMobileYoutubeChannelOhouseInteriorStillImage",
+    "import": "import { AssetScreenshotMobileYoutubeChannelOhouseInteriorStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetTempAssetMotionGetPointPCircleAnimatedImage",
+    "import": "import { AssetTempAssetMotionGetPointPCircleAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetTempAssetMotionGetPointPCircleApngAnimatedImage",
+    "import": "import { AssetTempAssetMotionGetPointPCircleApngAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetTempAssetMotionGiftLargeAnimatedImage",
+    "import": "import { AssetTempAssetMotionGiftLargeAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetTempAssetMotionGiftLargeApngAnimatedImage",
+    "import": "import { AssetTempAssetMotionGiftLargeApngAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetTempAssetMotionSpinnerAnimatedImage",
+    "import": "import { AssetTempAssetMotionSpinnerAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetTempAssetMotionSpinnerApngAnimatedImage",
+    "import": "import { AssetTempAssetMotionSpinnerApngAnimatedImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetThumbnailBadgeOhouseStillImage",
+    "import": "import { AssetThumbnailBadgeOhouseStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetThumbnailBadgeOnSaleJaStillImage",
+    "import": "import { AssetThumbnailBadgeOnSaleJaStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetTossHorizontalStillImage",
+    "import": "import { AssetTossHorizontalStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetTossSymbolCircleStillImage",
+    "import": "import { AssetTossSymbolCircleStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetTossSymbolStillImage",
+    "import": "import { AssetTossSymbolStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetWonSignCircleLargeStillImage",
+    "import": "import { AssetWonSignCircleLargeStillImage } from '@bucketplace/assets/image';",
+    "type": "image"
+  },
+  {
+    "name": "AssetMotionChevronDownLottie",
+    "import": "import { AssetMotionChevronDownLottie } from '@bucketplace/assets/lottie';",
+    "type": "lottie"
+  },
+  {
+    "name": "AssetMotionGetPointPCircleLottie",
+    "import": "import { AssetMotionGetPointPCircleLottie } from '@bucketplace/assets/lottie';",
+    "type": "lottie"
+  },
+  {
+    "name": "AssetMotionHandPinchZoomInLottie",
+    "import": "import { AssetMotionHandPinchZoomInLottie } from '@bucketplace/assets/lottie';",
+    "type": "lottie"
+  },
+  {
+    "name": "AssetMotionHandSwipeLeftLottie",
+    "import": "import { AssetMotionHandSwipeLeftLottie } from '@bucketplace/assets/lottie';",
+    "type": "lottie"
+  },
+  {
+    "name": "AssetMotionIconMagnifyingGlassViewfinderGenuineBlueLottie",
+    "import": "import { AssetMotionIconMagnifyingGlassViewfinderGenuineBlueLottie } from '@bucketplace/assets/lottie';",
+    "type": "lottie"
+  },
+  {
+    "name": "AssetMotionIconMagnifyingGlassViewfinderLottie",
+    "import": "import { AssetMotionIconMagnifyingGlassViewfinderLottie } from '@bucketplace/assets/lottie';",
+    "type": "lottie"
+  },
+  {
+    "name": "AssetMotionPlusCircleSweepLottie",
+    "import": "import { AssetMotionPlusCircleSweepLottie } from '@bucketplace/assets/lottie';",
+    "type": "lottie"
+  },
+  {
+    "name": "AssetMotionPushBenefitNudgeLottie",
+    "import": "import { AssetMotionPushBenefitNudgeLottie } from '@bucketplace/assets/lottie';",
+    "type": "lottie"
+  }
+]

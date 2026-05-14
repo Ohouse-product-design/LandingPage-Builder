@@ -2,72 +2,27 @@
 
 /**
  * 에셋 임베드 모달.
- * - 실제 구현에서는 design-assets 레포 검색 API 를 호출하지만,
- *   1차 골격에서는 mock 카탈로그를 검색하는 시뮬레이션.
+ * - `src/catalog/ods-assets.json` 기반 ODS Asset Library(image / lottie) 검색·선택
+ * - 선택 시 `AssetRef.assetId` 에 ODS 컴포넌트명이 저장되고, 프리뷰는 `OdsAssetRenderer` 가 해석
  */
 
 import { useMemo, useState } from "react";
 
 import { cn } from "@/lib/cn";
+import { searchOdsLibrary } from "@/lib/ods-asset-library";
 import type { AssetRef } from "@/schema/doc";
 import { useBuilderStore } from "@/store/builder-store";
 
-const MOCK_ASSETS: AssetRef[] = [
-  {
-    assetId: "moving/hero/main",
-    type: "image",
-    alt: "이사 트럭 메인",
-    meta: { width: 1280, height: 720, sizeKB: 184 },
-  },
-  {
-    assetId: "moving/usp/fragile",
-    type: "image",
-    alt: "파손 위험",
-    meta: { width: 440, height: 300, sizeKB: 42 },
-  },
-  {
-    assetId: "moving/usp/price",
-    type: "image",
-    alt: "견적 비교",
-    meta: { width: 440, height: 300, sizeKB: 38 },
-  },
-  {
-    assetId: "moving/usp/time",
-    type: "image",
-    alt: "시간 부족",
-    meta: { width: 440, height: 300, sizeKB: 41 },
-  },
-  {
-    assetId: "moving/usp/trust",
-    type: "image",
-    alt: "신뢰",
-    meta: { width: 440, height: 300, sizeKB: 36 },
-  },
-  {
-    assetId: "service/interior",
-    type: "image",
-    alt: "인테리어 서비스",
-    meta: { width: 96, height: 96, sizeKB: 8 },
-  },
-  {
-    assetId: "service/cleaning",
-    type: "image",
-    alt: "청소 서비스",
-    meta: { width: 96, height: 96, sizeKB: 7 },
-  },
-  {
-    assetId: "ods/icon/check",
-    type: "svg",
-    alt: "체크 아이콘",
-    meta: { width: 24, height: 24, sizeKB: 1 },
-  },
-  {
-    assetId: "ods/icon/star",
-    type: "svg",
-    alt: "별 아이콘",
-    meta: { width: 24, height: 24, sizeKB: 1 },
-  },
-];
+function entryToAssetRef(entry: {
+  name: string;
+  type: AssetRef["type"];
+}): AssetRef {
+  return {
+    assetId: entry.name,
+    type: entry.type,
+    alt: entry.name,
+  };
+}
 
 export default function AssetEmbedModal() {
   const modal = useBuilderStore((s) => s.assetModal);
@@ -76,13 +31,10 @@ export default function AssetEmbedModal() {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return MOCK_ASSETS;
-    return MOCK_ASSETS.filter(
-      (a) =>
-        a.assetId?.toLowerCase().includes(q) ||
-        a.alt.toLowerCase().includes(q)
+    const list = searchOdsLibrary(query, { category: "asset" }).filter(
+      (e) => e.type === "image" || e.type === "lottie"
     );
+    return list.slice(0, 90).map(entryToAssetRef);
   }, [query]);
 
   if (!modal) return null;
@@ -100,7 +52,14 @@ export default function AssetEmbedModal() {
           <div>
             <div className="text-sm font-semibold">에셋 임베드</div>
             <div className="text-[11px] text-builder-muted">
-              design-assets 레포에서 검색 · 슬롯: {modal.slotName}
+              {modal.cellId && modal.cardSlotName ? (
+                <>
+                  ODS Asset Library · 카드 셀 슬롯:{" "}
+                  <span className="text-builder-text">{modal.cardSlotName}</span>
+                </>
+              ) : (
+                <>ODS Asset Library · 슬롯: {modal.slotName}</>
+              )}
             </div>
           </div>
           <button
@@ -117,7 +76,7 @@ export default function AssetEmbedModal() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="에셋 ID 또는 alt 텍스트로 검색"
+            placeholder="컴포넌트명 검색 (예: BoltTruck, Motion…)"
             className="w-full rounded-ods-8 border border-builder-border bg-builder-bg px-3 py-2 text-[12px] outline-none focus:border-builder-accent"
           />
         </div>
@@ -138,15 +97,8 @@ export default function AssetEmbedModal() {
                 <div className="mb-2 flex h-24 items-center justify-center rounded-ods-4 bg-builder-panel-2 text-[10px] text-builder-muted">
                   {asset.type.toUpperCase()}
                 </div>
-                <div className="truncate text-[11px] text-builder-text">
-                  {asset.alt}
-                </div>
-                <div className="truncate text-[10px] text-builder-muted">
-                  {asset.assetId}
-                </div>
-                <div className="text-[9px] text-builder-muted">
-                  {asset.meta?.width}×{asset.meta?.height} · {asset.meta?.sizeKB}KB
-                </div>
+                <div className="truncate text-[11px] text-builder-text">{asset.alt}</div>
+                <div className="truncate text-[10px] text-builder-muted">{asset.assetId}</div>
               </button>
             ))}
           </div>

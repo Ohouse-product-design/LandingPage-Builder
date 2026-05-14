@@ -68,13 +68,13 @@ export default function Section({ section, viewport }: Props) {
 
   const renderers: Record<SectionPresetId, () => JSX.Element> = {
     header: () => <HeaderTemplate section={section} />,
-    hero: () => <HeroTemplate section={section} />,
+    hero: () => <HeroTemplate section={section} viewport={viewport} />,
     usp: () => (
       <CardSectionTemplate section={section} viewport={viewport} bg="white" />
     ),
     table: () => <TableTemplate section={section} />,
     coverage: () => (
-      <CardSectionTemplate section={section} viewport={viewport} bg="white" badge />
+      <CardSectionTemplate section={section} viewport={viewport} bg="white" />
     ),
     review: () => (
       <CardSectionTemplate section={section} viewport={viewport} bg="gray" />

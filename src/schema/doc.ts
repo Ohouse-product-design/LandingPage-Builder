@@ -15,13 +15,13 @@ import type { ComponentPresetId } from "./component-presets";
 import type { OdsTokenRef } from "./ods-tokens";
 
 // ---------------------------------------------------------------------------
-// Asset (design-assets 레포 참조)
+// Asset (ODS Asset Library — `src/catalog/ods-assets.json` 컴포넌트명, 빌드 시 번들/CDN 으로 치환)
 // ---------------------------------------------------------------------------
 
 export type AssetType = "image" | "svg" | "video" | "lottie";
 
 export interface AssetRef {
-  /** design-assets 레포 내 고유 ID — 빌드 시 CDN URL 로 치환 */
+  /** ODS StillImage / Lottie 컴포넌트명(`AssetBoltTruckLargeStillImage` 등) 또는 레거시 path id */
   assetId?: string;
   /** 직접 URL 을 지정하는 경우 (assetId 가 없을 때 폴백) */
   url?: string;

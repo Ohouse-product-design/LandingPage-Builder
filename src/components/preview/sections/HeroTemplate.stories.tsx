@@ -31,7 +31,11 @@ export const TitleOnly: Story = {
   args: {
     section: {
       ...heroFixture,
-      props: { title: "이사,\n오늘의집과 함께", primaryCtaLabel: "시작하기" },
+      props: {
+        ...heroFixture.props,
+        title: "이사,\n오늘의집과 함께",
+        primaryCtaLabel: "시작하기",
+      },
     },
   },
 };

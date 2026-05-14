@@ -6,13 +6,11 @@ import type { InspectorTab } from "@/store/builder-store";
 import PropsTab from "./tabs/PropsTab";
 import SlotsTab from "./tabs/SlotsTab";
 import AssetsTab from "./tabs/AssetsTab";
-import TokensTab from "./tabs/TokensTab";
 
 const TABS: { id: InspectorTab; label: string }[] = [
   { id: "props", label: "Props" },
   { id: "slots", label: "Slots" },
   { id: "assets", label: "Assets" },
-  { id: "tokens", label: "Tokens" },
 ];
 
 export default function Inspector() {
@@ -64,7 +62,6 @@ export default function Inspector() {
         {tab === "props" && <PropsTab />}
         {tab === "slots" && <SlotsTab />}
         {tab === "assets" && <AssetsTab />}
-        {tab === "tokens" && <TokensTab />}
       </div>
     </div>
   );

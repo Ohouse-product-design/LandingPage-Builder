@@ -61,7 +61,7 @@ const uspCells: CardCell[] = [
       body: { kind: "text", text: "비싼 가구가\n흠집 없이 도착할까?" },
       media: {
         kind: "asset",
-        asset: { type: "image", alt: "파손된 가구", assetId: "moving/usp/fragile" },
+        asset: { type: "image", alt: "파손된 가구", assetId: "AssetPackageSurpriseIconsStillImage" },
       },
     },
   },
@@ -73,7 +73,7 @@ const uspCells: CardCell[] = [
       body: { kind: "text", text: "어떤 업체가\n진짜 합리적일까?" },
       media: {
         kind: "asset",
-        asset: { type: "image", alt: "견적서", assetId: "moving/usp/price" },
+        asset: { type: "image", alt: "견적서", assetId: "AssetPercentTicketLargeStillImage" },
       },
     },
   },
@@ -85,7 +85,7 @@ const uspCells: CardCell[] = [
       body: { kind: "text", text: "이사 준비할\n시간이 부족하다" },
       media: {
         kind: "asset",
-        asset: { type: "image", alt: "시계", assetId: "moving/usp/time" },
+        asset: { type: "image", alt: "시계", assetId: "AssetClockLargeStillImage" },
       },
     },
   },
@@ -97,7 +97,7 @@ const uspCells: CardCell[] = [
       body: { kind: "text", text: "처음 보는 업체를\n믿을 수 있을까?" },
       media: {
         kind: "asset",
-        asset: { type: "image", alt: "체크마크", assetId: "moving/usp/trust" },
+        asset: { type: "image", alt: "체크마크", assetId: "AssetLuckyCheckLargeStillImage" },
       },
     },
   },
@@ -227,7 +227,7 @@ const stepCells: CardCell[] = [
       stepNumber: { kind: "text", text: "01" },
       title: { kind: "text", text: "견적 요청" },
       body: { kind: "text", text: "이사 정보 입력하고\n견적 받아보기" },
-      media: { kind: "asset", asset: { type: "image", alt: "견적 요청", assetId: "moving/step/01" } },
+      media: { kind: "asset", asset: { type: "image", alt: "견적 요청", assetId: "AssetOpenGraphO2OMovingStillImage" } },
     },
   },
   {
@@ -236,7 +236,10 @@ const stepCells: CardCell[] = [
       stepNumber: { kind: "text", text: "02" },
       title: { kind: "text", text: "업체 매칭" },
       body: { kind: "text", text: "검증된 업체에서\n비교 견적 받기" },
-      media: { kind: "asset", asset: { type: "image", alt: "업체 매칭", assetId: "moving/step/02" } },
+      media: {
+        kind: "asset",
+        asset: { type: "lottie", alt: "진행 안내", assetId: "AssetMotionPlusCircleSweepLottie" },
+      },
     },
   },
   {
@@ -245,7 +248,7 @@ const stepCells: CardCell[] = [
       stepNumber: { kind: "text", text: "03" },
       title: { kind: "text", text: "업체 선정" },
       body: { kind: "text", text: "원하는 조건에 맞는\n업체 직접 선택" },
-      media: { kind: "asset", asset: { type: "image", alt: "업체 선정", assetId: "moving/step/03" } },
+      media: { kind: "asset", asset: { type: "image", alt: "업체 선정", assetId: "AssetOhouseHorizontalStillImage" } },
     },
   },
   {
@@ -254,7 +257,7 @@ const stepCells: CardCell[] = [
       stepNumber: { kind: "text", text: "04" },
       title: { kind: "text", text: "이사 진행" },
       body: { kind: "text", text: "당일 진행하고\n책임보장으로 안심" },
-      media: { kind: "asset", asset: { type: "image", alt: "이사 진행", assetId: "moving/step/04" } },
+      media: { kind: "asset", asset: { type: "image", alt: "이사 진행", assetId: "AssetBoltTruckLargeView3StillImage" } },
     },
   },
 ];
@@ -277,7 +280,7 @@ const serviceCells: CardCell[] = [
   {
     id: uid("cs-cell", 1),
     slots: {
-      icon: { kind: "asset", asset: { type: "image", alt: "인테리어", assetId: "service/interior" } },
+      icon: { kind: "asset", asset: { type: "image", alt: "인테리어", assetId: "AssetArtSettingDeliveryHorizontalStillImage" } },
       title: { kind: "text", text: "인테리어" },
       body: { kind: "text", text: "원스톱 시공" },
       cta: { kind: "cta", label: "보러가기", url: "/interior" },
@@ -286,7 +289,7 @@ const serviceCells: CardCell[] = [
   {
     id: uid("cs-cell", 2),
     slots: {
-      icon: { kind: "asset", asset: { type: "image", alt: "청소", assetId: "service/cleaning" } },
+      icon: { kind: "asset", asset: { type: "image", alt: "청소", assetId: "AssetCameraLargeStillImage" } },
       title: { kind: "text", text: "청소" },
       body: { kind: "text", text: "입주청소 매칭" },
       cta: { kind: "cta", label: "보러가기", url: "/cleaning" },
@@ -295,7 +298,7 @@ const serviceCells: CardCell[] = [
   {
     id: uid("cs-cell", 3),
     slots: {
-      icon: { kind: "asset", asset: { type: "image", alt: "렌탈", assetId: "service/rental" } },
+      icon: { kind: "asset", asset: { type: "image", alt: "렌탈", assetId: "AssetCartLargeStillImage" } },
       title: { kind: "text", text: "렌탈" },
       body: { kind: "text", text: "가전·생활 렌탈" },
       cta: { kind: "cta", label: "보러가기", url: "/rental/landing" },
@@ -321,31 +324,22 @@ const allVisible = { mobile: true, tablet: true, desktop: true };
 
 const sections: Section[] = [
   {
-    id: "sec-header",
-    preset: "header",
-    name: "헤더",
-    locked: true,
-    props: { logoText: "오늘의집" },
-    slots: {},
-    assets: [],
-    visibility: allVisible,
-  },
-  {
     id: "sec-hero",
     preset: "hero",
     name: "히어로",
     locked: true,
     props: {
-      title: "이사, 더 쉽고\n안심되게",
-      subtitle: "비교 견적부터 책임보장까지 한 번에",
-      primaryCtaLabel: "무료 견적 받기",
-      secondaryCtaLabel: "상담 신청",
+      eyebrow: "오늘의집 이사",
+      title: "집을 잘 아니까,\n이사도 오늘의집에서",
+      subtitle: "",
+      primaryCtaLabel: "무료 견적 신청하기",
+      secondaryCtaLabel: "",
     },
     slots: {},
     assets: [
       {
         slotName: "background",
-        asset: { type: "image", alt: "이사 트럭", assetId: "moving/hero/main" },
+        asset: { type: "image", alt: "이사 트럭", assetId: "AssetBoltTruckLargeStillImage" },
       },
     ],
     tokens: [{ propPath: "title.color", tokenRef: "color.text.primary" }],
@@ -398,11 +392,9 @@ const sections: Section[] = [
     props: {
       sectionSubtitle: "함께하는 파트너",
       sectionTitle: "신뢰할 수 있는 보장",
-      badgeLabel: "책임보장",
     },
     slots: { content: [coverageCard] },
     assets: [],
-    tokens: [{ propPath: "badge.background", tokenRef: "gradient.responsibility" }],
     visibility: allVisible,
   },
   {

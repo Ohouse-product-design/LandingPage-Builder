@@ -1,0 +1,13 @@
+.lead-root {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #141414;
+  color-scheme: light;
+}
+
+.lead-root .no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.lead-root .no-scrollbar {
+  scrollbar-width: none;
+}

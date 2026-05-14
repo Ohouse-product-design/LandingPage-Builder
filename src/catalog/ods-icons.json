@@ -1,0 +1,2261 @@
+[
+  {
+    "name": "IconAbcRectangle",
+    "import": "import { IconAbcRectangle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "abc",
+      "rectangle"
+    ]
+  },
+  {
+    "name": "IconAbcRectangleFilled",
+    "import": "import { IconAbcRectangleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "abc",
+      "rectangle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconAr",
+    "import": "import { IconAr } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "ar"
+    ]
+  },
+  {
+    "name": "IconArrowDiagonalOutward",
+    "import": "import { IconArrowDiagonalOutward } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "diagonal",
+      "outward"
+    ]
+  },
+  {
+    "name": "IconArrowDown",
+    "import": "import { IconArrowDown } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "down"
+    ]
+  },
+  {
+    "name": "IconArrowDownCircle",
+    "import": "import { IconArrowDownCircle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "down",
+      "circle"
+    ]
+  },
+  {
+    "name": "IconArrowDownCircleFilled",
+    "import": "import { IconArrowDownCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "down",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconArrowDownToBracket",
+    "import": "import { IconArrowDownToBracket } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "down",
+      "to",
+      "bracket"
+    ]
+  },
+  {
+    "name": "IconArrowDownToLayer",
+    "import": "import { IconArrowDownToLayer } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "down",
+      "to",
+      "layer"
+    ]
+  },
+  {
+    "name": "IconArrowDownToLine",
+    "import": "import { IconArrowDownToLine } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "down",
+      "to",
+      "line"
+    ]
+  },
+  {
+    "name": "IconArrowLeft",
+    "import": "import { IconArrowLeft } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "left"
+    ]
+  },
+  {
+    "name": "IconArrowLeftArrowRight",
+    "import": "import { IconArrowLeftArrowRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "left",
+      "right"
+    ]
+  },
+  {
+    "name": "IconArrowLeftFromLine3Horizontal",
+    "import": "import { IconArrowLeftFromLine3Horizontal } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "left",
+      "from",
+      "line3",
+      "horizontal"
+    ]
+  },
+  {
+    "name": "IconArrowOrthogonalOutward",
+    "import": "import { IconArrowOrthogonalOutward } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "orthogonal",
+      "outward"
+    ]
+  },
+  {
+    "name": "IconArrowRight",
+    "import": "import { IconArrowRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "right"
+    ]
+  },
+  {
+    "name": "IconArrowRightFromLine3Horizontal",
+    "import": "import { IconArrowRightFromLine3Horizontal } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "right",
+      "from",
+      "line3",
+      "horizontal"
+    ]
+  },
+  {
+    "name": "IconArrowRightFromRectanglePortrait",
+    "import": "import { IconArrowRightFromRectanglePortrait } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "right",
+      "from",
+      "rectangle",
+      "portrait"
+    ]
+  },
+  {
+    "name": "IconArrowTriangleDown",
+    "import": "import { IconArrowTriangleDown } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "triangle",
+      "down"
+    ]
+  },
+  {
+    "name": "IconArrowTriangleHeadClockwise",
+    "import": "import { IconArrowTriangleHeadClockwise } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "triangle",
+      "head",
+      "clockwise"
+    ]
+  },
+  {
+    "name": "IconArrowTriangleHeadCounterClockwise",
+    "import": "import { IconArrowTriangleHeadCounterClockwise } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "triangle",
+      "head",
+      "counter",
+      "clockwise"
+    ]
+  },
+  {
+    "name": "IconArrowTriangleLeft",
+    "import": "import { IconArrowTriangleLeft } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "triangle",
+      "left"
+    ]
+  },
+  {
+    "name": "IconArrowTriangleRight",
+    "import": "import { IconArrowTriangleRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "triangle",
+      "right"
+    ]
+  },
+  {
+    "name": "IconArrowTriangleUp",
+    "import": "import { IconArrowTriangleUp } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "triangle",
+      "up"
+    ]
+  },
+  {
+    "name": "IconArrowUp",
+    "import": "import { IconArrowUp } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "up"
+    ]
+  },
+  {
+    "name": "IconArrowUpAndDown",
+    "import": "import { IconArrowUpAndDown } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "up",
+      "and",
+      "down"
+    ]
+  },
+  {
+    "name": "IconArrowUpArrowDown",
+    "import": "import { IconArrowUpArrowDown } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "up",
+      "down"
+    ]
+  },
+  {
+    "name": "IconArrowUpCircleFilled",
+    "import": "import { IconArrowUpCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "up",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconArrowUpFromBracket",
+    "import": "import { IconArrowUpFromBracket } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "up",
+      "from",
+      "bracket"
+    ]
+  },
+  {
+    "name": "IconArrowUpLeft",
+    "import": "import { IconArrowUpLeft } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "up",
+      "left"
+    ]
+  },
+  {
+    "name": "IconArrowUpRight",
+    "import": "import { IconArrowUpRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "up",
+      "right"
+    ]
+  },
+  {
+    "name": "IconArrowUpRightFromSquare",
+    "import": "import { IconArrowUpRightFromSquare } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "up",
+      "right",
+      "from",
+      "square"
+    ]
+  },
+  {
+    "name": "IconArrowUpToLine",
+    "import": "import { IconArrowUpToLine } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "up",
+      "to",
+      "line"
+    ]
+  },
+  {
+    "name": "IconArrowUturnLeft",
+    "import": "import { IconArrowUturnLeft } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "uturn",
+      "left"
+    ]
+  },
+  {
+    "name": "IconArrowUturnRight",
+    "import": "import { IconArrowUturnRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "arrow",
+      "uturn",
+      "right"
+    ]
+  },
+  {
+    "name": "IconAward",
+    "import": "import { IconAward } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "award"
+    ]
+  },
+  {
+    "name": "IconAwardFilled",
+    "import": "import { IconAwardFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "award",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconBell",
+    "import": "import { IconBell } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bell"
+    ]
+  },
+  {
+    "name": "IconBellFilled",
+    "import": "import { IconBellFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bell",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconBellSlashFilled",
+    "import": "import { IconBellSlashFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bell",
+      "slash",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconBlockQuote",
+    "import": "import { IconBlockQuote } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "block",
+      "quote"
+    ]
+  },
+  {
+    "name": "IconBold",
+    "import": "import { IconBold } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bold"
+    ]
+  },
+  {
+    "name": "IconBookmark",
+    "import": "import { IconBookmark } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bookmark"
+    ]
+  },
+  {
+    "name": "IconBookmarkFilled",
+    "import": "import { IconBookmarkFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bookmark",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconBubble",
+    "import": "import { IconBubble } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bubble"
+    ]
+  },
+  {
+    "name": "IconBubbleFilled",
+    "import": "import { IconBubbleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bubble",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconBubbleLeft",
+    "import": "import { IconBubbleLeft } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bubble",
+      "left"
+    ]
+  },
+  {
+    "name": "IconBubbleLeftBubbleRight",
+    "import": "import { IconBubbleLeftBubbleRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bubble",
+      "left",
+      "right"
+    ]
+  },
+  {
+    "name": "IconBubbleLeftBubbleRightFilled",
+    "import": "import { IconBubbleLeftBubbleRightFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bubble",
+      "left",
+      "right",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconBubbleMiddle",
+    "import": "import { IconBubbleMiddle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bubble",
+      "middle"
+    ]
+  },
+  {
+    "name": "IconBubbleRight",
+    "import": "import { IconBubbleRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bubble",
+      "right"
+    ]
+  },
+  {
+    "name": "IconBullhorn",
+    "import": "import { IconBullhorn } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bullhorn"
+    ]
+  },
+  {
+    "name": "IconBullhornFilled",
+    "import": "import { IconBullhornFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "bullhorn",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconCCircle",
+    "import": "import { IconCCircle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "c",
+      "circle"
+    ]
+  },
+  {
+    "name": "IconCCircleFilled",
+    "import": "import { IconCCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "c",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconCalculator",
+    "import": "import { IconCalculator } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "calculator"
+    ]
+  },
+  {
+    "name": "IconCalendar",
+    "import": "import { IconCalendar } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "calendar"
+    ]
+  },
+  {
+    "name": "IconCalendarFilled",
+    "import": "import { IconCalendarFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "calendar",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconCamera",
+    "import": "import { IconCamera } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "camera"
+    ]
+  },
+  {
+    "name": "IconCameraFilled",
+    "import": "import { IconCameraFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "camera",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconCart",
+    "import": "import { IconCart } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "cart"
+    ]
+  },
+  {
+    "name": "IconCheck",
+    "import": "import { IconCheck } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "check"
+    ]
+  },
+  {
+    "name": "IconCheckCircle",
+    "import": "import { IconCheckCircle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "check",
+      "circle"
+    ]
+  },
+  {
+    "name": "IconCheckCircleFilled",
+    "import": "import { IconCheckCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "check",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconCheckSeal",
+    "import": "import { IconCheckSeal } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "check",
+      "seal"
+    ]
+  },
+  {
+    "name": "IconCheckSealFilled",
+    "import": "import { IconCheckSealFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "check",
+      "seal",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconCheckboxChecked",
+    "import": "import { IconCheckboxChecked } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "checkbox",
+      "checked"
+    ]
+  },
+  {
+    "name": "IconCheckboxIndeterminate",
+    "import": "import { IconCheckboxIndeterminate } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "checkbox",
+      "indeterminate"
+    ]
+  },
+  {
+    "name": "IconChevronDown",
+    "import": "import { IconChevronDown } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "chevron",
+      "down"
+    ]
+  },
+  {
+    "name": "IconChevronDownLeftChevronUpRight",
+    "import": "import { IconChevronDownLeftChevronUpRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "chevron",
+      "down",
+      "left",
+      "up",
+      "right"
+    ]
+  },
+  {
+    "name": "IconChevronLeft",
+    "import": "import { IconChevronLeft } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "chevron",
+      "left"
+    ]
+  },
+  {
+    "name": "IconChevronRight",
+    "import": "import { IconChevronRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "chevron",
+      "right"
+    ]
+  },
+  {
+    "name": "IconChevronUp",
+    "import": "import { IconChevronUp } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "chevron",
+      "up"
+    ]
+  },
+  {
+    "name": "IconCircleFilled",
+    "import": "import { IconCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconClock",
+    "import": "import { IconClock } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "clock"
+    ]
+  },
+  {
+    "name": "IconClockFilled",
+    "import": "import { IconClockFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "clock",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconCreditCard",
+    "import": "import { IconCreditCard } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "credit",
+      "card"
+    ]
+  },
+  {
+    "name": "IconCreditCardFilled",
+    "import": "import { IconCreditCardFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "credit",
+      "card",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconCrown",
+    "import": "import { IconCrown } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "crown"
+    ]
+  },
+  {
+    "name": "IconCrownFilled",
+    "import": "import { IconCrownFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "crown",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconCube",
+    "import": "import { IconCube } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "cube"
+    ]
+  },
+  {
+    "name": "IconCubeBadgeSparkle",
+    "import": "import { IconCubeBadgeSparkle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "cube",
+      "badge",
+      "sparkle"
+    ]
+  },
+  {
+    "name": "IconCylinder",
+    "import": "import { IconCylinder } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "cylinder"
+    ]
+  },
+  {
+    "name": "IconDesktop",
+    "import": "import { IconDesktop } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "desktop"
+    ]
+  },
+  {
+    "name": "IconDoorRightHandClosed",
+    "import": "import { IconDoorRightHandClosed } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "door",
+      "right",
+      "hand",
+      "closed"
+    ]
+  },
+  {
+    "name": "IconDoubleQuoteClosing",
+    "import": "import { IconDoubleQuoteClosing } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "double",
+      "quote",
+      "closing"
+    ]
+  },
+  {
+    "name": "IconDoubleQuoteOpening",
+    "import": "import { IconDoubleQuoteOpening } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "double",
+      "quote",
+      "opening"
+    ]
+  },
+  {
+    "name": "IconDrill",
+    "import": "import { IconDrill } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "drill"
+    ]
+  },
+  {
+    "name": "IconDrywall",
+    "import": "import { IconDrywall } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "drywall"
+    ]
+  },
+  {
+    "name": "IconEllipsis",
+    "import": "import { IconEllipsis } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "ellipsis"
+    ]
+  },
+  {
+    "name": "IconEllipsisVertical",
+    "import": "import { IconEllipsisVertical } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "ellipsis",
+      "vertical"
+    ]
+  },
+  {
+    "name": "IconEnvelope",
+    "import": "import { IconEnvelope } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "envelope"
+    ]
+  },
+  {
+    "name": "IconEnvelopeFilled",
+    "import": "import { IconEnvelopeFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "envelope",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconExclamationTriangle",
+    "import": "import { IconExclamationTriangle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "exclamation",
+      "triangle"
+    ]
+  },
+  {
+    "name": "IconExclamationTriangleFilled",
+    "import": "import { IconExclamationTriangleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "exclamation",
+      "triangle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconEye",
+    "import": "import { IconEye } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "eye"
+    ]
+  },
+  {
+    "name": "IconEyeClosed",
+    "import": "import { IconEyeClosed } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "eye",
+      "closed"
+    ]
+  },
+  {
+    "name": "IconFaceSmilingSafetyHelmet",
+    "import": "import { IconFaceSmilingSafetyHelmet } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "face",
+      "smiling",
+      "safety",
+      "helmet"
+    ]
+  },
+  {
+    "name": "IconFaceSmilingSafetyHelmetFilled",
+    "import": "import { IconFaceSmilingSafetyHelmetFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "face",
+      "smiling",
+      "safety",
+      "helmet",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconFigureStand",
+    "import": "import { IconFigureStand } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "figure",
+      "stand"
+    ]
+  },
+  {
+    "name": "IconFire",
+    "import": "import { IconFire } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "fire"
+    ]
+  },
+  {
+    "name": "IconFireFilled",
+    "import": "import { IconFireFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "fire",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconFlask",
+    "import": "import { IconFlask } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "flask"
+    ]
+  },
+  {
+    "name": "IconFloorPlank",
+    "import": "import { IconFloorPlank } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "floor",
+      "plank"
+    ]
+  },
+  {
+    "name": "IconForward",
+    "import": "import { IconForward } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "forward"
+    ]
+  },
+  {
+    "name": "IconForwardFilled",
+    "import": "import { IconForwardFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "forward",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconFunnel",
+    "import": "import { IconFunnel } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "funnel"
+    ]
+  },
+  {
+    "name": "IconFunnelFilled",
+    "import": "import { IconFunnelFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "funnel",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconGauge",
+    "import": "import { IconGauge } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "gauge"
+    ]
+  },
+  {
+    "name": "IconGear",
+    "import": "import { IconGear } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "gear"
+    ]
+  },
+  {
+    "name": "IconGift",
+    "import": "import { IconGift } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "gift"
+    ]
+  },
+  {
+    "name": "IconGiftFilled",
+    "import": "import { IconGiftFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "gift",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconGlobe",
+    "import": "import { IconGlobe } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "globe"
+    ]
+  },
+  {
+    "name": "IconGripVertical",
+    "import": "import { IconGripVertical } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "grip",
+      "vertical"
+    ]
+  },
+  {
+    "name": "IconHandBroom",
+    "import": "import { IconHandBroom } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hand",
+      "broom"
+    ]
+  },
+  {
+    "name": "IconHandPinchZoomIn",
+    "import": "import { IconHandPinchZoomIn } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hand",
+      "pinch",
+      "zoom",
+      "in"
+    ]
+  },
+  {
+    "name": "IconHandPointUp",
+    "import": "import { IconHandPointUp } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hand",
+      "point",
+      "up"
+    ]
+  },
+  {
+    "name": "IconHandSwipeLeft",
+    "import": "import { IconHandSwipeLeft } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hand",
+      "swipe",
+      "left"
+    ]
+  },
+  {
+    "name": "IconHandSwipeRight",
+    "import": "import { IconHandSwipeRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hand",
+      "swipe",
+      "right"
+    ]
+  },
+  {
+    "name": "IconHandThumbsDown",
+    "import": "import { IconHandThumbsDown } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hand",
+      "thumbs",
+      "down"
+    ]
+  },
+  {
+    "name": "IconHandThumbsDownFilled",
+    "import": "import { IconHandThumbsDownFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hand",
+      "thumbs",
+      "down",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconHandThumbsUp",
+    "import": "import { IconHandThumbsUp } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hand",
+      "thumbs",
+      "up"
+    ]
+  },
+  {
+    "name": "IconHandThumbsUpFilled",
+    "import": "import { IconHandThumbsUpFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hand",
+      "thumbs",
+      "up",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconHashtag",
+    "import": "import { IconHashtag } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "hashtag"
+    ]
+  },
+  {
+    "name": "IconHeadset",
+    "import": "import { IconHeadset } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "headset"
+    ]
+  },
+  {
+    "name": "IconHeart",
+    "import": "import { IconHeart } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "heart"
+    ]
+  },
+  {
+    "name": "IconHeartFilled",
+    "import": "import { IconHeartFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "heart",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconHouse",
+    "import": "import { IconHouse } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "house"
+    ]
+  },
+  {
+    "name": "IconHouseFilled",
+    "import": "import { IconHouseFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "house",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconInfoCircle",
+    "import": "import { IconInfoCircle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "info",
+      "circle"
+    ]
+  },
+  {
+    "name": "IconInfoCircleFilled",
+    "import": "import { IconInfoCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "info",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconItalic",
+    "import": "import { IconItalic } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "italic"
+    ]
+  },
+  {
+    "name": "IconLensViewfinder",
+    "import": "import { IconLensViewfinder } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "lens",
+      "viewfinder"
+    ]
+  },
+  {
+    "name": "IconLightbulbOn",
+    "import": "import { IconLightbulbOn } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "lightbulb",
+      "on"
+    ]
+  },
+  {
+    "name": "IconLine3Horizontal",
+    "import": "import { IconLine3Horizontal } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "line3",
+      "horizontal"
+    ]
+  },
+  {
+    "name": "IconLine3VerticalIncrease",
+    "import": "import { IconLine3VerticalIncrease } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "line3",
+      "vertical",
+      "increase"
+    ]
+  },
+  {
+    "name": "IconLineVerticalAndRectangle",
+    "import": "import { IconLineVerticalAndRectangle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "line",
+      "vertical",
+      "and",
+      "rectangle"
+    ]
+  },
+  {
+    "name": "IconLink",
+    "import": "import { IconLink } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "link"
+    ]
+  },
+  {
+    "name": "IconListBullet",
+    "import": "import { IconListBullet } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "list",
+      "bullet"
+    ]
+  },
+  {
+    "name": "IconListBulletSquare",
+    "import": "import { IconListBulletSquare } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "list",
+      "bullet",
+      "square"
+    ]
+  },
+  {
+    "name": "IconListBulletSquareFilled",
+    "import": "import { IconListBulletSquareFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "list",
+      "bullet",
+      "square",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconLocationPinDot",
+    "import": "import { IconLocationPinDot } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "location",
+      "pin",
+      "dot"
+    ]
+  },
+  {
+    "name": "IconLocationPinDotFilled",
+    "import": "import { IconLocationPinDotFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "location",
+      "pin",
+      "dot",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconLock",
+    "import": "import { IconLock } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "lock"
+    ]
+  },
+  {
+    "name": "IconLockFilled",
+    "import": "import { IconLockFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "lock",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconMagnifyingGlass",
+    "import": "import { IconMagnifyingGlass } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "magnifying",
+      "glass",
+      "search",
+      "find"
+    ]
+  },
+  {
+    "name": "IconMagnifyingGlassViewfinder",
+    "import": "import { IconMagnifyingGlassViewfinder } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "magnifying",
+      "glass",
+      "viewfinder",
+      "search"
+    ]
+  },
+  {
+    "name": "IconMinus",
+    "import": "import { IconMinus } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "minus"
+    ]
+  },
+  {
+    "name": "IconMobile",
+    "import": "import { IconMobile } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "mobile"
+    ]
+  },
+  {
+    "name": "IconPCircle",
+    "import": "import { IconPCircle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "p",
+      "circle"
+    ]
+  },
+  {
+    "name": "IconPCircleFilled",
+    "import": "import { IconPCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "p",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPaintPalette",
+    "import": "import { IconPaintPalette } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "paint",
+      "palette"
+    ]
+  },
+  {
+    "name": "IconPaperClip",
+    "import": "import { IconPaperClip } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "paper",
+      "clip"
+    ]
+  },
+  {
+    "name": "IconPaperPlaneFilled",
+    "import": "import { IconPaperPlaneFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "paper",
+      "plane",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPause",
+    "import": "import { IconPause } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "pause"
+    ]
+  },
+  {
+    "name": "IconPauseFilled",
+    "import": "import { IconPauseFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "pause",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPayRectangle",
+    "import": "import { IconPayRectangle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "pay",
+      "rectangle"
+    ]
+  },
+  {
+    "name": "IconPencil",
+    "import": "import { IconPencil } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "pencil"
+    ]
+  },
+  {
+    "name": "IconPencilFilled",
+    "import": "import { IconPencilFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "pencil",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPerson",
+    "import": "import { IconPerson } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "person"
+    ]
+  },
+  {
+    "name": "IconPerson2",
+    "import": "import { IconPerson2 } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "person2"
+    ]
+  },
+  {
+    "name": "IconPersonBadgePlus",
+    "import": "import { IconPersonBadgePlus } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "person",
+      "badge",
+      "plus"
+    ]
+  },
+  {
+    "name": "IconPersonFilled",
+    "import": "import { IconPersonFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "person",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPhone",
+    "import": "import { IconPhone } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "phone"
+    ]
+  },
+  {
+    "name": "IconPhoneFilled",
+    "import": "import { IconPhoneFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "phone",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPhoto",
+    "import": "import { IconPhoto } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "photo"
+    ]
+  },
+  {
+    "name": "IconPhotoFilled",
+    "import": "import { IconPhotoFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "photo",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPin",
+    "import": "import { IconPin } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "pin"
+    ]
+  },
+  {
+    "name": "IconPlaceHouse",
+    "import": "import { IconPlaceHouse } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "place",
+      "house"
+    ]
+  },
+  {
+    "name": "IconPlaceHouseFilled",
+    "import": "import { IconPlaceHouseFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "place",
+      "house",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPlay",
+    "import": "import { IconPlay } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "play"
+    ]
+  },
+  {
+    "name": "IconPlayCircle",
+    "import": "import { IconPlayCircle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "play",
+      "circle"
+    ]
+  },
+  {
+    "name": "IconPlayCircleFilled",
+    "import": "import { IconPlayCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "play",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPlayFilled",
+    "import": "import { IconPlayFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "play",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPlayRectangle",
+    "import": "import { IconPlayRectangle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "play",
+      "rectangle"
+    ]
+  },
+  {
+    "name": "IconPlus",
+    "import": "import { IconPlus } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "plus"
+    ]
+  },
+  {
+    "name": "IconPlusCart",
+    "import": "import { IconPlusCart } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "plus",
+      "cart"
+    ]
+  },
+  {
+    "name": "IconPlusCircle",
+    "import": "import { IconPlusCircle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "plus",
+      "circle"
+    ]
+  },
+  {
+    "name": "IconPlusCircleFilled",
+    "import": "import { IconPlusCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "plus",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPlusSquare",
+    "import": "import { IconPlusSquare } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "plus",
+      "square"
+    ]
+  },
+  {
+    "name": "IconPlusSquareFilled",
+    "import": "import { IconPlusSquareFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "plus",
+      "square",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconPoint3ConnectedSplitPath",
+    "import": "import { IconPoint3ConnectedSplitPath } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "point3",
+      "connected",
+      "split",
+      "path"
+    ]
+  },
+  {
+    "name": "IconQuestionCircle",
+    "import": "import { IconQuestionCircle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "question",
+      "circle"
+    ]
+  },
+  {
+    "name": "IconQuestionCircleFilled",
+    "import": "import { IconQuestionCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "question",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconRadioDot",
+    "import": "import { IconRadioDot } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "radio",
+      "dot"
+    ]
+  },
+  {
+    "name": "IconRectangleGrid1X2",
+    "import": "import { IconRectangleGrid1X2 } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "rectangle",
+      "grid1",
+      "x2"
+    ]
+  },
+  {
+    "name": "IconRectangleGrid1X2Filled",
+    "import": "import { IconRectangleGrid1X2Filled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "rectangle",
+      "grid1",
+      "x2",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconRes2kRectangle",
+    "import": "import { IconRes2kRectangle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "res2k",
+      "rectangle"
+    ]
+  },
+  {
+    "name": "IconRes4kRectangle",
+    "import": "import { IconRes4kRectangle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "res4k",
+      "rectangle"
+    ]
+  },
+  {
+    "name": "IconScope",
+    "import": "import { IconScope } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "scope"
+    ]
+  },
+  {
+    "name": "IconShield",
+    "import": "import { IconShield } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "shield"
+    ]
+  },
+  {
+    "name": "IconShieldFilled",
+    "import": "import { IconShieldFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "shield",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconShoppingBag",
+    "import": "import { IconShoppingBag } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "shopping",
+      "bag"
+    ]
+  },
+  {
+    "name": "IconSliderHorizontal",
+    "import": "import { IconSliderHorizontal } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "slider",
+      "horizontal"
+    ]
+  },
+  {
+    "name": "IconSparkles",
+    "import": "import { IconSparkles } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "sparkles"
+    ]
+  },
+  {
+    "name": "IconSparklesHouse",
+    "import": "import { IconSparklesHouse } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "sparkles",
+      "house"
+    ]
+  },
+  {
+    "name": "IconSparklesHouseFilled",
+    "import": "import { IconSparklesHouseFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "sparkles",
+      "house",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconSpeakerSlashFilled",
+    "import": "import { IconSpeakerSlashFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "speaker",
+      "slash",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconSpeakerWave2",
+    "import": "import { IconSpeakerWave2 } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "speaker",
+      "wave2"
+    ]
+  },
+  {
+    "name": "IconSpeakerWave2Filled",
+    "import": "import { IconSpeakerWave2Filled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "speaker",
+      "wave2",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconSpeakerX",
+    "import": "import { IconSpeakerX } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "speaker",
+      "x"
+    ]
+  },
+  {
+    "name": "IconSpeakerXFilled",
+    "import": "import { IconSpeakerXFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "speaker",
+      "x",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconSquareAndPencil",
+    "import": "import { IconSquareAndPencil } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "square",
+      "and",
+      "pencil"
+    ]
+  },
+  {
+    "name": "IconSquareGrid2X2Filled",
+    "import": "import { IconSquareGrid2X2Filled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "square",
+      "grid2",
+      "x2",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconSquareOnSquare",
+    "import": "import { IconSquareOnSquare } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "square",
+      "on"
+    ]
+  },
+  {
+    "name": "IconSquareOnSquareFilled",
+    "import": "import { IconSquareOnSquareFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "square",
+      "on",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconSquarefaceStare",
+    "import": "import { IconSquarefaceStare } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "squareface",
+      "stare"
+    ]
+  },
+  {
+    "name": "IconSquarefaceStareFilled",
+    "import": "import { IconSquarefaceStareFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "squareface",
+      "stare",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconStar",
+    "import": "import { IconStar } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "star"
+    ]
+  },
+  {
+    "name": "IconStarFilled",
+    "import": "import { IconStarFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "star",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconStopCircleFilled",
+    "import": "import { IconStopCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "stop",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconStore",
+    "import": "import { IconStore } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "store"
+    ]
+  },
+  {
+    "name": "IconStoreFilled",
+    "import": "import { IconStoreFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "store",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconSunRightHalfFilled",
+    "import": "import { IconSunRightHalfFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "sun",
+      "right",
+      "half",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconTag",
+    "import": "import { IconTag } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "tag"
+    ]
+  },
+  {
+    "name": "IconTagFilled",
+    "import": "import { IconTagFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "tag",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconTextAlignCenter",
+    "import": "import { IconTextAlignCenter } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "text",
+      "align",
+      "center"
+    ]
+  },
+  {
+    "name": "IconTextAlignLeft",
+    "import": "import { IconTextAlignLeft } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "text",
+      "align",
+      "left"
+    ]
+  },
+  {
+    "name": "IconTextAlignRight",
+    "import": "import { IconTextAlignRight } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "text",
+      "align",
+      "right"
+    ]
+  },
+  {
+    "name": "IconTextDocument",
+    "import": "import { IconTextDocument } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "text",
+      "document"
+    ]
+  },
+  {
+    "name": "IconTextDocumentFilled",
+    "import": "import { IconTextDocumentFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "text",
+      "document",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconTextJustifyLeft",
+    "import": "import { IconTextJustifyLeft } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "text",
+      "justify",
+      "left"
+    ]
+  },
+  {
+    "name": "IconTextRectangleOnRectangleAngled",
+    "import": "import { IconTextRectangleOnRectangleAngled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "text",
+      "rectangle",
+      "on",
+      "angled"
+    ]
+  },
+  {
+    "name": "IconTextRectangleOnRectangleAngledFilled",
+    "import": "import { IconTextRectangleOnRectangleAngledFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "text",
+      "rectangle",
+      "on",
+      "angled",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconTicket",
+    "import": "import { IconTicket } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "ticket"
+    ]
+  },
+  {
+    "name": "IconTicketFilled",
+    "import": "import { IconTicketFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "ticket",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconTipRectangle",
+    "import": "import { IconTipRectangle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "tip",
+      "rectangle"
+    ]
+  },
+  {
+    "name": "IconTrash",
+    "import": "import { IconTrash } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "trash"
+    ]
+  },
+  {
+    "name": "IconTrashFilled",
+    "import": "import { IconTrashFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "trash",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconTruck",
+    "import": "import { IconTruck } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "truck"
+    ]
+  },
+  {
+    "name": "IconTruckFilled",
+    "import": "import { IconTruckFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "truck",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconTv",
+    "import": "import { IconTv } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "tv"
+    ]
+  },
+  {
+    "name": "IconUnderline",
+    "import": "import { IconUnderline } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "underline"
+    ]
+  },
+  {
+    "name": "IconVideo",
+    "import": "import { IconVideo } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "video"
+    ]
+  },
+  {
+    "name": "IconWallpaper",
+    "import": "import { IconWallpaper } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "wallpaper"
+    ]
+  },
+  {
+    "name": "IconWifi",
+    "import": "import { IconWifi } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "wifi"
+    ]
+  },
+  {
+    "name": "IconWindowArch",
+    "import": "import { IconWindowArch } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "window",
+      "arch"
+    ]
+  },
+  {
+    "name": "IconWonSign",
+    "import": "import { IconWonSign } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "won",
+      "sign"
+    ]
+  },
+  {
+    "name": "IconWonSignCircle2",
+    "import": "import { IconWonSignCircle2 } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "won",
+      "sign",
+      "circle2"
+    ]
+  },
+  {
+    "name": "IconWonSignCircleFilled",
+    "import": "import { IconWonSignCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "won",
+      "sign",
+      "circle",
+      "filled"
+    ]
+  },
+  {
+    "name": "IconWonSignCircleMotion",
+    "import": "import { IconWonSignCircleMotion } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "won",
+      "sign",
+      "circle",
+      "motion"
+    ]
+  },
+  {
+    "name": "IconX",
+    "import": "import { IconX } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "x"
+    ]
+  },
+  {
+    "name": "IconXCircle",
+    "import": "import { IconXCircle } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "x",
+      "circle"
+    ]
+  },
+  {
+    "name": "IconXCircleFilled",
+    "import": "import { IconXCircleFilled } from '@bucketplace/icons';",
+    "size": "size prop: number | string (default \"1em\"). aspect: \"width\"|\"height\"|\"both\"",
+    "tags": [
+      "x",
+      "circle",
+      "filled"
+    ]
+  }
+]

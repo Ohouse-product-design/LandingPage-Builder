@@ -210,14 +210,16 @@ function RowLayout({
 
 function CellRenderer({ cell, usage }: { cell: CardCell; usage: CardUsagePresetId }) {
   switch (usage) {
-    case "CardContents":
+    case "usp":
       return <CardContentsCell cell={cell} />;
-    case "CardReview":
+    case "review":
       return <CardReviewCell cell={cell} />;
-    case "CardStep":
+    case "step":
       return <CardStepCell cell={cell} />;
-    case "List":
+    case "service":
       return <ListCell cell={cell} />;
+    case "custom":
+      return <CardContentsCell cell={cell} />;
   }
 }
 
@@ -292,12 +294,10 @@ function asCta(c?: CardSlotContent): { label: string; url: string } | null {
 // ---------------------------------------------------------------------------
 
 /**
- * USP 카드 — Figma `card_usp` (node 33:7897) 스펙 적용.
+ * USP 카드 — Figma `card_usp` 스펙.
+ * - 카드 셸: `border-radius: 12px`, 배경 그라데이션 + `#F5F5F5` 베이스
  * - 풀-블리드 배경 사진 + 어두운 dim gradient + 흰 텍스트 오버레이
- * - title  : Heading20 SemiBold 20/28 -0.3 white, 1줄 ellipsis
- * - body   : Body15 Regular 15/24 -0.3 white, max-w 200, 2줄 ellipsis (whitespace-pre-line)
- * - tag    : Detail10 white/70 — 카드 하단 좌측 푸트노트 (예: "* 당일 견적 한정")
- * - 모서리 rounded-12, 미디어 없을 때는 회색 그라데이션만 표시.
+ * - title / body / tag 레이아웃 동일
  */
 function CardContentsCell({ cell }: { cell: CardCell }) {
   const tag = asText(slot(cell, "tag"));
@@ -306,10 +306,11 @@ function CardContentsCell({ cell }: { cell: CardCell }) {
   const media = asAsset(slot(cell, "media"));
   return (
     <div
-      className="relative h-[300px] w-full overflow-hidden rounded-ods-12"
+      className="relative h-[300px] w-full overflow-hidden"
       style={{
-        backgroundImage:
-          "linear-gradient(155.829deg, rgba(239,239,239,0.2) 1.049%, rgba(147,184,210,0.2) 99.182%), linear-gradient(90deg, rgb(245,245,245) 0%, rgb(245,245,245) 100%)",
+        borderRadius: "12px",
+        background:
+          "linear-gradient(160deg, rgba(239, 239, 239, 0.20) -1.05%, rgba(147, 184, 210, 0.20) 99.18%), #F5F5F5",
       }}
     >
       {media ? (
@@ -465,39 +466,49 @@ function CardStepCell({ cell }: { cell: CardCell }) {
   );
 }
 
+/**
+ * 서비스 리스트 셀 — Figma `이사-프로덕트` CrossSelling `CardService` (node 640:9365 근방).
+ * - 96px 높이 가로 카드, `rounded-ods-8`, 좌 96×96 이미지 + 우측 타이틀/설명
+ * - 타이틀 18px Semibold / 본문 15px Regular 70% opacity (피그마 Body15)
+ * - 카드 전체 링크; 별도 "보러가기" 텍스트는 시안에 없음 (`aria-label`에 CTA 반영)
+ */
 function ListCell({ cell }: { cell: CardCell }) {
   const iconAsset = asAsset(slot(cell, "icon"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
   const cta = asCta(slot(cell, "cta"));
+  const label =
+    [title, cta?.label].filter(Boolean).join(" — ") || "서비스 카드";
+
   return (
     <a
       href={cta?.url ?? "#"}
-      className="flex h-full flex-row items-start gap-3 rounded-ods-12 bg-white p-4 text-left hover:shadow-sm"
+      aria-label={label}
+      className="flex h-[96px] w-full min-w-0 max-w-[360px] flex-row items-stretch overflow-hidden rounded-ods-8 bg-white text-left shadow-none transition-shadow hover:shadow-sm"
     >
-      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-ods-surface-light text-ods-text-tertiary">
+      <div className="relative h-full w-24 shrink-0 bg-ods-surface-light">
         {iconAsset ? (
           <OdsAssetRenderer
             asset={iconAsset}
-            size={24}
-            className="flex h-10 w-10 items-center justify-center"
+            className="pointer-events-none absolute inset-0 size-full object-cover"
           />
         ) : (
-          <IconPhoto size={20} />
-        )}
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col">
-        {title && (
-          <div className="text-ods-title-md text-ods-text-primary">{title}</div>
-        )}
-        {body && (
-          <div className="mt-1 text-ods-body-md text-ods-text-tertiary">{body}</div>
-        )}
-        {cta && (
-          <div className="mt-2 text-ods-caption text-ods-primary">
-            {cta.label} →
+          <div className="flex size-full items-center justify-center text-ods-text-tertiary">
+            <IconPhoto size={28} />
           </div>
         )}
+      </div>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1 bg-white px-4 py-5">
+        {title ? (
+          <p className="truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
+            {title}
+          </p>
+        ) : null}
+        {body ? (
+          <p className="line-clamp-2 font-pretendard text-[15px] font-normal leading-6 tracking-[-0.3px] text-ods-text-primary opacity-70">
+            {body}
+          </p>
+        ) : null}
       </div>
     </a>
   );

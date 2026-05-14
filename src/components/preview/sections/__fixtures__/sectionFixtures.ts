@@ -34,10 +34,10 @@ function buildCardInstance(args: {
 // ───────────────────────────────────────────────────────────
 
 const uspCells: CardCell[] = [
-  { id: "u1", slots: { tag: { kind: "text", text: "FRAGILE" }, title: { kind: "text", text: "파손 걱정" }, body: { kind: "text", text: "비싼 가구가\n흠집 없이 도착할까?" }, media: { kind: "asset", asset: { type: "image", alt: "파손 가구" } } } },
-  { id: "u2", slots: { tag: { kind: "text", text: "PRICE" }, title: { kind: "text", text: "비교 견적" }, body: { kind: "text", text: "어떤 업체가\n진짜 합리적일까?" }, media: { kind: "asset", asset: { type: "image", alt: "견적서" } } } },
-  { id: "u3", slots: { tag: { kind: "text", text: "TIME" }, title: { kind: "text", text: "시간 부족" }, body: { kind: "text", text: "이사 준비할\n시간이 부족하다" }, media: { kind: "asset", asset: { type: "image", alt: "시계" } } } },
-  { id: "u4", slots: { tag: { kind: "text", text: "TRUST" }, title: { kind: "text", text: "업체 신뢰" }, body: { kind: "text", text: "처음 보는 업체를\n믿을 수 있을까?" }, media: { kind: "asset", asset: { type: "image", alt: "체크" } } } },
+  { id: "u1", slots: { tag: { kind: "text", text: "FRAGILE" }, title: { kind: "text", text: "파손 걱정" }, body: { kind: "text", text: "비싼 가구가\n흠집 없이 도착할까?" }, media: { kind: "asset", asset: { type: "image", alt: "파손 가구", assetId: "AssetPackageSurpriseIconsStillImage" } } } },
+  { id: "u2", slots: { tag: { kind: "text", text: "PRICE" }, title: { kind: "text", text: "비교 견적" }, body: { kind: "text", text: "어떤 업체가\n진짜 합리적일까?" }, media: { kind: "asset", asset: { type: "image", alt: "견적서", assetId: "AssetPercentTicketLargeStillImage" } } } },
+  { id: "u3", slots: { tag: { kind: "text", text: "TIME" }, title: { kind: "text", text: "시간 부족" }, body: { kind: "text", text: "이사 준비할\n시간이 부족하다" }, media: { kind: "asset", asset: { type: "image", alt: "시계", assetId: "AssetClockLargeStillImage" } } } },
+  { id: "u4", slots: { tag: { kind: "text", text: "TRUST" }, title: { kind: "text", text: "업체 신뢰" }, body: { kind: "text", text: "처음 보는 업체를\n믿을 수 있을까?" }, media: { kind: "asset", asset: { type: "image", alt: "체크", assetId: "AssetLuckyCheckLargeStillImage" } } } },
 ];
 
 const reviewCells: CardCell[] = [
@@ -107,10 +107,11 @@ export const heroFixture: Section = {
   name: "히어로",
   locked: true,
   props: {
-    title: "이사,\n오늘의집과 함께",
-    subtitle: "검증된 업체가 합리적인 가격으로",
-    primaryCtaLabel: "견적 요청",
-    secondaryCtaLabel: "업체 둘러보기",
+    eyebrow: "오늘의집 이사",
+    title: "집을 잘 아니까,\n이사도 오늘의집에서",
+    subtitle: "",
+    primaryCtaLabel: "무료 견적 신청하기",
+    secondaryCtaLabel: "",
   },
   slots: {},
   assets: [],
@@ -124,7 +125,6 @@ export function buildCardSectionFixture(args: {
   cells: CardCell[];
   sectionTitle?: string;
   sectionSubtitle?: string;
-  badgeLabel?: string;
 }): Section {
   return {
     id: `fix-${args.preset}`,
@@ -134,7 +134,6 @@ export function buildCardSectionFixture(args: {
     props: {
       sectionTitle: args.sectionTitle ?? "섹션 제목",
       sectionSubtitle: args.sectionSubtitle ?? "서브 카피",
-      ...(args.badgeLabel ? { badgeLabel: args.badgeLabel } : {}),
     },
     slots: {
       content: [
@@ -167,7 +166,6 @@ export const coverageFixture = buildCardSectionFixture({
   cells: uspCells.slice(0, 2),
   sectionTitle: "안전한 이사를 위한\n책임보장 시스템",
   sectionSubtitle: "Coverage",
-  badgeLabel: "책임보장",
 });
 
 export const reviewFixture = buildCardSectionFixture({

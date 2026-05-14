@@ -3,15 +3,22 @@
 /**
  * ODS Asset 렌더러 (프리뷰).
  *
- * - `type: "lottie"` 또는 Lottie 로 보이는 `url` → JSON fetch 후 `lottie-react` 재생
- * - `type: "image"` + `url`(비-Lottie) → `<img>`
- * - `type: "image"` + `assetId` 만 → `resolvePreviewRasterImageSrc` (결정적 플레이스홀더)
- * - `assetId` 가 `Icon*` 이고 로컬 어댑터에 있으면 SVG 아이콘
- * - 그 외 → 이름/타입 placeholder
+ * - `assetId` 가 `src/catalog/ods-assets.json` 의 ODS 컴포넌트명과 일치하면 라이브러리 타입(image/lottie)에 맞춰 렌더
+ * - Lottie: 공개 샘플 JSON URL 을 `resolveOdsCatalogLottiePreviewSrc` 로 매핑 후 `lottie-react`
+ * - StillImage 등: `url` 우선, 없으면 picsum 시드(이름 기반) 플레이스홀더
+ * - `assetId` 가 `Icon*` 이거나 ODS 아이콘 카탈로그명이면 로컬 `ods-icons` SVG
  */
 
 import * as OdsIcons from "@/lib/ods-icons";
-import { isLikelyLottieUrl, resolvePreviewRasterImageSrc } from "@/lib/preview-asset-url";
+import {
+  getOdsLibraryAssetByAssetId,
+  getOdsLibraryIconByAssetId,
+} from "@/lib/ods-asset-library";
+import {
+  isLikelyLottieUrl,
+  resolveOdsCatalogLottiePreviewSrc,
+  resolvePreviewRasterImageSrc,
+} from "@/lib/preview-asset-url";
 import type { AssetRef, AssetType } from "@/schema/doc";
 import LottieAssetView from "./LottieAssetView";
 
@@ -27,24 +34,48 @@ type IconComponent = (props: { size?: number | string; className?: string }) => 
 
 const ICON_MAP = OdsIcons as Record<string, IconComponent>;
 
+/** 구 design-assets path / 임시 id → 로컬 ODS 아이콘 컴포넌트명 */
+const LEGACY_ASSETID_TO_ICON: Record<string, string> = {
+  "ods/icon/check": "IconCheck",
+  "ods/icon/star": "IconCheck",
+};
+
+function resolveIconComponentName(assetId: string | undefined): string | null {
+  if (!assetId?.trim()) return null;
+  const raw = assetId.trim();
+  if (LEGACY_ASSETID_TO_ICON[raw]) return LEGACY_ASSETID_TO_ICON[raw];
+  if (raw.startsWith("Icon")) return raw;
+  const odsIcon = getOdsLibraryIconByAssetId(raw);
+  return odsIcon ? odsIcon.name : null;
+}
+
 export default function OdsAssetRenderer({ asset, size = 24, className }: Props) {
   const imgClass = className ?? "h-full w-full object-cover";
 
+  const odsAsset = getOdsLibraryAssetByAssetId(asset.assetId);
   const wantsLottie =
-    asset.type === "lottie" || (!!asset.url && isLikelyLottieUrl(asset.url));
+    (!!asset.url && isLikelyLottieUrl(asset.url)) ||
+    asset.type === "lottie" ||
+    odsAsset?.type === "lottie";
 
   if (wantsLottie) {
     const lottieSrc =
       asset.url && isLikelyLottieUrl(asset.url)
         ? asset.url
-        : asset.type === "lottie"
-          ? asset.url || undefined
+        : asset.assetId
+          ? resolveOdsCatalogLottiePreviewSrc(asset.assetId.trim())
           : undefined;
     return <LottieAssetView src={lottieSrc} className={className} />;
   }
 
-  if (asset.url) {
+  if (asset.url && !isLikelyLottieUrl(asset.url)) {
     return <img src={asset.url} alt={asset.alt} className={imgClass} />;
+  }
+
+  const iconName = resolveIconComponentName(asset.assetId);
+  if (iconName && typeof ICON_MAP[iconName] === "function") {
+    const Icon = ICON_MAP[iconName];
+    return <Icon size={size} className={className} />;
   }
 
   const name = asset.assetId;
@@ -52,12 +83,7 @@ export default function OdsAssetRenderer({ asset, size = 24, className }: Props)
     return <PlaceholderCard label="(empty)" type={asset.type} className={className} />;
   }
 
-  if (name.startsWith("Icon") && typeof ICON_MAP[name] === "function") {
-    const Icon = ICON_MAP[name];
-    return <Icon size={size} className={className} />;
-  }
-
-  if (asset.type === "image") {
+  if (asset.type === "image" || odsAsset?.type === "image") {
     return (
       <img src={resolvePreviewRasterImageSrc(asset)} alt={asset.alt} className={imgClass} />
     );

@@ -80,10 +80,11 @@ export const SECTION_PRESETS: Record<SectionPresetId, SectionPreset> = {
     defaultLocked: true,
     icon: "Sparkles",
     uiSpec: {
-      title: { maxChar: 30, maxLine: 2, required: true },
-      subtitle: { maxChar: 40, maxLine: 1 },
-      primaryCtaLabel: { maxChar: 12, maxLine: 1, required: true },
-      secondaryCtaLabel: { maxChar: 12, maxLine: 1 },
+      eyebrow: { maxChar: 20, maxLine: 1 },
+      title: { maxChar: 48, maxLine: 3, required: true },
+      subtitle: { maxChar: 48, maxLine: 2 },
+      primaryCtaLabel: { maxChar: 20, maxLine: 1, required: true },
+      secondaryCtaLabel: { maxChar: 20, maxLine: 1 },
     },
     slots: [],
     assets: [
@@ -91,7 +92,7 @@ export const SECTION_PRESETS: Record<SectionPresetId, SectionPreset> = {
         slotName: "background",
         label: "히어로 이미지",
         required: true,
-        recommended: { width: 1280, height: 720 },
+        recommended: { width: 600, height: 400 },
       },
     ],
     maxPerPage: 1,
@@ -149,14 +150,13 @@ export const SECTION_PRESETS: Record<SectionPresetId, SectionPreset> = {
   coverage: {
     id: "coverage",
     label: "책임보장 (신뢰)",
-    description: "보장 범위·파트너 로고·배지로 신뢰 강화",
+    description: "보장 범위·파트너 로고 등으로 신뢰 강화",
     category: "content",
     defaultLocked: false,
     icon: "ShieldCheck",
     uiSpec: {
       sectionTitle: { maxChar: 22, maxLine: 2, required: true },
       sectionSubtitle: { maxChar: 18, maxLine: 1 },
-      badgeLabel: { maxChar: 12, maxLine: 1 },
     },
     slots: [
       {
