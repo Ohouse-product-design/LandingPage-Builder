@@ -48,8 +48,8 @@ src/
       BuilderShell.tsx    # 3-pane 레이아웃 (Tree / Preview / Inspector, 상단 앱 헤더 없음)
       SectionTree.tsx     # 좌측 섹션 트리 (DnD + 잠금 + 추가/삭제)
       section-add-menu.ts # 「+ 섹션 추가」드롭다운: 기본 7 프리셋 + 마케팅 7항목 (라벨 규칙 단일 소스)
-      PreviewStage.tsx    # 가운데 반응형 프리뷰 + 뷰포트 토글·검수 요청(하단 보조 줄)
-      Inspector.tsx       # 우측 인스펙터 3탭 (Props / Slots / Assets)
+      PreviewStage.tsx    # 가운데 반응형 프리뷰 + 뷰포트 토글·검수 요청(상단 보조 줄)
+      Inspector.tsx       # 우측 인스펙터 3탭 (타이틀 / 콘텐츠 슬롯 / 이미지)
       tabs/
         PropsTab.tsx      # 입력 + 실시간 UI Spec 검증
         SlotsTab.tsx      # 슬롯 내 컴포넌트 선택/삭제
@@ -116,7 +116,7 @@ LandingPageDoc
 | 프리뷰 이미지·Lottie | `OdsAssetRenderer` — `url` / `type` 으로 `<img>` 또는 `lottie-react` (`preview-asset-url.ts` 결정적 이미지 플레이스홀더) |
 | 에셋 임베드 | `AssetsTab` → `AssetEmbedModal` → `builder-store.embedAsset` |
 | Responsive Preview 패널 | `PreviewStage` + `VIEWPORT_WIDTH` (375/768/1280) |
-| 검수 요청 → 티켓/Slack | `PreviewStage` 하단 보조 줄 → `ReviewModal` (Jira/Slack 통합은 다음 단계) |
+| 검수 요청 → 티켓/Slack | `PreviewStage` 상단 보조 줄 → `ReviewModal` (Jira/Slack 통합은 다음 단계) |
 | UI Spec 자동 검증 | `PropsTab` 실시간 카운터 + `ReviewModal` 의 전체 검증 패널 |
 | ODS 토큰 바인딩 (데이터만) | `doc` 의 `tokens` / `globalTokens` + `builder-store.bindSectionToken` — 우측 전용 탭 없음 |
 

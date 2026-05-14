@@ -32,10 +32,13 @@ import type {
   TokenBinding,
   Viewport,
 } from "@/schema/doc";
+import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import {
   SECTION_PRESETS,
   type SectionPresetId,
 } from "@/schema/section-presets";
+
+export type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 
 export type InspectorTab = "props" | "slots" | "assets";
 
@@ -53,16 +56,7 @@ export interface BuilderState {
   viewport: Viewport;
   inspectorTab: InspectorTab;
   reviewModalOpen: boolean;
-  assetModal:
-    | null
-    | {
-        sectionId: string;
-        componentId: string | null;
-        slotName: string;
-        /** Card 셀 슬롯에 임베드할 때 — embedAsset 이 updateCardCellSlot 으로 라우팅 */
-        cellId?: string;
-        cardSlotName?: CardSlotName;
-      };
+  assetModal: AssetSlotModalOpenContext | null;
 
   // -------- Selection --------
   selectSection: (sectionId: string | null) => void;
@@ -130,13 +124,7 @@ export interface BuilderState {
   ) => void;
 
   // -------- Asset ops --------
-  openAssetModal: (ctx: {
-    sectionId: string;
-    componentId: string | null;
-    slotName: string;
-    cellId?: string;
-    cardSlotName?: CardSlotName;
-  }) => void;
+  openAssetModal: (ctx: AssetSlotModalOpenContext) => void;
   closeAssetModal: () => void;
   embedAsset: (
     sectionId: string,

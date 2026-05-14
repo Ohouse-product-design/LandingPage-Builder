@@ -7,12 +7,13 @@
  * - 빌더의 PreviewRenderer 가 섹션마다 이걸 호출
  * - Storybook 의 Section.stories 가 preset prop 으로 모든 변형을 한 자리에서 컨트롤
  *
- *   <Section section={section} viewport={viewport} />
+ *   <Section section={section} viewport={viewport} onRequestAssetSlot={...} />
  *
  * variant: "marketing" / "marketing-form" / "marketing-contact" (구버전 lead* 는 아래에서 정규화)
  * 마케팅 풀페이지 UI(`app/lead` 계열 컴포넌트)로 렌더링.
  */
 
+import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import type { Section as SectionData, Viewport } from "@/schema/doc";
 import type { SectionPresetId } from "@/schema/section-presets";
 import CardSectionTemplate from "./sections/CardSectionTemplate";
@@ -35,6 +36,8 @@ import {
 interface Props {
   section: SectionData;
   viewport: Viewport;
+  /** 빌더 프리뷰: 에셋 영역 클릭 시 `openAssetModal` 과 동일 컨텍스트로 호출 */
+  onRequestAssetSlot?: (ctx: AssetSlotModalOpenContext) => void;
 }
 
 function normalizeMarketingVariant(raw: string | undefined): string | undefined {
@@ -44,7 +47,7 @@ function normalizeMarketingVariant(raw: string | undefined): string | undefined 
   return raw;
 }
 
-export default function Section({ section, viewport }: Props) {
+export default function Section({ section, viewport, onRequestAssetSlot }: Props) {
   const variant = normalizeMarketingVariant(
     (section.props as { variant?: string } | undefined)?.variant
   );
@@ -68,22 +71,53 @@ export default function Section({ section, viewport }: Props) {
 
   const renderers: Record<SectionPresetId, () => JSX.Element> = {
     header: () => <HeaderTemplate section={section} />,
-    hero: () => <HeroTemplate section={section} viewport={viewport} />,
+    hero: () => (
+      <HeroTemplate
+        section={section}
+        viewport={viewport}
+        onRequestAssetSlot={onRequestAssetSlot}
+      />
+    ),
     usp: () => (
-      <CardSectionTemplate section={section} viewport={viewport} bg="white" />
+      <CardSectionTemplate
+        section={section}
+        viewport={viewport}
+        bg="white"
+        onRequestAssetSlot={onRequestAssetSlot}
+      />
     ),
     table: () => <TableTemplate section={section} />,
     coverage: () => (
-      <CardSectionTemplate section={section} viewport={viewport} bg="white" />
+      <CardSectionTemplate
+        section={section}
+        viewport={viewport}
+        bg="white"
+        onRequestAssetSlot={onRequestAssetSlot}
+      />
     ),
     review: () => (
-      <CardSectionTemplate section={section} viewport={viewport} bg="gray" />
+      <CardSectionTemplate
+        section={section}
+        viewport={viewport}
+        bg="gray"
+        onRequestAssetSlot={onRequestAssetSlot}
+      />
     ),
     process: () => (
-      <CardSectionTemplate section={section} viewport={viewport} bg="white" />
+      <CardSectionTemplate
+        section={section}
+        viewport={viewport}
+        bg="white"
+        onRequestAssetSlot={onRequestAssetSlot}
+      />
     ),
     "cross-sell": () => (
-      <CardSectionTemplate section={section} viewport={viewport} bg="gray" />
+      <CardSectionTemplate
+        section={section}
+        viewport={viewport}
+        bg="gray"
+        onRequestAssetSlot={onRequestAssetSlot}
+      />
     ),
     "cta-form": () => <CtaFormTemplate section={section} />,
     "sticky-cta": () => <StickyCtaTemplate section={section} />,

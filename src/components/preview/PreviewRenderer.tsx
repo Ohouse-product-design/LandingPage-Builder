@@ -9,6 +9,7 @@
  */
 
 import { cn } from "@/lib/cn";
+import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import type { LandingPageDoc, Section as SectionData, Viewport } from "@/schema/doc";
 import Section from "./Section";
 
@@ -17,6 +18,7 @@ interface Props {
   viewport: Viewport;
   selectedSectionId?: string;
   onSelectSection?: (id: string) => void;
+  onRequestAssetSlot?: (ctx: AssetSlotModalOpenContext) => void;
 }
 
 export default function PreviewRenderer({
@@ -24,6 +26,7 @@ export default function PreviewRenderer({
   viewport,
   selectedSectionId,
   onSelectSection,
+  onRequestAssetSlot,
 }: Props) {
   const visibleSections = doc.sections.filter(
     (s) => s.visibility[viewport] !== false
@@ -37,6 +40,7 @@ export default function PreviewRenderer({
           selected={selectedSectionId === section.id}
           onSelect={onSelectSection}
           viewport={viewport}
+          onRequestAssetSlot={onRequestAssetSlot}
         />
       ))}
     </div>
@@ -48,11 +52,13 @@ function SectionShell({
   selected,
   onSelect,
   viewport,
+  onRequestAssetSlot,
 }: {
   section: SectionData;
   selected: boolean;
   onSelect?: (id: string) => void;
   viewport: Viewport;
+  onRequestAssetSlot?: (ctx: AssetSlotModalOpenContext) => void;
 }) {
   return (
     <section
@@ -67,7 +73,11 @@ function SectionShell({
           : "hover:outline hover:outline-1 hover:outline-builder-accent/50"
       )}
     >
-      <Section section={section} viewport={viewport} />
+      <Section
+        section={section}
+        viewport={viewport}
+        onRequestAssetSlot={onRequestAssetSlot}
+      />
     </section>
   );
 }

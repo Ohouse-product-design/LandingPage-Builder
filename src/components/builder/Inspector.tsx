@@ -8,9 +8,9 @@ import SlotsTab from "./tabs/SlotsTab";
 import AssetsTab from "./tabs/AssetsTab";
 
 const TABS: { id: InspectorTab; label: string }[] = [
-  { id: "props", label: "Props" },
-  { id: "slots", label: "Slots" },
-  { id: "assets", label: "Assets" },
+  { id: "props", label: "타이틀" },
+  { id: "slots", label: "콘텐츠 슬롯" },
+  { id: "assets", label: "이미지" },
 ];
 
 export default function Inspector() {
@@ -35,12 +35,6 @@ export default function Inspector() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-builder-border px-4 pb-2 pt-3">
-        <div className="text-[11px] uppercase tracking-wider text-builder-muted">
-          섹션
-        </div>
-        <div className="mt-0.5 truncate text-sm font-semibold">{section.name}</div>
-      </div>
       <div className="flex border-b border-builder-border bg-builder-panel">
         {TABS.map((t) => (
           <button
@@ -58,7 +52,7 @@ export default function Inspector() {
           </button>
         ))}
       </div>
-      <div className="builder-scroll flex-1 overflow-y-auto p-4">
+      <div className="builder-scroll flex-1 overflow-y-auto p-4" key={section.id}>
         {tab === "props" && <PropsTab />}
         {tab === "slots" && <SlotsTab />}
         {tab === "assets" && <AssetsTab />}

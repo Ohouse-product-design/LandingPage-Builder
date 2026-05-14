@@ -9,7 +9,7 @@ import PreviewRenderer from "../preview/PreviewRenderer";
 
 /**
  * 가운데 프리뷰 패널.
- * - 디바이스 토글·슬러그·검수 요청: 프리뷰 카드 하단 보조 줄 (상단 고정 바 없음)
+ * - 디바이스 토글·해상도 안내·검수 요청: 프리뷰 카드 **상단** 보조 줄
  * - 1차 골격: iframe 대신 동일 프로세스에서 PreviewRenderer 를 직접 렌더하고
  *   고정 width container 로 시뮬레이션 — 추후 실 iframe + postMessage 동기화로 교체.
  */
@@ -20,24 +20,14 @@ export default function PreviewStage() {
   const selection = useBuilderStore((s) => s.selection);
   const selectSection = useBuilderStore((s) => s.selectSection);
   const openReviewModal = useBuilderStore((s) => s.openReviewModal);
+  const openAssetModal = useBuilderStore((s) => s.openAssetModal);
 
   const width = useMemo(() => VIEWPORT_WIDTH[viewport], [viewport]);
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col">
       <div className="builder-scroll flex-1 overflow-y-auto bg-[#0a0c12] p-6">
-        <div
-          className="mx-auto rounded-ods-12 border border-builder-border bg-white text-black shadow-2xl transition-all"
-          style={{ width: `${width}px`, maxWidth: "100%" }}
-        >
-          <PreviewRenderer
-            doc={doc}
-            viewport={viewport}
-            selectedSectionId={selection.sectionId ?? undefined}
-            onSelectSection={selectSection}
-          />
-        </div>
-        <div className="mt-3 flex flex-col items-center gap-3 text-[11px] text-builder-muted sm:flex-row sm:justify-center sm:gap-4">
+        <div className="mb-3 flex flex-col items-center gap-3 text-[11px] text-builder-muted sm:flex-row sm:justify-center sm:gap-4">
           <div className="flex flex-wrap items-center justify-center gap-2">
             {(["mobile", "tablet", "desktop"] as Viewport[]).map((v) => (
               <button
@@ -69,6 +59,18 @@ export default function PreviewStage() {
               검수 요청
             </button>
           </div>
+        </div>
+        <div
+          className="mx-auto rounded-ods-12 border border-builder-border bg-white text-black shadow-2xl transition-all"
+          style={{ width: `${width}px`, maxWidth: "100%" }}
+        >
+          <PreviewRenderer
+            doc={doc}
+            viewport={viewport}
+            selectedSectionId={selection.sectionId ?? undefined}
+            onSelectSection={selectSection}
+            onRequestAssetSlot={openAssetModal}
+          />
         </div>
       </div>
     </div>

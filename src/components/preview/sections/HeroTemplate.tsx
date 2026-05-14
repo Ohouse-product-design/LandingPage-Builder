@@ -11,6 +11,7 @@ import type { CSSProperties } from "react";
 
 import { cn } from "@/lib/cn";
 import { IconChevronDown } from "@/lib/ods-icons";
+import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import type { Section, Viewport } from "@/schema/doc";
 import OdsAssetRenderer from "../OdsAssetRenderer";
 
@@ -22,9 +23,11 @@ const HERO_BG_STYLE: CSSProperties = {
 export default function HeroTemplate({
   section,
   viewport,
+  onRequestAssetSlot,
 }: {
   section: Section;
   viewport: Viewport;
+  onRequestAssetSlot?: (ctx: AssetSlotModalOpenContext) => void;
 }) {
   const eyebrow = (section.props["eyebrow"] as string) || "";
   const title = (section.props["title"] as string) ?? "메인 카피";
@@ -34,6 +37,15 @@ export default function HeroTemplate({
   const cta2 =
     typeof cta2Raw === "string" && cta2Raw.trim() ? cta2Raw.trim() : undefined;
   const bgAsset = section.assets.find((a) => a.slotName === "background")?.asset;
+
+  const onHeroBgEdit = onRequestAssetSlot
+    ? () =>
+        onRequestAssetSlot({
+          sectionId: section.id,
+          componentId: null,
+          slotName: "background",
+        })
+    : undefined;
 
   const isDesktop = viewport === "desktop";
 
@@ -74,7 +86,14 @@ export default function HeroTemplate({
             {bgAsset ? (
               <OdsAssetRenderer
                 asset={bgAsset}
-                className="pointer-events-none absolute inset-0 size-full max-w-none object-cover"
+                className="absolute inset-0 size-full max-w-none object-cover"
+                onRequestSlotEdit={onHeroBgEdit}
+              />
+            ) : onHeroBgEdit ? (
+              <OdsAssetRenderer
+                asset={{ type: "image", alt: "히어로 배경" }}
+                className="absolute inset-0 size-full max-w-none object-cover"
+                onRequestSlotEdit={onHeroBgEdit}
               />
             ) : (
               <div className="flex size-full items-center justify-center bg-ods-surface-light text-[11px] text-ods-text-tertiary">

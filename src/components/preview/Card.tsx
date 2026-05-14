@@ -16,7 +16,8 @@
 import { useMemo } from "react";
 
 import { cn } from "@/lib/cn";
-import { IconPhoto } from "@/lib/ods-icons";
+import { IconPhoto, IconStar, IconStarFilled } from "@/lib/ods-icons";
+import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import type {
   CardCell,
   CardLayoutSettings,
@@ -35,21 +36,53 @@ import OdsAssetRenderer from "./OdsAssetRenderer";
 // Card 컴포넌트 (메인)
 // ---------------------------------------------------------------------------
 
+export interface CardPreviewAssetBinding {
+  sectionId: string;
+  componentId: string;
+  onRequestSlot: (ctx: AssetSlotModalOpenContext) => void;
+}
+
 interface CardProps {
   usage: CardUsagePresetId;
   layout: CardLayoutSettings;
   cells: CardCell[];
   viewport: Viewport;
+  /** 빌더 프리뷰: 에셋 클릭 시 슬롯 교체 모달 */
+  previewAsset?: CardPreviewAssetBinding;
 }
 
-export default function Card({ usage, layout, cells, viewport }: CardProps) {
+export default function Card({ usage, layout, cells, viewport, previewAsset }: CardProps) {
   switch (layout.type) {
     case "grid":
-      return <GridLayout usage={usage} cells={cells} viewport={viewport} settings={layout.settings} />;
+      return (
+        <GridLayout
+          usage={usage}
+          cells={cells}
+          viewport={viewport}
+          settings={layout.settings}
+          previewAsset={previewAsset}
+        />
+      );
     case "carousel":
-      return <CarouselLayout usage={usage} cells={cells} viewport={viewport} settings={layout.settings} />;
+      return (
+        <CarouselLayout
+          usage={usage}
+          cells={cells}
+          viewport={viewport}
+          settings={layout.settings}
+          previewAsset={previewAsset}
+        />
+      );
     case "row":
-      return <RowLayout usage={usage} cells={cells} viewport={viewport} settings={layout.settings} />;
+      return (
+        <RowLayout
+          usage={usage}
+          cells={cells}
+          viewport={viewport}
+          settings={layout.settings}
+          previewAsset={previewAsset}
+        />
+      );
   }
 }
 
@@ -66,11 +99,13 @@ const GRID_FIXED_GAP_PX = 8;
 function GridLayout({
   usage,
   cells,
+  previewAsset,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
   viewport: Viewport;
   settings: Extract<CardLayoutSettings, { type: "grid" }>["settings"];
+  previewAsset?: CardPreviewAssetBinding;
 }) {
   return (
     <div
@@ -79,7 +114,7 @@ function GridLayout({
     >
       {cells.map((cell) => (
         <div key={cell.id} className="w-full">
-          <CellRenderer cell={cell} usage={usage} />
+          <CellRenderer cell={cell} usage={usage} previewAsset={previewAsset} />
         </div>
       ))}
     </div>
@@ -103,11 +138,13 @@ function CarouselLayout({
   cells,
   viewport,
   settings,
+  previewAsset,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
   viewport: Viewport;
   settings: Extract<CardLayoutSettings, { type: "carousel" }>["settings"];
+  previewAsset?: CardPreviewAssetBinding;
 }) {
   const cardWidth = settings.cardWidth[viewport] ?? 320;
 
@@ -139,7 +176,7 @@ function CarouselLayout({
             className="p-0"
             style={{ width: `${cardWidth}px`, flexShrink: 0 }}
           >
-            <CellRenderer cell={cell} usage={usage} />
+            <CellRenderer cell={cell} usage={usage} previewAsset={previewAsset} />
           </div>
         ))}
       </div>
@@ -184,11 +221,13 @@ const ROW_FIXED_GAP_PX = 8;
 function RowLayout({
   usage,
   cells,
+  previewAsset,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
   viewport: Viewport;
   settings: Extract<CardLayoutSettings, { type: "row" }>["settings"];
+  previewAsset?: CardPreviewAssetBinding;
 }) {
   return (
     <div
@@ -197,7 +236,7 @@ function RowLayout({
     >
       {cells.map((cell) => (
         <div key={cell.id} className="w-full">
-          <CellRenderer cell={cell} usage={usage} />
+          <CellRenderer cell={cell} usage={usage} previewAsset={previewAsset} />
         </div>
       ))}
     </div>
@@ -208,18 +247,39 @@ function RowLayout({
 // Cell 렌더러 — usage 별 슬롯 조합 + 스타일
 // ---------------------------------------------------------------------------
 
-function CellRenderer({ cell, usage }: { cell: CardCell; usage: CardUsagePresetId }) {
+function CellRenderer({
+  cell,
+  usage,
+  previewAsset,
+}: {
+  cell: CardCell;
+  usage: CardUsagePresetId;
+  previewAsset?: CardPreviewAssetBinding;
+}) {
+  const openSlot = (slot: CardSlotName) => {
+    if (!previewAsset) return;
+    previewAsset.onRequestSlot({
+      sectionId: previewAsset.sectionId,
+      componentId: previewAsset.componentId,
+      slotName: slot,
+      cellId: cell.id,
+      cardSlotName: slot,
+    });
+  };
+  const slotEdit = (slot: CardSlotName) =>
+    previewAsset ? () => openSlot(slot) : undefined;
+
   switch (usage) {
     case "usp":
-      return <CardContentsCell cell={cell} />;
+      return <CardContentsCell cell={cell} onRequestSlotEdit={slotEdit("media")} />;
     case "review":
-      return <CardReviewCell cell={cell} />;
+      return <CardReviewCell cell={cell} onRequestSlotEdit={slotEdit("media")} />;
     case "step":
-      return <CardStepCell cell={cell} />;
+      return <CardStepCell cell={cell} onRequestSlotEdit={slotEdit("media")} />;
     case "service":
-      return <ListCell cell={cell} />;
+      return <ListCell cell={cell} onRequestSlotEdit={slotEdit("icon")} />;
     case "custom":
-      return <CardContentsCell cell={cell} />;
+      return <CardContentsCell cell={cell} onRequestSlotEdit={slotEdit("media")} />;
   }
 }
 
@@ -299,7 +359,13 @@ function asCta(c?: CardSlotContent): { label: string; url: string } | null {
  * - 풀-블리드 배경 사진 + 어두운 dim gradient + 흰 텍스트 오버레이
  * - title / body / tag 레이아웃 동일
  */
-function CardContentsCell({ cell }: { cell: CardCell }) {
+function CardContentsCell({
+  cell,
+  onRequestSlotEdit,
+}: {
+  cell: CardCell;
+  onRequestSlotEdit?: () => void;
+}) {
   const tag = asText(slot(cell, "tag"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
@@ -317,6 +383,13 @@ function CardContentsCell({ cell }: { cell: CardCell }) {
         <OdsAssetRenderer
           asset={media}
           className="absolute inset-0 flex h-full w-full items-center justify-center object-cover"
+          onRequestSlotEdit={onRequestSlotEdit}
+        />
+      ) : onRequestSlotEdit ? (
+        <OdsAssetRenderer
+          asset={{ type: "image", alt: "미디어 슬롯" }}
+          className="absolute inset-0 flex h-full w-full items-center justify-center object-cover"
+          onRequestSlotEdit={onRequestSlotEdit}
         />
       ) : null}
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50" />
@@ -354,7 +427,13 @@ function CardContentsCell({ cell }: { cell: CardCell }) {
  * - body   : Body14 Regular 14/20 -0.3, w-254 ellipsis 3줄. `**...**` 마커는 SemiBold 변환.
  * - rating : 선택 슬롯이 채워진 경우만 별점 노출 (기본 Lead 시안은 사용 안 함).
  */
-function CardReviewCell({ cell }: { cell: CardCell }) {
+function CardReviewCell({
+  cell,
+  onRequestSlotEdit,
+}: {
+  cell: CardCell;
+  onRequestSlotEdit?: () => void;
+}) {
   const rating = asRating(slot(cell, "rating"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
@@ -367,9 +446,19 @@ function CardReviewCell({ cell }: { cell: CardCell }) {
       <div className="flex w-full gap-3">
         <div className="flex flex-1 flex-col gap-1.5 tracking-[-0.3px]">
           {rating && (
-            <div className="flex gap-0.5 text-ods-star-yellow">
+            <div
+              className="flex gap-0.5 text-ods-star-yellow"
+              role="img"
+              aria-label={`별점 ${rating.value}점 만점 ${rating.max}점`}
+            >
               {Array.from({ length: rating.max }).map((_, i) => (
-                <span key={i}>{i < rating.value ? "★" : "☆"}</span>
+                <span key={i} className="inline-flex shrink-0" aria-hidden>
+                  {i < rating.value ? (
+                    <IconStarFilled size={18} className="text-ods-star-yellow" />
+                  ) : (
+                    <IconStar size={18} className="text-ods-star-yellow opacity-45" />
+                  )}
+                </span>
               ))}
             </div>
           )}
@@ -394,16 +483,27 @@ function CardReviewCell({ cell }: { cell: CardCell }) {
             </div>
           )}
         </div>
-        {media && (
+        {media ? (
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[10px]">
             <OdsAssetRenderer
               asset={media}
               size={32}
               className="absolute inset-0 flex h-full w-full items-center justify-center object-cover"
+              onRequestSlotEdit={onRequestSlotEdit}
             />
             <div className="absolute inset-0 bg-black/5" />
           </div>
-        )}
+        ) : onRequestSlotEdit ? (
+          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[10px]">
+            <OdsAssetRenderer
+              asset={{ type: "image", alt: "미디어 슬롯" }}
+              size={32}
+              className="absolute inset-0 flex h-full w-full items-center justify-center object-cover"
+              onRequestSlotEdit={onRequestSlotEdit}
+            />
+            <div className="absolute inset-0 bg-black/5" />
+          </div>
+        ) : null}
       </div>
       {body && (
         <p className="font-pretendard text-[14px] leading-5 tracking-[-0.3px] text-ods-text-primary line-clamp-3">
@@ -422,7 +522,13 @@ function CardReviewCell({ cell }: { cell: CardCell }) {
  *            stepNumber 가 별도로 있으면 "{n}. {title}" 으로 prefix.
  * - body   : Body15 Regular 15/24 -0.3 #141414 opacity-80, 2줄 ellipsis (whitespace-pre-line).
  */
-function CardStepCell({ cell }: { cell: CardCell }) {
+function CardStepCell({
+  cell,
+  onRequestSlotEdit,
+}: {
+  cell: CardCell;
+  onRequestSlotEdit?: () => void;
+}) {
   const stepNumber = asText(slot(cell, "stepNumber"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
@@ -441,6 +547,13 @@ function CardStepCell({ cell }: { cell: CardCell }) {
           <OdsAssetRenderer
             asset={media}
             className="absolute inset-0 flex h-full w-full items-center justify-center object-contain"
+            onRequestSlotEdit={onRequestSlotEdit}
+          />
+        ) : onRequestSlotEdit ? (
+          <OdsAssetRenderer
+            asset={{ type: "image", alt: "그래픽 슬롯" }}
+            className="absolute inset-0 flex h-full w-full items-center justify-center object-contain"
+            onRequestSlotEdit={onRequestSlotEdit}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
@@ -472,7 +585,13 @@ function CardStepCell({ cell }: { cell: CardCell }) {
  * - 타이틀 18px Semibold / 본문 15px Regular 70% opacity (피그마 Body15)
  * - 카드 전체 링크; 별도 "보러가기" 텍스트는 시안에 없음 (`aria-label`에 CTA 반영)
  */
-function ListCell({ cell }: { cell: CardCell }) {
+function ListCell({
+  cell,
+  onRequestSlotEdit,
+}: {
+  cell: CardCell;
+  onRequestSlotEdit?: () => void;
+}) {
   const iconAsset = asAsset(slot(cell, "icon"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
@@ -481,16 +600,13 @@ function ListCell({ cell }: { cell: CardCell }) {
     [title, cta?.label].filter(Boolean).join(" — ") || "서비스 카드";
 
   return (
-    <a
-      href={cta?.url ?? "#"}
-      aria-label={label}
-      className="flex h-[96px] w-full min-w-0 max-w-[360px] flex-row items-stretch overflow-hidden rounded-ods-8 bg-white text-left shadow-none transition-shadow hover:shadow-sm"
-    >
+    <div className="flex h-[96px] w-full min-w-0 max-w-[360px] flex-row items-stretch overflow-hidden rounded-ods-8 bg-white text-left shadow-none transition-shadow hover:shadow-sm">
       <div className="relative h-full w-24 shrink-0 bg-ods-surface-light">
-        {iconAsset ? (
+        {iconAsset || onRequestSlotEdit ? (
           <OdsAssetRenderer
-            asset={iconAsset}
-            className="pointer-events-none absolute inset-0 size-full object-cover"
+            asset={iconAsset ?? { type: "image", alt: "아이콘 슬롯" }}
+            className="absolute inset-0 size-full object-cover"
+            onRequestSlotEdit={onRequestSlotEdit}
           />
         ) : (
           <div className="flex size-full items-center justify-center text-ods-text-tertiary">
@@ -498,7 +614,11 @@ function ListCell({ cell }: { cell: CardCell }) {
           </div>
         )}
       </div>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1 bg-white px-4 py-5">
+      <a
+        href={cta?.url ?? "#"}
+        aria-label={label}
+        className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1 bg-white px-4 py-5 no-underline"
+      >
         {title ? (
           <p className="truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
             {title}
@@ -509,8 +629,8 @@ function ListCell({ cell }: { cell: CardCell }) {
             {body}
           </p>
         ) : null}
-      </div>
-    </a>
+      </a>
+    </div>
   );
 }
 
