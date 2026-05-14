@@ -2,7 +2,7 @@
  * LandingPageDoc — 랜딩페이지 빌더의 직렬화 산출물.
  *
  * 어드민에서 편집되는 모든 상태는 이 타입 하나로 표현되며,
- * - 좌측 SectionTree 는 doc.sections 를 렌더
+ * - 좌측 SectionTree 는 doc.sections 를 렌더 (각 행 라벨은 `SECTION_PRESETS[preset].label` 만 사용)
  * - 가운데 PreviewStage 는 doc 전체를 iframe 으로 렌더
  * - 우측 Inspector 는 selectedSectionId 가 가리키는 Section / ComponentInstance 를 편집
  *
@@ -90,7 +90,11 @@ export interface Section {
   id: string;
   /** 섹션 프리셋 ID — Hero, Usp, Review ... */
   preset: SectionPresetId;
-  /** 화면에 표시되는 이름. 사용자가 자유롭게 수정 가능 */
+  /**
+   * 섹션 식별용 이름 (`addSection` 시 프리셋 라벨·변형 접미사 등).
+   * 좌측 트리 라벨에는 쓰이지 않음 — 트리는 `preset` → `SECTION_PRESETS[].label` 만 표시.
+   * 삭제 확인·Inspector 헤더·프리뷰 태그 등에 사용.
+   */
   name: string;
   /**
    * 고정 영역 여부. true 면 SectionTree 에서 드래그 핸들이 숨겨지고

@@ -1,17 +1,14 @@
 "use client";
 
 /**
- * 3-pane Builder Shell.
+ * 3-pane Builder Shell (상단 앱 헤더 없음).
  *
- * ┌─────────────────────────────────────────────────────────────────┐
- * │  BuilderHeader                                                  │
- * ├──────────────┬───────────────────────────────┬──────────────────┤
+ * ┌──────────────┬───────────────────────────────┬──────────────────┐
  * │ SectionTree  │  PreviewStage (Responsive)    │  Inspector       │
  * │  (260px)     │  (flex 1)                     │  (340px)         │
  * └──────────────┴───────────────────────────────┴──────────────────┘
  */
 
-import BuilderHeader from "./BuilderHeader";
 import SectionTree from "./SectionTree";
 import PreviewStage from "./PreviewStage";
 import Inspector from "./Inspector";
@@ -21,7 +18,6 @@ import ReviewModal from "./ReviewModal";
 export default function BuilderShell() {
   return (
     <div className="flex h-screen w-screen flex-col bg-builder-bg text-builder-text">
-      <BuilderHeader />
       <div className="flex min-h-0 flex-1">
         <aside className="w-[260px] shrink-0 border-r border-builder-border bg-builder-panel">
           <SectionTree />

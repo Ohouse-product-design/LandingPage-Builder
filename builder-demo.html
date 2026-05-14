@@ -112,7 +112,9 @@ input, select, textarea { font-family: inherit; }
 .scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 /* =============================================================================
- * 좌측 SectionTree
+ * 좌측 SectionTree (Next `SectionTree` 와 동일 UX)
+ * - 행 라벨: SECTION_PRESETS[preset].label 한 줄 (이름/서브타이틀 없음)
+ * - 「+ 섹션 추가」: 기본 7 + 마케팅 풀페이지 UI 7 — 라벨 규칙은 Next `section-add-menu.ts` 와 동일
  * ===========================================================================*/
 .tree-list { flex: 1; padding: 8px 0; }
 .tree-item {
@@ -130,7 +132,6 @@ input, select, textarea { font-family: inherit; }
   flex: 1; min-width: 0;
 }
 .tree-item .label .name { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tree-item .label .preset { font-size: 11px; color: var(--muted); }
 .tree-item .remove {
   width: 20px; height: 20px; border-radius: 4px; border: 0; background: transparent; color: var(--muted);
   display: none; align-items: center; justify-content: center; padding: 0;
@@ -159,7 +160,15 @@ input, select, textarea { font-family: inherit; }
 }
 .tree-add-menu button:hover { background: var(--panel); }
 .tree-add-menu .menu-label { font-size: 12px; }
-.tree-add-menu .menu-desc { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.tree-add-menu .add-menu-group {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 6px 8px 2px;
+  margin-top: 4px;
+}
+.tree-add-menu .add-menu-group:first-child { margin-top: 0; }
 
 /* =============================================================================
  * 가운데 Preview
@@ -964,7 +973,7 @@ function showToast(msg) {
 }
 
 // =============================================================================
-// 렌더링 — 좌측 SectionTree
+// 렌더링 — 좌측 SectionTree (라벨·추가 메뉴는 Next `SectionTree` / `section-add-menu.ts` 와 동일 규칙)
 // =============================================================================
 function renderTree() {
   const list = $('tree-list');
@@ -981,8 +990,7 @@ function renderTree() {
         ondrop="onDrop('${s.id}', event)">
         <span class="handle ${s.locked ? 'locked' : ''}">${s.locked ? '🔒' : '≡'}</span>
         <div class="label">
-          <div class="name">${esc(s.name)}</div>
-          <div class="preset">${esc(def.label)}</div>
+          <div class="name">${esc(def.label)}</div>
         </div>
         ${!s.locked ? `<button class="remove" onclick="event.stopPropagation(); removeSection('${s.id}')">×</button>` : ''}
       </div>`;
@@ -993,15 +1001,39 @@ function renderTree() {
 function renderAddMenu() {
   const menu = $('tree-add-menu');
   if (!state.addMenuOpen) { menu.classList.add('hidden'); return; }
-  const addable = ['usp','table','coverage','review','process','cross-sell','cta-form'];
   menu.classList.remove('hidden');
-  menu.innerHTML = addable.map(p => {
-    const def = SECTION_PRESETS[p];
-    return `<button onclick="addSection('${p}')">
-      <div class="menu-label">▸ ${esc(def.label)}</div>
-      <div class="menu-desc">${esc(def.description || '')}</div>
+  const basic = ['usp','table','coverage','review','process','cross-sell','cta-form'];
+  const marketing = [
+    { p: 'hero', v: 'marketing' },
+    { p: 'cta-form', v: 'marketing-form' },
+    { p: 'usp', v: 'marketing' },
+    { p: 'process', v: 'marketing' },
+    { p: 'review', v: 'marketing' },
+    { p: 'cta-form', v: 'marketing-contact' },
+    { p: 'sticky-cta', v: 'marketing' },
+  ];
+  function addMenuLabel(preset, variant) {
+    const d = SECTION_PRESETS[preset];
+    if (variant === 'marketing-form') return d.label + ' · 상담 필드';
+    if (variant === 'marketing-contact') return d.label + ' · 문의 박스';
+    return d.label;
+  }
+  let html = '';
+  html += '<p class="add-menu-group">기본</p>';
+  html += basic.map(p => {
+    const d = SECTION_PRESETS[p];
+    return `<button type="button" onclick="addSection('${p}')">
+      <div class="menu-label">▸ ${esc(d.label)}</div>
     </button>`;
   }).join('');
+  html += '<p class="add-menu-group">마케팅 풀페이지 UI</p>';
+  html += marketing.map(({ p, v }) => {
+    const lab = addMenuLabel(p, v);
+    return `<button type="button" onclick="addSection('${p}','${v}')">
+      <div class="menu-label">▸ ${esc(lab)}</div>
+    </button>`;
+  }).join('');
+  menu.innerHTML = html;
 }
 
 // =============================================================================
@@ -1674,12 +1706,16 @@ function toggleAddMenu() {
 }
 window.toggleAddMenu = toggleAddMenu;
 
-function addSection(preset) {
+function addSection(preset, variant) {
   const def = SECTION_PRESETS[preset];
+  let name = def.label;
+  if (variant === 'marketing-form') name = def.label + ' · 상담 필드';
+  else if (variant === 'marketing-contact') name = def.label + ' · 문의 박스';
   const id = `sec-${preset}-${Math.random().toString(36).slice(2,8)}`;
+  const props = variant ? { variant } : {};
   const newSec = {
-    id, preset, name: def.label, locked: !!def.locked,
-    props: {}, slots: {}, assets: [],
+    id, preset, name, locked: !!def.locked,
+    props, slots: {}, assets: [],
     visibility: { mobile: true, tablet: true, desktop: true }
   };
   // 카드 섹션은 기본 card 한 개 추가

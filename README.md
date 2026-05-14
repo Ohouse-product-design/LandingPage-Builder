@@ -39,15 +39,16 @@ src/
 
   lib/
     seed.ts               # /moving 페이지 기반 시드 LandingPageDoc
+    preview-asset-url.ts  # 프리뷰용 이미지 URL·Lottie URL 판별
     validate.ts           # UI Spec 검증 유틸 (validateField/validateProps/countChars/countLines)
     cn.ts                 # clsx 래퍼
 
   components/
     builder/              # 어드민 UI
-      BuilderShell.tsx    # 3-pane 레이아웃 (Header / Tree / Preview / Inspector)
-      BuilderHeader.tsx   # 상단 헤더 + 검수/배포 버튼
+      BuilderShell.tsx    # 3-pane 레이아웃 (Tree / Preview / Inspector, 상단 앱 헤더 없음)
       SectionTree.tsx     # 좌측 섹션 트리 (DnD + 잠금 + 추가/삭제)
-      PreviewStage.tsx    # 가운데 반응형 프리뷰
+      section-add-menu.ts # 「+ 섹션 추가」드롭다운: 기본 7 프리셋 + 마케팅 7항목 (라벨 규칙 단일 소스)
+      PreviewStage.tsx    # 가운데 반응형 프리뷰 + 뷰포트 토글·검수 요청
       Inspector.tsx       # 우측 인스펙터 4탭
       tabs/
         PropsTab.tsx      # 입력 + 실시간 UI Spec 검증
@@ -57,7 +58,10 @@ src/
       AssetEmbedModal.tsx # design-assets 검색 모달 (mock)
       ReviewModal.tsx     # 검수 요청 모달 (Jira/Slack 시뮬레이션)
     preview/
-      PreviewRenderer.tsx # 섹션별 mini wireframe — 다음 단계에서 실 컴포넌트로 교체
+      PreviewRenderer.tsx  # doc → Section 셸 + 선택 outline
+      OdsAssetRenderer.tsx   # AssetRef → 이미지 `<img>` / Lottie `lottie-react` / Icon*
+      LottieAssetView.tsx    # Lottie JSON fetch + 폴백
+      Section.tsx            # preset dispatch → *Template
 ```
 
 ## 데이터 모델 한눈에 보기
@@ -95,14 +99,25 @@ LandingPageDoc
 
 각 컴포넌트는 `uiSpec`(prop 제약) + `assetSlots`(에셋 슬롯) 을 정의합니다.
 
+## 좌측 SectionTree와 섹션 추가 메뉴
+
+- **트리 한 줄 라벨**: 각 행은 `SECTION_PRESETS[preset].label` 만 표시한다 (`sectionTitle` / `section.name` 미사용).
+- **삭제 확인** 등에는 여전히 `Section.name` 이 쓰인다 (`builder-store.addSection` 이 부여한 이름·접미사).
+- **드롭다운 옵션**은 `section-add-menu.ts` 가 단일 소스다.
+  - **기본**: `usp`, `table`, `coverage`, `review`, `process`, `cross-sell`, `cta-form` — 라벨은 각 프리셋의 `label`.
+  - **마케팅 풀페이지 UI**: `hero`·`usp`·`process`·`review`·`sticky-cta` 는 `variant: "marketing"`; `cta-form` 은 `marketing-form` / `marketing-contact` 두 종. `cta-form` 변형만 라벨에 ` · 상담 필드` / ` · 문의 박스` 접미사 (`sectionAddMenuLabel` = `builder-store` 새 섹션 `name` 과 동일 규칙).
+- Storybook `SectionPresetMenu` 스토리 `AsInSectionTree` / `WithMarketingLayouts` 는 위 구성과 동일한 데이터를 쓴다.
+
 ## 핵심 동작 매핑
 
 | 요구 기능 | 구현 위치 |
 |---|---|
 | 섹션 순서 변경 (잠긴 영역 제외) | `SectionTree` (HTML5 native drag) + `builder-store.reorderSections` |
+| 섹션 추가 (기본·마케팅) | `SectionTree` → `section-add-menu.ts` + `builder-store.addSection` |
+| 프리뷰 이미지·Lottie | `OdsAssetRenderer` — `url` / `type` 으로 `<img>` 또는 `lottie-react` (`preview-asset-url.ts` 결정적 이미지 플레이스홀더) |
 | 에셋 임베드 | `AssetsTab` → `AssetEmbedModal` → `builder-store.embedAsset` |
 | Responsive Preview 패널 | `PreviewStage` + `VIEWPORT_WIDTH` (375/768/1280) |
-| 검수 버튼 → 티켓/Slack | `BuilderHeader` → `ReviewModal` (Jira/Slack 통합은 다음 단계) |
+| 검수 요청 → 티켓/Slack | `PreviewStage` 상단 바 → `ReviewModal` (Jira/Slack 통합은 다음 단계) |
 | UI Spec 자동 검증 | `PropsTab` 실시간 카운터 + `ReviewModal` 의 전체 검증 패널 |
 | ODS 토큰 바인딩 | `TokensTab` + `builder-store.bindSectionToken` |
 

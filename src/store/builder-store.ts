@@ -72,7 +72,7 @@ export interface BuilderState {
 
   // -------- Section ops --------
   reorderSections: (fromId: string, toId: string) => void;
-  addSection: (preset: SectionPresetId) => void;
+  addSection: (preset: SectionPresetId, variant?: string) => void;
   removeSection: (sectionId: string) => void;
   updateSectionProp: (sectionId: string, key: string, value: unknown) => void;
   bindSectionToken: (sectionId: string, binding: TokenBinding) => void;
@@ -243,15 +243,21 @@ export const useBuilderStore = create<BuilderState>((set) => ({
       return { doc: bumpAudit({ ...state.doc, sections: next }) };
     }),
 
-  addSection: (preset) =>
+  addSection: (preset, variant) =>
     set((state) => {
       const def = SECTION_PRESETS[preset];
+      const variantNameSuffix =
+        variant === "marketing-form"
+          ? " · 상담 필드"
+          : variant === "marketing-contact"
+            ? " · 문의 박스"
+            : "";
       const newSection: Section = {
         id: `sec-${preset}-${Math.random().toString(36).slice(2, 8)}`,
         preset,
-        name: def.label,
+        name: `${def.label}${variantNameSuffix}`,
         locked: def.defaultLocked,
-        props: {},
+        props: variant ? { variant } : {},
         slots: {},
         assets: [],
         visibility: { mobile: true, tablet: true, desktop: true },

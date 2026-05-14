@@ -20,5 +20,8 @@ export default function SectionTitleBlock({ section }: { section: Section }) {
   );
 }
 
-export const containerPad =
-  "px-5 py-8 md:px-10 md:py-12 lg:px-[120px] lg:py-[60px]";
+/**
+ * 섹션 좌우 패딩: 모든 브레이크포인트에서 16px(px-4).
+ * 수직 패딩은 디바이스별 디자인 의도를 유지.
+ */
+export const containerPad = "px-4 py-8 md:py-12 lg:py-[60px]";

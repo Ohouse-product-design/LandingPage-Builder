@@ -16,6 +16,7 @@
 import { useMemo } from "react";
 
 import { cn } from "@/lib/cn";
+import { IconPhoto } from "@/lib/ods-icons";
 import type {
   CardCell,
   CardLayoutSettings,
@@ -24,27 +25,11 @@ import type {
   CardUsagePresetId,
 } from "@/schema/card";
 import type { Viewport } from "@/schema/doc";
+import OdsAssetRenderer from "./OdsAssetRenderer";
 
 // ---------------------------------------------------------------------------
 // 공용 헬퍼
 // ---------------------------------------------------------------------------
-
-const GRID_COLS_CLASS: Record<number, string> = {
-  1: "grid-cols-1",
-  2: "grid-cols-2",
-  3: "grid-cols-3",
-  4: "grid-cols-4",
-  5: "grid-cols-5",
-  6: "grid-cols-6",
-};
-
-const ROW_ALIGN_CLASS: Record<string, string> = {
-  start: "justify-start",
-  center: "justify-center",
-  end: "justify-end",
-  between: "justify-between",
-  around: "justify-around",
-};
 
 // ---------------------------------------------------------------------------
 // Card 컴포넌트 (메인)
@@ -69,36 +54,49 @@ export default function Card({ usage, layout, cells, viewport }: CardProps) {
 }
 
 // ---------------------------------------------------------------------------
-// Grid layout
+// Grid layout — Figma 31:777 (Lead 태블릿) 스펙
+//
+// 규칙: 2×2 full-width, 카드 사이 간격 8px 고정.
+// - settings.columns / settings.gap 은 schema 호환을 위해 유지되나
+//   렌더는 항상 2 col / gap 8 로 강제 (Lead UI spec).
 // ---------------------------------------------------------------------------
+
+const GRID_FIXED_GAP_PX = 8;
 
 function GridLayout({
   usage,
   cells,
-  viewport,
-  settings,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
   viewport: Viewport;
   settings: Extract<CardLayoutSettings, { type: "grid" }>["settings"];
 }) {
-  const cols = settings.columns[viewport] ?? 4;
   return (
     <div
-      className={cn("grid", GRID_COLS_CLASS[cols] ?? "grid-cols-4")}
-      style={{ gap: `${settings.gap}px` }}
+      className="grid w-full grid-cols-2"
+      style={{ gap: `${GRID_FIXED_GAP_PX}px` }}
     >
       {cells.map((cell) => (
-        <CellRenderer key={cell.id} cell={cell} usage={usage} />
+        <div key={cell.id} className="w-full">
+          <CellRenderer cell={cell} usage={usage} />
+        </div>
       ))}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Carousel layout — autoScroll on/off
+// Carousel layout — Figma 31:777 (Lead 태블릿) 스펙
+//
+// 규칙: 카드 고정 너비, 카드 좌우 패딩 제거(= 컨테이너에 horizontal padding 없음,
+// 셀 wrapper 도 padding 없이 cardWidth 그대로).
+// - settings.cardWidth[viewport] 는 그대로 사용
+// - settings.gap 은 schema 호환을 위해 유지되나 카드 사이 간격은 8로 고정
+// - autoScroll on/off 동작은 동일하게 유지.
 // ---------------------------------------------------------------------------
+
+const CAROUSEL_FIXED_GAP_PX = 8;
 
 function CarouselLayout({
   usage,
@@ -113,35 +111,39 @@ function CarouselLayout({
 }) {
   const cardWidth = settings.cardWidth[viewport] ?? 320;
 
-  // autoScroll=true 면 marquee 형태로 cells 를 두 번 반복하고 keyframe 으로 무한 이동
   const renderedCells = settings.autoScroll ? [...cells, ...cells] : cells;
   const durationSec = (settings.autoScrollDurationMs ?? 30000) / 1000;
 
-  // 고유 animation name (autoScroll on/off 토글 시 재시작되도록 key 부여)
   const animKey = useMemo(
     () => `card-marquee-${cells.length}-${durationSec}`,
     [cells.length, durationSec]
   );
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden px-0">
       <div
-        className={cn("flex w-max", settings.autoScroll ? "" : "overflow-x-auto")}
+        className={cn(
+          "flex w-max px-0",
+          settings.autoScroll ? "" : "overflow-x-auto"
+        )}
         style={{
-          gap: `${settings.gap}px`,
+          gap: `${CAROUSEL_FIXED_GAP_PX}px`,
           animation: settings.autoScroll
             ? `${animKey} ${durationSec}s linear infinite`
             : undefined,
         }}
       >
         {renderedCells.map((cell, i) => (
-          <div key={`${cell.id}-${i}`} style={{ width: `${cardWidth}px`, flexShrink: 0 }}>
+          <div
+            key={`${cell.id}-${i}`}
+            className="p-0"
+            style={{ width: `${cardWidth}px`, flexShrink: 0 }}
+          >
             <CellRenderer cell={cell} usage={usage} />
           </div>
         ))}
       </div>
 
-      {/* 좌우 화살표 */}
       {settings.showArrows && !settings.autoScroll && (
         <>
           <button
@@ -161,7 +163,6 @@ function CarouselLayout({
         </>
       )}
 
-      {/* keyframes — translateX(0) → translateX(-50%) (절반만 이동하면 두 번 반복한 cells 의 처음으로 매끄럽게 돌아감) */}
       {settings.autoScroll && (
         <style>{`@keyframes ${animKey} { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }`}</style>
       )}
@@ -170,33 +171,32 @@ function CarouselLayout({
 }
 
 // ---------------------------------------------------------------------------
-// Row layout
+// Row layout — Figma 31:777 (Lead 태블릿) 스펙
+//
+// 규칙: 카드 full width(100%) + 위→아래 세로 스택 + 간격 8px 고정.
+// - 기존의 수평 row 배치(align/wrap/horizontal flex) 는 Lead UI spec 에서
+//   vertical stack 으로 재정의됨. align/wrap/responsive 는 schema 호환을 위해
+//   유지되나 렌더에는 반영되지 않는다.
 // ---------------------------------------------------------------------------
+
+const ROW_FIXED_GAP_PX = 8;
 
 function RowLayout({
   usage,
   cells,
-  viewport,
-  settings,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
   viewport: Viewport;
   settings: Extract<CardLayoutSettings, { type: "row" }>["settings"];
 }) {
-  // responsive override 가 있으면 viewport 별로 align/wrap 결정
-  const resolved = settings.responsive?.[viewport] ?? settings;
   return (
     <div
-      className={cn(
-        "flex",
-        ROW_ALIGN_CLASS[resolved.align] ?? "justify-start",
-        resolved.wrap ? "flex-wrap" : "flex-nowrap"
-      )}
-      style={{ gap: `${settings.gap}px` }}
+      className="flex w-full flex-col"
+      style={{ gap: `${ROW_FIXED_GAP_PX}px` }}
     >
       {cells.map((cell) => (
-        <div key={cell.id} className="flex-1 min-w-0">
+        <div key={cell.id} className="w-full">
           <CellRenderer cell={cell} usage={usage} />
         </div>
       ))}
@@ -210,16 +210,14 @@ function RowLayout({
 
 function CellRenderer({ cell, usage }: { cell: CardCell; usage: CardUsagePresetId }) {
   switch (usage) {
-    case "usp":
-      return <UspCell cell={cell} />;
-    case "review":
-      return <ReviewCell cell={cell} />;
-    case "step":
-      return <StepCell cell={cell} />;
-    case "service":
-      return <ServiceCell cell={cell} />;
-    case "custom":
-      return <CustomCell cell={cell} />;
+    case "CardContents":
+      return <CardContentsCell cell={cell} />;
+    case "CardReview":
+      return <CardReviewCell cell={cell} />;
+    case "CardStep":
+      return <CardStepCell cell={cell} />;
+    case "List":
+      return <ListCell cell={cell} />;
   }
 }
 
@@ -254,6 +252,36 @@ function asAssetAlt(c?: CardSlotContent): string | null {
   return c.asset.alt;
 }
 
+function asAssetUrl(c?: CardSlotContent): { url: string; alt: string } | null {
+  if (!c || c.kind !== "asset") return null;
+  const url = c.asset.url ?? "";
+  if (!url) return null;
+  return { url, alt: c.asset.alt };
+}
+
+function asAsset(c?: CardSlotContent): import("@/schema/doc").AssetRef | null {
+  if (!c || c.kind !== "asset") return null;
+  return c.asset;
+}
+
+/**
+ * 본문에 인라인 **bold** 마커가 들어있으면 SemiBold span 으로 변환.
+ * 빌더 입력자는 강조 구간을 `**...**` 로 감싸서 작성한다.
+ */
+function renderRichText(text: string): React.ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <span key={i} className="font-semibold">
+          {part.slice(2, -2)}
+        </span>
+      );
+    }
+    return <span key={i}>{part}</span>;
+  });
+}
+
 function asCta(c?: CardSlotContent): { label: string; url: string } | null {
   if (!c || c.kind !== "cta") return null;
   return { label: c.label, url: c.url };
@@ -263,142 +291,215 @@ function asCta(c?: CardSlotContent): { label: string; url: string } | null {
 // Usage 별 cell 스타일
 // ---------------------------------------------------------------------------
 
-function UspCell({ cell }: { cell: CardCell }) {
+/**
+ * USP 카드 — Figma `card_usp` (node 33:7897) 스펙 적용.
+ * - 풀-블리드 배경 사진 + 어두운 dim gradient + 흰 텍스트 오버레이
+ * - title  : Heading20 SemiBold 20/28 -0.3 white, 1줄 ellipsis
+ * - body   : Body15 Regular 15/24 -0.3 white, max-w 200, 2줄 ellipsis (whitespace-pre-line)
+ * - tag    : Detail10 white/70 — 카드 하단 좌측 푸트노트 (예: "* 당일 견적 한정")
+ * - 모서리 rounded-12, 미디어 없을 때는 회색 그라데이션만 표시.
+ */
+function CardContentsCell({ cell }: { cell: CardCell }) {
   const tag = asText(slot(cell, "tag"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
-  const mediaAlt = asAssetAlt(slot(cell, "media"));
+  const media = asAsset(slot(cell, "media"));
   return (
-    <div className="h-full rounded-ods-12 border border-ods-border p-4">
+    <div
+      className="relative h-[300px] w-full overflow-hidden rounded-ods-12"
+      style={{
+        backgroundImage:
+          "linear-gradient(155.829deg, rgba(239,239,239,0.2) 1.049%, rgba(147,184,210,0.2) 99.182%), linear-gradient(90deg, rgb(245,245,245) 0%, rgb(245,245,245) 100%)",
+      }}
+    >
+      {media ? (
+        <OdsAssetRenderer
+          asset={media}
+          className="absolute inset-0 flex h-full w-full items-center justify-center object-cover"
+        />
+      ) : null}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50" />
       {tag && (
-        <div className="mb-2 inline-block rounded-ods-4 bg-ods-surface-gray px-2 py-0.5 text-ods-caption text-ods-text-secondary">
+        <p className="absolute bottom-[60px] left-0 w-full px-5 text-left font-pretendard text-[10px] leading-[14px] tracking-[-0.3px] text-white/70">
           {tag}
-        </div>
+        </p>
       )}
-      {title && (
-        <div className="whitespace-pre-line text-ods-title-lg text-ods-text-primary">
-          {title}
-        </div>
-      )}
-      {body && (
-        <div className="mt-1 whitespace-pre-line text-ods-body-lg text-ods-text-tertiary">
-          {body}
-        </div>
-      )}
-      {mediaAlt && (
-        <div className="mt-3 flex h-20 items-center justify-center rounded-ods-8 bg-ods-surface-light text-[10px] text-ods-text-tertiary">
-          🖼 {mediaAlt}
-        </div>
-      )}
+      <p className="absolute bottom-3 right-5 font-pretendard text-[10px] font-medium leading-[14px] tracking-[-0.3px] text-white/40">
+        AI Generated
+      </p>
+      <div className="absolute bottom-0 left-0 w-full px-5 pb-[24px] pt-[40px] text-white">
+        {title && (
+          <h3 className="overflow-hidden text-ellipsis whitespace-nowrap font-pretendard text-[20px] font-semibold leading-7 tracking-[-0.3px]">
+            {title}
+          </h3>
+        )}
+        {body && (
+          <p className="mt-1.5 max-w-[200px] whitespace-pre-line font-pretendard text-[15px] leading-6 tracking-[-0.3px] line-clamp-2">
+            {body}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
 
-function ReviewCell({ cell }: { cell: CardCell }) {
+/**
+ * 리뷰 카드 — Figma `card_review_internet` (node 132:4457) 스펙 적용.
+ * - 컨테이너 200px 높이 흰 배경 p-16 rounded-12
+ * - title  : Body16 SemiBold 16/20 -0.3, 2줄 ellipsis (whitespace-pre-line)
+ * - meta   : Detail12 Medium 12/16. items 가 3개 이상이면 마지막 항목은 `|` 로 구분.
+ *            중간 항목들은 `·` 로 join. (예: 신혼 · U+ 500MB TV결합 | km***)
+ * - media  : 48×48 rounded-10 작성자/제품 사진 + 5% 검정 오버레이.
+ * - body   : Body14 Regular 14/20 -0.3, w-254 ellipsis 3줄. `**...**` 마커는 SemiBold 변환.
+ * - rating : 선택 슬롯이 채워진 경우만 별점 노출 (기본 Lead 시안은 사용 안 함).
+ */
+function CardReviewCell({ cell }: { cell: CardCell }) {
   const rating = asRating(slot(cell, "rating"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
   const meta = asMeta(slot(cell, "meta"));
+  const media = asAsset(slot(cell, "media"));
+  const metaHead = meta && meta.length > 1 ? meta.slice(0, -1) : meta ?? [];
+  const metaTail = meta && meta.length > 1 ? meta[meta.length - 1] : null;
   return (
-    <div className="h-full rounded-ods-12 bg-white p-4 shadow-sm">
-      {rating && (
-        <div className="flex gap-0.5 text-ods-star-yellow">
-          {Array.from({ length: rating.max }).map((_, i) => (
-            <span key={i}>{i < rating.value ? "★" : "☆"}</span>
-          ))}
+    <div className="flex h-[200px] w-full flex-col gap-5 rounded-ods-12 bg-white p-4">
+      <div className="flex w-full gap-3">
+        <div className="flex flex-1 flex-col gap-1.5 tracking-[-0.3px]">
+          {rating && (
+            <div className="flex gap-0.5 text-ods-star-yellow">
+              {Array.from({ length: rating.max }).map((_, i) => (
+                <span key={i}>{i < rating.value ? "★" : "☆"}</span>
+              ))}
+            </div>
+          )}
+          {title && (
+            <h3 className="whitespace-pre-line font-pretendard text-[16px] font-semibold leading-5 text-ods-text-primary line-clamp-2">
+              {title}
+            </h3>
+          )}
+          {meta && meta.length > 0 && (
+            <div className="flex items-center gap-1 whitespace-nowrap font-pretendard text-[12px] font-medium leading-4">
+              {metaHead.length > 0 && (
+                <span className="overflow-hidden text-ellipsis text-ods-text-tertiary">
+                  {metaHead.join(" · ")}
+                </span>
+              )}
+              {metaTail && (
+                <>
+                  <span className="text-[#c1c1c1]">|</span>
+                  <span className="text-ods-text-tertiary">{metaTail}</span>
+                </>
+              )}
+            </div>
+          )}
         </div>
-      )}
-      {title && (
-        <div className="mt-2 whitespace-pre-line text-ods-title-md text-ods-text-primary">
-          {title}
-        </div>
-      )}
+        {media && (
+          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[10px]">
+            <OdsAssetRenderer
+              asset={media}
+              size={32}
+              className="absolute inset-0 flex h-full w-full items-center justify-center object-cover"
+            />
+            <div className="absolute inset-0 bg-black/5" />
+          </div>
+        )}
+      </div>
       {body && (
-        <div className="mt-2 line-clamp-5 text-ods-body-md text-ods-text-tertiary">
-          {body}
-        </div>
-      )}
-      {meta && meta.length > 0 && (
-        <div className="mt-3 text-ods-caption text-ods-text-tertiary">
-          {meta.join(" · ")}
-        </div>
+        <p className="font-pretendard text-[14px] leading-5 tracking-[-0.3px] text-ods-text-primary line-clamp-3">
+          {renderRichText(body)}
+        </p>
       )}
     </div>
   );
 }
 
-function StepCell({ cell }: { cell: CardCell }) {
+/**
+ * 프로세스 스텝 — Figma `card_process/md` (node 34:2983) 스펙 적용.
+ * - 컨테이너 260px 높이 그라데이션 배경, px-20 pb-20 rounded-12.
+ * - imgGraphic 영역 : 240×160. media 가 있으면 이미지, 없으면 placeholder chip 표시.
+ * - title  : Heading20 SemiBold 20/28 -0.3 #141414 opacity-80, 1줄 ellipsis.
+ *            stepNumber 가 별도로 있으면 "{n}. {title}" 으로 prefix.
+ * - body   : Body15 Regular 15/24 -0.3 #141414 opacity-80, 2줄 ellipsis (whitespace-pre-line).
+ */
+function CardStepCell({ cell }: { cell: CardCell }) {
   const stepNumber = asText(slot(cell, "stepNumber"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
-  const mediaAlt = asAssetAlt(slot(cell, "media"));
+  const media = asAsset(slot(cell, "media"));
+  const displayTitle = stepNumber && title ? `${stepNumber}. ${title}` : title;
   return (
-    <div className="h-full rounded-ods-12 bg-ods-surface-light p-4">
-      {stepNumber && (
-        <div className="text-ods-caption font-semibold text-ods-primary">
-          STEP {stepNumber}
-        </div>
-      )}
-      {title && (
-        <div className="mt-1 text-ods-title-md text-ods-text-primary">{title}</div>
-      )}
-      {body && (
-        <div className="mt-1 whitespace-pre-line text-ods-body-md text-ods-text-tertiary">
-          {body}
-        </div>
-      )}
-      {mediaAlt && (
-        <div className="mt-3 flex h-24 items-center justify-center rounded-ods-8 bg-white text-[10px] text-ods-text-tertiary">
-          🖼 {mediaAlt}
-        </div>
-      )}
+    <div
+      className="flex h-[260px] w-full flex-col items-center justify-end gap-4 rounded-ods-12 px-5 pb-5"
+      style={{
+        backgroundImage:
+          "linear-gradient(173.759deg, rgba(239,239,239,0.2) 1.5877%, rgba(139,195,235,0.2) 92.346%), linear-gradient(90deg, rgb(245,245,245) 0%, rgb(245,245,245) 100%)",
+      }}
+    >
+      <div className="relative h-[160px] w-full max-w-[240px] shrink-0 overflow-hidden">
+        {media ? (
+          <OdsAssetRenderer
+            asset={media}
+            className="absolute inset-0 flex h-full w-full items-center justify-center object-contain"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <span className="rounded-ods-12 bg-ods-primary px-8 py-4 font-pretendard text-[16px] font-semibold leading-6 tracking-[-0.3px] text-white">
+              {title ?? "상담 신청하기"}
+            </span>
+          </div>
+        )}
+      </div>
+      <div className="flex w-full flex-col gap-1 tracking-[-0.3px] text-ods-text-primary">
+        {displayTitle && (
+          <h3 className="overflow-hidden text-ellipsis whitespace-nowrap font-pretendard text-[20px] font-semibold leading-7 opacity-80">
+            {displayTitle}
+          </h3>
+        )}
+        {body && (
+          <p className="whitespace-pre-line font-pretendard text-[15px] leading-6 opacity-80 line-clamp-2">
+            {body}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
 
-function ServiceCell({ cell }: { cell: CardCell }) {
-  const iconAlt = asAssetAlt(slot(cell, "icon"));
+function ListCell({ cell }: { cell: CardCell }) {
+  const iconAsset = asAsset(slot(cell, "icon"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
   const cta = asCta(slot(cell, "cta"));
   return (
     <a
       href={cta?.url ?? "#"}
-      className="flex h-full flex-col items-center rounded-ods-12 bg-white p-4 text-center hover:shadow-sm"
+      className="flex h-full flex-row items-start gap-3 rounded-ods-12 bg-white p-4 text-left hover:shadow-sm"
     >
-      <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-ods-surface-light text-[10px] text-ods-text-tertiary">
-        {iconAlt ? "🖼" : ""}
+      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-ods-surface-light text-ods-text-tertiary">
+        {iconAsset ? (
+          <OdsAssetRenderer
+            asset={iconAsset}
+            size={24}
+            className="flex h-10 w-10 items-center justify-center"
+          />
+        ) : (
+          <IconPhoto size={20} />
+        )}
       </div>
-      {title && (
-        <div className="text-ods-title-md text-ods-text-primary">{title}</div>
-      )}
-      {body && (
-        <div className="mt-1 text-ods-body-md text-ods-text-tertiary">{body}</div>
-      )}
-      {cta && (
-        <div className="mt-2 text-ods-caption text-ods-primary">
-          {cta.label} →
-        </div>
-      )}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {title && (
+          <div className="text-ods-title-md text-ods-text-primary">{title}</div>
+        )}
+        {body && (
+          <div className="mt-1 text-ods-body-md text-ods-text-tertiary">{body}</div>
+        )}
+        {cta && (
+          <div className="mt-2 text-ods-caption text-ods-primary">
+            {cta.label} →
+          </div>
+        )}
+      </div>
     </a>
   );
 }
 
-function CustomCell({ cell }: { cell: CardCell }) {
-  // 커스텀 — 채워진 슬롯만 순서대로 렌더
-  const slots = cell.slots;
-  return (
-    <div className="h-full rounded-ods-12 border border-ods-border p-4">
-      {Object.entries(slots).map(([k, c]) => (
-        <div key={k} className="mb-2 text-[12px] text-ods-text-secondary">
-          <span className="text-[10px] uppercase text-ods-text-tertiary">{k}:</span>{" "}
-          {c?.kind === "text" && c.text}
-          {c?.kind === "rating" && `★ ${c.value}/${c.max ?? 5}`}
-          {c?.kind === "meta" && c.items.join(" · ")}
-          {c?.kind === "cta" && `→ ${c.label}`}
-          {c?.kind === "asset" && `🖼 ${c.asset.alt}`}
-        </div>
-      ))}
-    </div>
-  );
-}

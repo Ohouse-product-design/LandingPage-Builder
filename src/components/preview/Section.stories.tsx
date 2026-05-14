@@ -66,7 +66,7 @@ const meta: Meta<StoryArgs> = {
     preset: "usp",
     viewport: "desktop",
     cardLayout: "grid",
-    cardUsage: "usp",
+    cardUsage: "CardContents",
   },
   argTypes: {
     preset: {
@@ -84,7 +84,8 @@ const meta: Meta<StoryArgs> = {
         "sticky-cta",
         "footer",
       ] as SectionPresetId[],
-      description: "어떤 섹션 preset 을 렌더할지 — 빌더에서 섹션 추가/스왑하는 것과 동일",
+      description:
+        "어떤 섹션 preset 을 렌더할지. 빌더 `SectionTree` 기본 추가 메뉴의 7 프리셋과 같은 id 집합(고정 header/hero/sticky/footer 는 메뉴에 없고 스토리에서만 선택 가능).",
     },
     viewport: {
       control: "inline-radio",
@@ -98,8 +99,8 @@ const meta: Meta<StoryArgs> = {
     },
     cardUsage: {
       control: "select",
-      options: ["usp", "review", "step", "service", "custom"] as CardUsagePresetId[],
-      description: "카드형 섹션의 cell 모양 — UspCell/ReviewCell/StepCell/ServiceCell",
+      options: ["CardContents", "CardReview", "CardStep", "List"] as CardUsagePresetId[],
+      description: "카드형 섹션의 cell 모양 — CardContentsCell/CardReviewCell/CardStepCell/ListCell",
       if: { arg: "preset", neq: "header" },
     },
   },
@@ -121,13 +122,13 @@ export const Usp: Story = { args: { preset: "usp" } };
 export const Table: Story = { args: { preset: "table" } };
 export const Coverage: Story = { args: { preset: "coverage" } };
 export const Review: Story = {
-  args: { preset: "review", cardLayout: "carousel", cardUsage: "review" },
+  args: { preset: "review", cardLayout: "carousel", cardUsage: "CardReview" },
 };
 export const Process: Story = {
-  args: { preset: "process", cardLayout: "grid", cardUsage: "step" },
+  args: { preset: "process", cardLayout: "grid", cardUsage: "CardStep" },
 };
 export const CrossSell: Story = {
-  args: { preset: "cross-sell", cardLayout: "row", cardUsage: "service" },
+  args: { preset: "cross-sell", cardLayout: "row", cardUsage: "List" },
 };
 export const CtaForm: Story = { args: { preset: "cta-form" } };
 export const StickyCta: Story = { args: { preset: "sticky-cta" } };
@@ -147,8 +148,8 @@ export const UspRow: Story = {
   args: { preset: "usp", cardLayout: "row" },
 };
 
-// ───── usage 스왑 시연 — 같은 process 섹션이 step/service cell 로 ─────
-export const ProcessAsServiceCells: Story = {
-  name: "Process · Cell Usage: Service",
-  args: { preset: "process", cardLayout: "row", cardUsage: "service" },
+// ───── usage 스왑 시연 — 같은 process 섹션이 CardStep/List cell 로 ─────
+export const ProcessAsList: Story = {
+  name: "Process · Cell Usage: List",
+  args: { preset: "process", cardLayout: "row", cardUsage: "List" },
 };

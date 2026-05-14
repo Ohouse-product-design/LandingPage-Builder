@@ -10,6 +10,7 @@ import PreviewRenderer from "../preview/PreviewRenderer";
 /**
  * 가운데 프리뷰 패널.
  * - 디바이스 토글: Mobile / Tablet / Desktop
+ * - 검수 요청: 상단 바 우측 (`ReviewModal` 연동)
  * - 1차 골격: iframe 대신 동일 프로세스에서 PreviewRenderer 를 직접 렌더하고
  *   고정 width container 로 시뮬레이션 — 추후 실 iframe + postMessage 동기화로 교체.
  */
@@ -19,6 +20,7 @@ export default function PreviewStage() {
   const doc = useBuilderStore((s) => s.doc);
   const selection = useBuilderStore((s) => s.selection);
   const selectSection = useBuilderStore((s) => s.selectSection);
+  const openReviewModal = useBuilderStore((s) => s.openReviewModal);
 
   const width = useMemo(() => VIEWPORT_WIDTH[viewport], [viewport]);
 
@@ -38,14 +40,23 @@ export default function PreviewStage() {
                   : "text-builder-muted hover:bg-builder-panel-2 hover:text-builder-text"
               )}
             >
-              {v === "mobile" ? "📱 375" : v === "tablet" ? "📐 768" : "🖥 1280"}
+              {v}
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-3 text-[11px] text-builder-muted">
-          <span>
-            {width}px · /preview/{doc.meta.slug}
-          </span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-[11px] text-builder-muted">
+            <span>
+              {width}px · /preview/{doc.meta.slug}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => openReviewModal()}
+            className="rounded-ods-8 bg-builder-success px-2.5 py-1 text-[11px] font-medium text-black hover:bg-builder-success/90"
+          >
+            검수 요청
+          </button>
         </div>
       </div>
 

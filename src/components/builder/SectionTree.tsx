@@ -3,15 +3,20 @@
 import { useState } from "react";
 
 import { cn } from "@/lib/cn";
+import { IconChevronRight } from "@/lib/ods-icons";
 import { SECTION_PRESETS } from "@/schema/section-presets";
-import type { SectionPresetId } from "@/schema/section-presets";
 import { useBuilderStore } from "@/store/builder-store";
+import {
+  SECTION_ADD_BASIC_PRESET_IDS,
+  SECTION_ADD_MARKETING_ENTRIES,
+  sectionAddMenuLabel,
+} from "./section-add-menu";
 
 /**
  * 좌측 섹션 트리.
  * - 잠긴 섹션(Hero/Header/Footer/StickyCta) 은 드래그 핸들 숨김.
  * - 드래그앤드롭 — HTML5 native drag events 로 구현. 1차 골격이므로 단순화.
- * - "+ 섹션 추가" 메뉴로 새 섹션 삽입.
+ * - "+ 섹션 추가" 메뉴 — 옵션 목록은 `section-add-menu.ts` 와 공유.
  */
 export default function SectionTree() {
   const sections = useBuilderStore((s) => s.doc.sections);
@@ -84,13 +89,8 @@ export default function SectionTree() {
               >
                 {section.locked ? "🔒" : "≡"}
               </span>
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-[13px] font-medium">
-                  {section.name}
-                </div>
-                <div className="truncate text-[11px] text-builder-muted">
-                  {preset.label}
-                </div>
+              <div className="min-w-0 flex-1 truncate text-[13px] font-medium">
+                {preset.label}
               </div>
               {!section.locked && (
                 <button
@@ -121,18 +121,11 @@ export default function SectionTree() {
           + 섹션 추가
         </button>
         {addMenuOpen && (
-          <div className="absolute bottom-14 left-3 right-3 z-10 rounded-ods-8 border border-builder-border bg-builder-panel-2 p-1 shadow-xl">
-            {(
-              [
-                "usp",
-                "table",
-                "coverage",
-                "review",
-                "process",
-                "cross-sell",
-                "cta-form",
-              ] as SectionPresetId[]
-            ).map((p) => {
+          <div className="absolute bottom-14 left-3 right-3 z-10 max-h-[60vh] overflow-y-auto rounded-ods-8 border border-builder-border bg-builder-panel-2 p-1 shadow-xl">
+            <p className="px-2 pt-1 pb-0.5 text-[10px] uppercase tracking-wider text-builder-muted">
+              기본
+            </p>
+            {SECTION_ADD_BASIC_PRESET_IDS.map((p) => {
               const def = SECTION_PRESETS[p];
               return (
                 <button
@@ -142,18 +135,32 @@ export default function SectionTree() {
                     addSection(p);
                     setAddMenuOpen(false);
                   }}
-                  className="flex w-full items-start gap-2 rounded px-2 py-1.5 text-left hover:bg-builder-panel"
+                  className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left hover:bg-builder-panel"
                 >
-                  <span className="mt-0.5 text-builder-muted">▸</span>
-                  <span>
-                    <span className="block text-[12px]">{def.label}</span>
-                    <span className="block text-[10px] text-builder-muted">
-                      {def.description}
-                    </span>
-                  </span>
+                  <IconChevronRight size={12} className="shrink-0 text-builder-muted" />
+                  <span className="block text-[12px]">{def.label}</span>
                 </button>
               );
             })}
+            <p className="mt-1 px-2 pt-1 pb-0.5 text-[10px] uppercase tracking-wider text-builder-muted">
+              마케팅 풀페이지 UI
+            </p>
+            {SECTION_ADD_MARKETING_ENTRIES.map((entry) => (
+              <button
+                key={`${entry.preset}-${entry.variant}`}
+                type="button"
+                onClick={() => {
+                  addSection(entry.preset, entry.variant);
+                  setAddMenuOpen(false);
+                }}
+                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left hover:bg-builder-panel"
+              >
+                <IconChevronRight size={12} className="shrink-0 text-builder-muted" />
+                <span className="block text-[12px]">
+                  {sectionAddMenuLabel(entry.preset, entry.variant)}
+                </span>
+              </button>
+            ))}
           </div>
         )}
       </div>
