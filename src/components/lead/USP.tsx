@@ -14,7 +14,7 @@ export function USP() {
           {uspCopy.cards.map((card) => (
             <article
               key={card.title}
-              className="relative h-[300px] w-full max-w-[240px] overflow-hidden rounded-ods-12"
+              className="relative aspect-[3/4] w-full max-w-[240px] overflow-hidden rounded-ods-12"
               style={{
                 backgroundImage:
                   "linear-gradient(155.829deg, rgba(239,239,239,0.2) 1.049%, rgba(147,184,210,0.2) 99.182%), linear-gradient(90deg, rgb(245,245,245) 0%, rgb(245,245,245) 100%)",

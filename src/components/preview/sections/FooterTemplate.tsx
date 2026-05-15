@@ -1,8 +1,11 @@
 "use client";
 
 /**
- * 오늘의집 푸터 — 제품 HTML/CSS 스펙 정렬 (3단 그리드 + 회사정보 토글).
- * 인증 마크 래스터: `footer-mcp-assets` (Figma MCP URL, 만료 시 교체).
+ * 오늘의집 푸터 — 제품 레이아웃 반응형 스펙 정렬.
+ * - ≥1256: max-width 1256px 가운데, 좌우 padding 60px
+ * - ≥1024: 5열 `256px | 1px | 256px | 1px | minmax(0,1fr)`, 열 간격 24px
+ * - 768–1023: 3열 `1fr | 1px | 1fr`, 회사 블록은 가로 전체(span)
+ * - ≤767: 1열, 첫 구분선은 가로선 전환, CTA 가로 배치, 링크는 block 흐름
  */
 
 import { useState } from "react";
@@ -73,21 +76,31 @@ function SocialNaverBlog({ className }: { className?: string }) {
   );
 }
 
+const ctaBtnClass =
+  "inline-flex h-8 w-fit cursor-pointer select-none items-center justify-center rounded border border-[#e0e0e0] bg-transparent px-2 text-center text-[14px] font-normal leading-5 tracking-[-0.3px] text-[#2f3438] hover:bg-[#f7f9fa] focus-visible:bg-[#f7f9fa] max-md:whitespace-normal md:whitespace-nowrap";
+
 export default function FooterTemplate({ section }: { section: Section }) {
   const copyrightOverride = (section.props["copyright"] as string | undefined)?.trim();
   const [companyOpen, setCompanyOpen] = useState(false);
 
   return (
-    <footer className="w-full bg-[#f7f9fa] py-10 font-pretendard text-[#424242] [&_a:hover]:underline">
-      <div className="mx-auto w-full max-w-[1200px] px-4 text-[12px] leading-4 tracking-[-0.3px] text-[#2f3438]">
+    <footer className="w-full bg-[#f7f9fa] py-10 font-pretendard text-[#424242] max-md:py-[30px] [&_a:hover]:underline">
+      <div
+        className={cn(
+          "mx-auto box-border w-full px-4 text-[12px] leading-4 tracking-[-0.3px] text-[#2f3438]",
+          "md:px-10 lg:px-[60px]",
+          "min-[1256px]:max-w-[1256px] min-[1256px]:px-[60px]",
+        )}
+      >
         <div
           className={cn(
-            "grid gap-6",
-            "lg:grid-cols-[256px_1px_256px_1px_minmax(0,1fr)] lg:gap-x-6 lg:gap-y-0"
+            "grid w-full grid-cols-1 gap-y-5",
+            "md:grid-cols-[1fr_1px_1fr] md:gap-x-6 md:gap-y-6",
+            "lg:grid-cols-[256px_1px_256px_1px_minmax(0,1fr)] lg:gap-x-6 lg:gap-y-0",
           )}
         >
-          {/* 1열: 고객센터 */}
-          <div className="min-w-0 text-[#2f3438]">
+          {/* 1. 고객센터 */}
+          <div className="min-w-0 md:col-start-1 md:row-start-1 lg:col-start-1 lg:row-start-1">
             <div className="flex items-center gap-0.5">
               <a
                 href="https://ohou.se/customer_center"
@@ -95,26 +108,26 @@ export default function FooterTemplate({ section }: { section: Section }) {
               >
                 고객센터
               </a>
-              <span className="inline-block text-[14px] leading-none text-[#2f3438]" aria-hidden>
+              <span className="inline-block text-[12px] leading-none text-[#2f3438]" aria-hidden>
                 ›
               </span>
             </div>
             <div className="mb-2 mt-5 flex flex-wrap items-center">
               <a
                 href="tel:1670-0876"
-                className="mr-1 whitespace-nowrap text-[16px] font-bold leading-5 tracking-[-0.3px] text-inherit no-underline hover:underline"
+                className="mr-1.5 whitespace-nowrap text-[16px] font-bold leading-5 tracking-[-0.3px] text-inherit no-underline hover:underline"
               >
                 1670-0876
               </a>
               <time className="text-[14px] font-normal leading-5 tracking-[-0.3px]" dateTime="09:00">
                 09:00
               </time>
-              ~
+              <span className="text-[14px] leading-5 tracking-[-0.3px]">~</span>
               <time className="text-[14px] font-normal leading-5 tracking-[-0.3px]" dateTime="18:00">
                 18:00
               </time>
             </div>
-            <div className="mb-3 text-[12px] leading-5 tracking-[-0.3px]">
+            <div className="mb-3 whitespace-pre-wrap text-[12px] leading-5 tracking-[-0.3px] min-[1256px]:pr-2.5">
               <div className="relative pl-5 before:absolute before:left-[7px] before:top-0 before:text-[10px] before:content-['•']">
                 평일: 전체 문의 상담
               </div>
@@ -125,29 +138,34 @@ export default function FooterTemplate({ section }: { section: Section }) {
                 일요일: 휴무
               </div>
             </div>
-            <div className="mt-3 flex flex-col gap-3">
-              <button
-                type="button"
-                className="inline-flex h-8 w-fit cursor-pointer items-center justify-center whitespace-nowrap rounded border border-[#e0e0e0] bg-transparent px-2 text-left text-[14px] font-normal leading-5 tracking-[-0.3px] text-[#2f3438] hover:bg-[#f7f9fa]"
-              >
+            <div className="mt-3 flex flex-col gap-3 max-md:flex-row max-md:flex-wrap max-md:gap-3">
+              <button type="button" className={ctaBtnClass}>
                 카톡 상담(평일 09:00~18:00)
               </button>
-              <a
-                href="https://ohou.se/contacts/new"
-                className="inline-flex h-8 w-fit items-center justify-center whitespace-nowrap rounded border border-[#e0e0e0] bg-transparent px-2 text-[14px] font-normal leading-5 tracking-[-0.3px] text-[#2f3438] no-underline hover:bg-[#f7f9fa]"
-              >
+              <a href="https://ohou.se/contacts/new" className={cn(ctaBtnClass, "no-underline")}>
                 이메일 문의
               </a>
             </div>
           </div>
 
-          <div className="hidden h-full min-h-[1px] w-px bg-[#eaeddf] lg:block" aria-hidden />
+          {/* 2. 구분선: 모바일 가로 / 태블릿·데스크톱 첫 세로 */}
+          <div
+            className={cn(
+              "shrink-0 bg-[#eaedef]",
+              "col-span-full h-px w-full",
+              "md:col-start-2 md:row-start-1 md:h-full md:min-h-[1px] md:w-px md:justify-self-center md:self-stretch",
+              "lg:col-start-2 lg:row-start-1",
+            )}
+            aria-hidden
+          />
 
-          <div className="h-px w-full bg-[#eaeddf] lg:hidden" aria-hidden />
-
-          {/* 2열: 링크 (grid-auto-flow: column, 2 cols × 7 rows) */}
+          {/* 3. 링크 메뉴 */}
           <nav
-            className="grid min-w-0 grid-flow-col grid-cols-2 grid-rows-[repeat(7,min-content)] gap-x-2 gap-y-5"
+            className={cn(
+              "min-w-0 md:col-start-3 md:row-start-1 lg:col-start-3 lg:row-start-1",
+              "max-md:block",
+              "md:grid md:grid-flow-col md:grid-cols-2 md:grid-rows-[repeat(7,min-content)] md:gap-x-2 md:gap-y-5",
+            )}
             aria-label="푸터 링크"
           >
             {NAV_LINKS.map(({ href, label, bold }) => (
@@ -155,8 +173,9 @@ export default function FooterTemplate({ section }: { section: Section }) {
                 key={label}
                 href={href}
                 className={cn(
-                  "inline-block whitespace-nowrap text-[12px] leading-4 tracking-[-0.3px] text-[#2f3438] no-underline hover:underline",
-                  bold ? "font-bold" : "font-normal"
+                  "inline-block text-[12px] leading-4 tracking-[-0.3px] text-[#2f3438] no-underline hover:underline",
+                  "whitespace-nowrap max-md:my-2 max-md:mr-3 max-md:inline-block",
+                  bold ? "font-bold" : "font-normal",
                 )}
               >
                 {label}
@@ -164,13 +183,27 @@ export default function FooterTemplate({ section }: { section: Section }) {
             ))}
           </nav>
 
-          <div className="hidden h-full min-h-[1px] w-px bg-[#eaeddf] lg:block" aria-hidden />
+          {/* 4. 태블릿 이하 가로 구분선 (1023px 이하) */}
+          <div
+            className="col-span-full h-px w-full bg-[#eaedef] md:col-span-3 lg:hidden"
+            aria-hidden
+          />
 
-          <div className="h-px w-full bg-[#eaeddf] lg:hidden" aria-hidden />
+          {/* 5. 데스크톱만 두 번째 세로 구분선 */}
+          <div
+            className="hidden h-auto min-h-full w-px bg-[#eaedef] lg:col-start-4 lg:row-start-1 lg:block lg:self-stretch"
+            aria-hidden
+          />
 
-          {/* 3열: 회사정보 + 인증 + 소셜 */}
-          <div className="flex min-w-0 flex-col gap-3 text-[10px] leading-[14px] tracking-[-0.3px] text-[#828c94]">
-            <div>
+          {/* 6. 회사정보 + 인증 + 소셜 */}
+          <div
+            className={cn(
+              "flex min-w-0 flex-col gap-3 text-[10px] leading-[14px] tracking-[-0.3px] text-[#828c94]",
+              "md:col-span-3 md:max-lg:col-start-1 md:max-lg:row-start-3",
+              "max-md:col-span-1 lg:col-start-5 lg:row-start-1",
+            )}
+          >
+            <div className="overflow-x-hidden">
               <button
                 type="button"
                 onClick={() => setCompanyOpen((o) => !o)}
@@ -185,7 +218,7 @@ export default function FooterTemplate({ section }: { section: Section }) {
               <div
                 className={cn(
                   "mt-2 text-[10px] leading-[14px] text-[#828c94] [&_a]:text-inherit",
-                  companyOpen ? "block" : "hidden"
+                  companyOpen ? "block" : "hidden",
                 )}
               >
                 <span>(주)버킷플레이스</span> | <span>대표이사 이승재</span> |{" "}
@@ -255,7 +288,7 @@ export default function FooterTemplate({ section }: { section: Section }) {
                 href="https://www.youtube.com/channel/UCBKtitA1RwY7F32rCniV1dA"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mr-3 inline-block text-[#828c94] no-underline transition-colors hover:text-[#656e75]"
+                className="mb-0 mr-3 inline-block text-[#828c94] no-underline transition-colors hover:text-[#656e75]"
                 aria-label="YouTube"
               >
                 <SocialYouTube className="block" />
@@ -264,7 +297,7 @@ export default function FooterTemplate({ section }: { section: Section }) {
                 href="https://www.instagram.com/todayhouse"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mr-3 inline-block text-[#828c94] no-underline transition-colors hover:text-[#656e75]"
+                className="mb-0 mr-3 inline-block text-[#828c94] no-underline transition-colors hover:text-[#656e75]"
                 aria-label="Instagram"
               >
                 <SocialInstagram className="block" />
@@ -273,7 +306,7 @@ export default function FooterTemplate({ section }: { section: Section }) {
                 href="https://www.facebook.com/interiortoday"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mr-3 inline-block text-[#828c94] no-underline transition-colors hover:text-[#656e75]"
+                className="mb-0 mr-3 inline-block text-[#828c94] no-underline transition-colors hover:text-[#656e75]"
                 aria-label="Facebook"
               >
                 <SocialFacebook className="block" />
@@ -282,7 +315,7 @@ export default function FooterTemplate({ section }: { section: Section }) {
                 href="https://naver.me/51ckkDZh"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mr-3 inline-block text-[#828c94] no-underline transition-colors hover:text-[#656e75]"
+                className="mb-0 mr-3 inline-block text-[#828c94] no-underline transition-colors hover:text-[#656e75]"
                 aria-label="Naver Blog"
               >
                 <SocialNaverBlog className="block" />

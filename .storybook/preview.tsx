@@ -4,6 +4,21 @@ import "../app/globals.css";
 
 const preview: Preview = {
   parameters: {
+    options: {
+      storySort: {
+        order: [
+          "Gallery",
+          ["Section & Card variants"],
+          "Catalog",
+          [
+            "Section presets",
+            ["Component presets", ["Overview", "Card", "Table row", "Form field", "Tab", "Badge"]],
+          ],
+          "Preview",
+          ["Builder", "ODS", "Lead", "Marketing"],
+        ],
+      },
+    },
     layout: "fullscreen",
     controls: {
       matchers: {

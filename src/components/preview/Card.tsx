@@ -409,6 +409,7 @@ function asCta(c?: CardSlotContent): { label: string; url: string } | null {
  * USP 카드 — Figma `card_usp` 스펙.
  * - 카드 셸: `border-radius: 12px`, 배경 그라데이션 + `#F5F5F5` 베이스
  * - 풀-블리드 배경 사진 + 어두운 dim gradient + 흰 텍스트 오버레이
+ * - 미디어 영역 비율: **3:4** (가로:세로, 세로형 카드) — 그리드 열 너비에 맞춤
  * - title / body / tag 레이아웃 동일
  */
 function CardContentsCell({
@@ -424,7 +425,7 @@ function CardContentsCell({
   const media = asAsset(slot(cell, "media"));
   return (
     <div
-      className="relative h-[300px] w-full overflow-hidden"
+      className="relative aspect-[3/4] w-full overflow-hidden"
       style={{
         borderRadius: "12px",
         background:
