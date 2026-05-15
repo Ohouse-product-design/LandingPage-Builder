@@ -114,7 +114,12 @@ export const heroFixture: Section = {
     secondaryCtaLabel: "",
   },
   slots: {},
-  assets: [],
+  assets: [
+    {
+      slotName: "background",
+      asset: { type: "image", alt: "이사 트럭", assetId: "AssetBoltTruckLargeStillImage" },
+    },
+  ],
   visibility: baseVisibility,
 };
 

@@ -7,8 +7,13 @@ const preview: Preview = {
     options: {
       storySort: {
         order: [
+          "Gallery",
+          ["Section & Card variants"],
           "Catalog",
-          ["Section presets", "Component presets"],
+          [
+            "Section presets",
+            ["Component presets", ["Overview", "Card", "Table row", "Form field", "Tab", "Badge"]],
+          ],
           "Preview",
           ["Builder", "ODS", "Lead", "Marketing"],
         ],
