@@ -158,7 +158,7 @@ export function compileSpec(spec) {
     if (p === "header") { out.push({ ...base, props: { ...TL, logoText: meta.brand || "오늘의집" } }); continue; }
     if (p === "footer") { out.push({ ...base, props: { ...TL, copyright: s.copyright || "© 2026 BUCKETPLACE Co., Ltd." } }); continue; }
     if (p === "sticky-cta") {
-      out.push({ ...base, props: { ...TL, label: s.label || ctaLabel, href: s.href || cta.href || "#" }, visibility: { mobile: true, tablet: true, desktop: false, ...(s.visibility || {}) } });
+      out.push({ ...base, props: { ...TL, label: s.label || ctaLabel, href: s.href || cta.href || "#" }, visibility: { mobile: true, tablet: true, desktop: true, ...(s.visibility || {}) } }); // PC 도 노출 (max-width 480 중앙)
       continue;
     }
     if (p === "hero") {

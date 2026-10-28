@@ -63,6 +63,7 @@ open harness/out/moving-1person/preview.html
 - `Card.tsx` FAQ 답변: 닫힘 상태도 `hidden` 으로 DOM 유지 (정적 export 에서 답변 유실 방지, 빌더 동작 동일)
 - `Card.tsx` bgfullimg 태그: absolute 고정 → 타이틀 위 흐름 배치 (본문 2줄일 때 겹침 수정)
 - `card.ts` + `Card.tsx` + `Card.stories.tsx`: 변형 4종(linkcard·pillcard·kvcard·stepcard) 슬롯 `links`/`rows`, 셀 렌더러, 스토리. `ods-icons.tsx` 에 IconArrowDownToLine·IconHeadset·IconLink(design-assets 원본 패스) 추가, IconArrowRight 원본 패스로 교체
+- `StickyCtaTemplate.tsx`: fixed + spacer, ATF(히어로) 지나간 뒤 노출(240ms 트랜지션), 흰색 dim 그라데이션, 모바일 100% / PC max-width 480. 빌더는 컴포넌트 effect, 정적 export 는 page 스크립트가 같은 규칙으로 토글. PC 에서도 기본 노출
 - `SectionTitleBlock.tsx` / `HeroTemplate.tsx` / `Card.tsx`: `props.titleLayout`(center | split) 분기 — 히어로 split 변형(좌 텍스트/우 에셋), 섹션 타이틀 중앙 정렬, imgcard 그리드 중앙 정렬. 타이틀에 `text-wrap: balance`
 - `Card.tsx` imgcard 카드 폭 260–300px: grid 는 `auto-fill` 로 들어가는 만큼 열 생성(1280→4열, 768→2열), carousel 카드폭도 300 상한
 
