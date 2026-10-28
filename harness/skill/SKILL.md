@@ -42,6 +42,8 @@ design-assets 접근은 `bucketplace/design-assets` 레포 읽기 권한(add_rep
 - `02-ux-writing.md` — 오늘의집 톤, 자리별 공식, 길이 감각
 - `spec-format.md` — lp-spec 필드·글자수·asset 표기
 
+스펙 최상위에 `titleLayout`(`center` | `split`) 을 **반드시** 넣는다 — 페이지당 하나, 섹션별 변경 불가. 타이틀은 `\n` 없이 쓰고 줄바꿈은 하네스에 맡긴다.
+
 작성한 스펙은 `harness/out/<slug>/spec.json` 에 저장하고:
 ```
 node harness/bin/lp.mjs validate harness/out/<slug>/spec.json

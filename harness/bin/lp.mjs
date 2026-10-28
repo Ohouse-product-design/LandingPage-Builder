@@ -23,7 +23,7 @@ const flag = (n, d) => { const i = rest.indexOf(`--${n}`); return i >= 0 ? rest[
 const readSpec = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
 
 if (cmd === "catalog") {
-  const out = { presets: {}, limits: LIMITS, banned: BANNED };
+  const out = { titleLayout: { required: true, options: { center: "[타이틀] [에셋] 중앙 정렬 (히어로 세로 스택, 섹션 타이틀·카드 중앙)", split: "[타이틀] [에셋] 일렬 정렬 (히어로 좌 텍스트/우 에셋, 섹션 타이틀 좌측)" }, rule: "페이지당 하나, 섹션별 변경 불가" }, presets: {}, limits: LIMITS, banned: BANNED };
   for (const [k, r] of Object.entries(PRESET_RULES)) out.presets[k] = { card: r.usage, cardTypes: r.cardTypes, layouts: Object.keys(r.layouts), defaultLayout: r.defaultLayout, items: r.count, recommended: r.recommended };
   console.log(JSON.stringify(out, null, 1));
 } else if (cmd === "assets") {
@@ -33,14 +33,14 @@ if (cmd === "catalog") {
   if (!res.length) console.log("(결과 없음 → 생성형 이미지 대상)");
 } else if (cmd === "validate") {
   const spec = readSpec(rest[0]);
-  const { assetLog, notes } = compileSpec(spec);
-  console.log(JSON.stringify(validateSpec(spec, { assetLog, notes }), null, 1));
+  const { assetLog, notes, breaks } = compileSpec(spec);
+  console.log(JSON.stringify(validateSpec(spec, { assetLog, notes, breaks }), null, 1));
 } else if (cmd === "build") {
   if (!designAssetsRoot()) console.warn("⚠ design-assets 원본 없음 — 에셋이 플레이스홀더로 표시됩니다 (README 'ODS 에셋 원본' 참고)");
   const specPath = rest[0];
   const spec = readSpec(specPath);
-  const { doc, assetLog, notes, where } = compileSpec(spec);
-  const report = validateSpec(spec, { assetLog, notes });
+  const { doc, assetLog, notes, where, breaks } = compileSpec(spec);
+  const report = validateSpec(spec, { assetLog, notes, breaks });
   const { assemble } = await import("../lib/assemble.mjs");
   const { page, makePreview, stats } = await assemble(doc, { report, spec, assetLog });
   const outDir = flag("out", path.join(here, "../out", doc.meta.slug));

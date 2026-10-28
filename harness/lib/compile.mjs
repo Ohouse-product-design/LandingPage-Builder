@@ -7,6 +7,9 @@
  *  - 에셋은 ODS 카탈로그 id 로만 해석 (query → 검색, 실패 시 생성형 슬롯으로 표시)
  */
 import { findAsset, searchAssets, objectKey } from "./assets.mjs";
+import { breakLines, SLOT_METRICS } from "./linebreak.mjs";
+
+export const TITLE_LAYOUTS = ["center", "split"];
 
 const GRID = (m, t, d, gap = 16) => ({ type: "grid", settings: { columns: { mobile: m, tablet: t, desktop: d }, gap } });
 const CAROUSEL = { type: "carousel", settings: { cardWidth: { mobile: 280, tablet: 320, desktop: 360 }, gap: 16, autoScroll: true, autoScrollDurationMs: 30000, loop: true, showArrows: false, showDots: false } };
@@ -61,6 +64,17 @@ function resolveAsset(spec, { role, alt, used, log, where }) {
 const PALETTE = { value: "GenuineBlue" };
 export function compileSpec(spec) {
   PALETTE.value = spec.assetPalette ?? "GenuineBlue";
+  // 타이틀 레이아웃: 페이지에 하나만. 섹션별 지정은 무시하고 notes 로 알린다 (validate 가 error 처리)
+  const titleLayout = TITLE_LAYOUTS.includes(spec.titleLayout) ? spec.titleLayout : "split";
+  const breaks = []; // 자동 줄바꿈 기록 → 리포트
+  const autoBreak = (where, text, metric, opts = {}) => {
+    if (!text || spec.autoLineBreak === false) return text;
+    const m = metric.mobile;
+    const r = breakLines(text, { maxWidthPx: m.w, fontPx: m.f, maxLines: metric.maxLines, ...opts });
+    if (r.changed) breaks.push({ where, from: text, to: r.text });
+    if (r.overflow) breaks.push({ where, from: text, to: r.text, overflow: true, maxLinePx: Math.round(r.maxLinePx), limitPx: m.w });
+    return r.text;
+  };
   const used = new Set();
   const assetLog = [];
   const notes = [];
@@ -88,21 +102,24 @@ export function compileSpec(spec) {
     const id = s.id || sid(p);
     where[id] = s.__i === undefined ? `auto(${p})` : `sections[${s.__i}](${p})`;
     const base = { id, preset: p, name: s.name || s.title?.replace(/\n/g, " ") || p, locked: ["header", "hero", "sticky-cta", "footer"].includes(p), slots: {}, assets: [], visibility: { ...ALL, ...(s.visibility || {}) } };
+    if (s.titleLayout && s.titleLayout !== titleLayout) notes.push(`${where[id]}: 섹션별 titleLayout('${s.titleLayout}') 은 허용되지 않음 — 페이지 값 '${titleLayout}' 으로 통일`);
+    const TL = { titleLayout };
 
-    if (p === "header") { out.push({ ...base, props: { logoText: meta.brand || "오늘의집" } }); continue; }
-    if (p === "footer") { out.push({ ...base, props: { copyright: s.copyright || "© 2026 BUCKETPLACE Co., Ltd." } }); continue; }
+    if (p === "header") { out.push({ ...base, props: { ...TL, logoText: meta.brand || "오늘의집" } }); continue; }
+    if (p === "footer") { out.push({ ...base, props: { ...TL, copyright: s.copyright || "© 2026 BUCKETPLACE Co., Ltd." } }); continue; }
     if (p === "sticky-cta") {
-      out.push({ ...base, props: { label: s.label || ctaLabel, href: s.href || cta.href || "#" }, visibility: { mobile: true, tablet: true, desktop: false, ...(s.visibility || {}) } });
+      out.push({ ...base, props: { ...TL, label: s.label || ctaLabel, href: s.href || cta.href || "#" }, visibility: { mobile: true, tablet: true, desktop: false, ...(s.visibility || {}) } });
       continue;
     }
     if (p === "hero") {
       const asset = resolveAsset(s.asset, { role: "media", alt: s.title, used, log: assetLog, where: `${id}.background` });
-      out.push({ ...base, props: { eyebrow: s.eyebrow || "", title: s.title || "", subtitle: s.subtitle || "", primaryCtaLabel: s.cta || ctaLabel, secondaryCtaLabel: s.secondaryCta || "" }, assets: asset ? [{ slotName: "background", asset }] : [] });
+      const heroTitle = autoBreak(`${where[id]}.title`, s.title || "", { ...SLOT_METRICS.heroTitle[titleLayout], maxLines: SLOT_METRICS.heroTitle.maxLines }, { preferTwoLinesFrom: 12 });
+      out.push({ ...base, props: { ...TL, eyebrow: s.eyebrow || "", title: heroTitle, subtitle: s.subtitle || "", primaryCtaLabel: s.cta || ctaLabel, secondaryCtaLabel: s.secondaryCta || "" }, assets: asset ? [{ slotName: "background", asset }] : [] });
       continue;
     }
     if (p === "cta-form") {
       const fields = (s.fields || [{ label: "이름", placeholder: "이름을 입력해 주세요" }, { label: "연락처", placeholder: "010-0000-0000", type: "tel" }]).map((f, i) => ({ id: `${id}-f${i + 1}`, preset: "form-field", props: { label: f.label, placeholder: f.placeholder || "", fieldType: f.type || "text", required: f.required !== false }, assets: [] }));
-      out.push({ ...base, props: { sectionTitle: s.title || "", sectionSubtitle: s.subtitle || "", submitLabel: s.submit || ctaLabel, consentText: s.consent || "" }, slots: { fields } });
+      out.push({ ...base, props: { ...TL, sectionTitle: autoBreak(`${where[id]}.title`, s.title || "", SLOT_METRICS.sectionTitle, { preferTwoLinesFrom: 12 }), sectionSubtitle: s.subtitle || "", submitLabel: s.submit || ctaLabel, consentText: s.consent || "" }, slots: { fields } });
       continue;
     }
 
@@ -140,7 +157,10 @@ export function compileSpec(spec) {
     });
 
     const card = { id: `${id}-card`, preset: "card", props: { usage: rule.usage, layout: rule.layouts[layoutKey](cells.length), cells, cardType }, assets: [] };
-    out.push({ ...base, props: { sectionTitle: s.title || "", sectionSubtitle: s.subtitle || "" }, slots: { content: [card] } });
+    // 카드 타이틀은 1줄(ellipsis) 또는 2줄 제한 — 폭을 넘으면 리포트에 올려 카피를 줄이게 한다
+    const cardMetric = rule.usage === "imgcard" ? (cardType === "leading-asset" ? SLOT_METRICS.leadingTitle : SLOT_METRICS.imgcardTitle) : rule.usage === "reviewcard" ? SLOT_METRICS.reviewTitle : rule.usage === "listcard" ? SLOT_METRICS.listcardTitle : null;
+    if (cardMetric) items.forEach((it, i) => { const t = it.title; if (!t) return; const r = breakLines(t, { maxWidthPx: cardMetric.mobile.w, fontPx: cardMetric.mobile.f, maxLines: cardMetric.maxLines }); if (r.overflow) breaks.push({ where: `${where[id]}.items[${i}].title`, from: t, overflow: true, maxLinePx: Math.round(r.maxLinePx), limitPx: cardMetric.mobile.w, maxLines: cardMetric.maxLines }); });
+    out.push({ ...base, props: { ...TL, sectionTitle: autoBreak(`${where[id]}.title`, s.title || "", SLOT_METRICS.sectionTitle, { preferTwoLinesFrom: 12 }), sectionSubtitle: s.subtitle || "" }, slots: { content: [card] } });
   }
 
   for (const a of assetLog) a.where = a.where.replace(/^sec-[a-z-]+-\d+/, (m) => where[m] || m);
@@ -148,9 +168,9 @@ export function compileSpec(spec) {
   const doc = {
     id: `doc-${meta.slug || "draft"}`,
     schemaVersion: "1.0.0",
-    meta: { slug: meta.slug || "draft", title: meta.title || "랜딩페이지 시안", description: meta.description || "", category: meta.category || "other", owners: {} },
+    meta: { slug: meta.slug || "draft", title: meta.title || "랜딩페이지 시안", description: meta.description || "", category: meta.category || "other", owners: {}, titleLayout },
     sections: out,
     audit: { createdAt: now, updatedAt: now, createdBy: spec.author || "lp-harness", updatedBy: spec.author || "lp-harness" },
   };
-  return { doc, assetLog, notes, where };
+  return { doc, assetLog, notes, where, breaks, titleLayout };
 }

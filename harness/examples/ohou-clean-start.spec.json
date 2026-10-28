@@ -1,4 +1,5 @@
 {
+ "titleLayout": "split",
  "source": {
   "type": "url",
   "ref": "https://ohou-clean-start.lovable.app/"
@@ -35,7 +36,7 @@
   {
    "preset": "hero",
    "eyebrow": "오늘의집 입주청소",
-   "title": "오늘의집이 검증한 업체,\n입주청소 견적을 무료로",
+   "title": "오늘의집이 검증한 업체, 입주청소 견적을 무료로",
    "subtitle": "30초 신청 · 최대 4곳 견적 비교",
    "cta": "무료 견적 받기",
    "asset": {
@@ -46,7 +47,7 @@
   {
    "preset": "usp",
    "subtitle": "인테리어부터 입주청소까지",
-   "title": "오늘의집이 고른\n업체만 연결해요",
+   "title": "오늘의집이 고른 업체만 연결해요",
    "items": [
     {
      "tag": "검증",
@@ -87,7 +88,7 @@
    "preset": "usp",
    "cardType": "leading-asset",
    "subtitle": "이럴 때 필요해요",
-   "title": "입주청소,\n언제 필요한가요?",
+   "title": "입주청소, 언제 필요한가요?",
    "items": [
     {
      "title": "신축 첫 입주",
@@ -118,7 +119,7 @@
   {
    "preset": "table",
    "subtitle": "5개 공간, 30개 항목",
-   "title": "입주청소는\n어디까지 해주나요?",
+   "title": "입주청소는 어디까지 해주나요?",
    "items": [
     {
      "title": "청소 공간",
@@ -147,7 +148,7 @@
   {
    "preset": "process",
    "subtitle": "이용 방법",
-   "title": "입주청소 신청,\n이렇게 진행돼요",
+   "title": "입주청소 신청, 이렇게 진행돼요",
    "items": [
     {
      "title": "간단 신청",

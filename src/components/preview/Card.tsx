@@ -54,6 +54,8 @@ interface CardProps {
   cardType?: ImgcardType;
   /** 빌더 프리뷰: 에셋 클릭 시 슬롯 교체 모달 */
   previewAsset?: CardPreviewAssetBinding;
+  /** 페이지 타이틀 레이아웃 — center 면 카드 그리드도 중앙 정렬 */
+  titleLayout?: "center" | "split";
 }
 
 /**
@@ -107,7 +109,7 @@ function resolveLayoutWithFallback(
   return layout;
 }
 
-export default function Card({ usage, layout, cells, viewport, cardType, previewAsset }: CardProps) {
+export default function Card({ usage, layout, cells, viewport, cardType, previewAsset, titleLayout }: CardProps) {
   const effective = resolveLayoutWithFallback(usage, layout, viewport);
   switch (effective.type) {
     case "grid":
@@ -119,6 +121,7 @@ export default function Card({ usage, layout, cells, viewport, cardType, preview
           settings={effective.settings}
           cardType={cardType}
           previewAsset={previewAsset}
+          centered={titleLayout === "center"}
         />
       );
     case "carousel":
@@ -167,6 +170,7 @@ function GridLayout({
   settings: _settings,
   cardType,
   previewAsset,
+  centered,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
@@ -174,6 +178,7 @@ function GridLayout({
   settings: Extract<CardLayoutSettings, { type: "grid" }>["settings"];
   cardType?: ImgcardType;
   previewAsset?: CardPreviewAssetBinding;
+  centered?: boolean;
 }) {
   const gridCols =
     usage === "listcard"
@@ -191,7 +196,7 @@ function GridLayout({
       style={{
         gap: `${GRID_FIXED_GAP_PX}px`,
         ...(isImgcard
-          ? { gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${IMGCARD_MIN_PX}px), ${IMGCARD_MAX_PX}px))`, justifyContent: "start" }
+          ? { gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${IMGCARD_MIN_PX}px), ${IMGCARD_MAX_PX}px))`, justifyContent: centered ? "center" : "start" }
           : null),
       }}
     >

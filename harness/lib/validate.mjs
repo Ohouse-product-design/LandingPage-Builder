@@ -3,7 +3,7 @@
  * level: error(반드시 수정) | warn(검수 시 확인) | info
  * 글자수는 빌더 validate.ts 와 동일하게 String.length(줄바꿈 포함) 기준.
  */
-import { PRESET_RULES } from "./compile.mjs";
+import { PRESET_RULES, TITLE_LAYOUTS } from "./compile.mjs";
 
 export const LIMITS = {
   hero: { eyebrow: [20, 1], title: [48, 3, true], subtitle: [48, 2], cta: [20, 1] },
@@ -25,7 +25,7 @@ const CTA_OK = /(하기|받기|보기|시작|신청|확인|예약|문의|상담|
 const len = (s) => (s ? String(s).length : 0);
 const lines = (s) => (s ? String(s).split(/\r?\n/).length : 0);
 
-export function validateSpec(spec, { assetLog = [], notes = [] } = {}) {
+export function validateSpec(spec, { assetLog = [], notes = [], breaks = [] } = {}) {
   const issues = [];
   const push = (level, where, msg, fix) => issues.push({ level, where, msg, ...(fix ? { fix } : {}) });
   const check = (where, value, [max, maxLine, required]) => {
@@ -39,6 +39,8 @@ export function validateSpec(spec, { assetLog = [], notes = [] } = {}) {
     if (label && !CTA_OK.test(String(label).trim())) push("warn", where, `CTA '${label}' 가 행동 동사로 끝나지 않음`, "예: 견적 받기 · 상담 신청하기 · 자세히 보기");
   };
 
+  if (!TITLE_LAYOUTS.includes(spec.titleLayout)) push("error", "titleLayout", `페이지 타이틀 레이아웃을 반드시 택1: ${TITLE_LAYOUTS.map((t) => `'${t}'`).join(" | ")} (center=[타이틀][에셋] 중앙 정렬 · split=[타이틀][에셋] 일렬 정렬)`);
+  for (const [i, s] of (spec.sections || []).entries()) if (s.titleLayout && s.titleLayout !== spec.titleLayout) push("error", `sections[${i}].titleLayout`, `섹션별 레이아웃 지정 금지 — 한 페이지는 하나의 titleLayout('${spec.titleLayout}')`);
   if (!spec.meta?.slug) push("error", "meta.slug", "slug 필요");
   if (!spec.meta?.title) push("error", "meta.title", "SEO title 필요");
   else if (len(spec.meta.title) > 60) push("warn", "meta.title", `SEO title 60자 초과 (${len(spec.meta.title)}자)`);
@@ -103,6 +105,10 @@ export function validateSpec(spec, { assetLog = [], notes = [] } = {}) {
     if (yo && da) push("warn", at, `문체 혼용 (해요체 ${yo} / 합니다·평서체 ${da}) — 한 섹션 안에서 통일`);
   });
 
+  for (const b of breaks) {
+    if (b.overflow) push("warn", b.where, `실측 글자폭 기준 ${b.maxLinePx}px > ${b.limitPx}px (${b.maxLines ?? ""}줄 제한) — 모바일에서 잘림`, "핵심어를 앞으로 당기고 짧게");
+    else push("info", b.where, `가독성 줄바꿈 적용: ${JSON.stringify(b.to)}`);
+  }
   for (const a of assetLog) if (a.level) push(a.level, a.where, `${a.note}${a.query ? ` · query="${a.query}"` : ""}${a.candidates?.length ? ` · 후보: ${a.candidates.join(", ")}` : ""}`);
   for (const n of notes) push("info", "compile", n);
 

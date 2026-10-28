@@ -49,9 +49,16 @@ node harness/bin/lp.mjs build harness/examples/moving.spec.json --shots
 open harness/out/moving-1person/preview.html
 ```
 
+## 레이아웃·줄바꿈 규칙
+- `titleLayout` 은 페이지당 하나(`center` | `split`). compile 이 모든 섹션 props 에 같은 값을 주입하고, 섹션별 지정은 validate 에서 error.
+  - center: 히어로 세로 스택 중앙, 섹션 타이틀 중앙, imgcard 그리드 중앙 정렬
+  - split: 히어로 좌 텍스트·CTA / 우 에셋(360px), 모바일은 좌정렬 세로 스택, 섹션 타이틀 좌측
+- 타이틀 줄바꿈(`lib/linebreak.mjs`): Pretendard SemiBold 실측 글자폭(`catalog/font-widths.json`) × font-size 로 모바일 폭을 재고, 쉼표·조사 뒤 우선 / 수식어 뒤·1글자 고아 회피 / 줄 길이 편차 최소로 2줄 분할. 카드 타이틀은 폭 초과 시 warn.
+
 ## 빌더 소스 변경 (이 하네스 도입 시 함께 반영)
 - `Card.tsx` FAQ 답변: 닫힘 상태도 `hidden` 으로 DOM 유지 (정적 export 에서 답변 유실 방지, 빌더 동작 동일)
 - `Card.tsx` bgfullimg 태그: absolute 고정 → 타이틀 위 흐름 배치 (본문 2줄일 때 겹침 수정)
+- `SectionTitleBlock.tsx` / `HeroTemplate.tsx` / `Card.tsx`: `props.titleLayout`(center | split) 분기 — 히어로 split 변형(좌 텍스트/우 에셋), 섹션 타이틀 중앙 정렬, imgcard 그리드 중앙 정렬. 타이틀에 `text-wrap: balance`
 - `Card.tsx` imgcard 카드 폭 260–300px: grid 는 `auto-fill` 로 들어가는 만큼 열 생성(1280→4열, 768→2열), carousel 카드폭도 300 상한
 
 ## 카탈로그 오너 확인 필요
