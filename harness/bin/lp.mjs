@@ -81,7 +81,12 @@ if (cmd === "catalog") {
   lines.push(`${ok(!!pyft)} fonttools+brotli (Pretendard 서브셋)${pyft ? "" : " — pip install fonttools brotli (없어도 빌드는 되지만 폰트가 시스템 폰트로 대체)"}`);
   const pw = tryRun("npm root -g") ; let pwOk = false; try { const { createRequire } = await import("node:module"); const r = createRequire((pw || "") + "/"); r("playwright"); pwOk = true; } catch { try { await import("playwright"); pwOk = true; } catch {} }
   lines.push(`${ok(pwOk)} playwright (렌더 QA)${pwOk ? "" : " — 없으면 --no-qa 로 빌드"}`);
-  lines.push(`${ok(!!root)} design-assets 원본 ${root ? `(${root}, ${fs.readdirSync(path.join(root, "assets")).length} assets)` : "— 없음 → CDN 폴백 사용"}`);
+  if (root) {
+    const idx = JSON.parse(fs.readFileSync(path.join(here, "../catalog/ods-asset-index.json"), "utf8"));
+    const have = idx.filter((a) => fs.existsSync(path.join(root, "assets", a.file))).length;
+    const pct = Math.round((have / idx.length) * 100);
+    lines.push(`${ok(pct >= 95)} design-assets 원본 (${root}) — 카탈로그 커버리지 ${have}/${idx.length} (${pct}%)${pct < 95 ? ` → 오래된 사본. git -C "${root}" pull 또는 팀원의 pack-assets 로 갱신` : ""}`);
+  } else lines.push(`${ok(false)} design-assets 원본 — 없음 → CDN 폴백 사용`);
   const { findAsset } = await import("../lib/assets.mjs");
   const probe = findAsset("AssetBellLargeGenuineBlueView2");
   let cdn = null; try { const r = await fetch(`https://asset.ohousecdn.com/static/${probe.id}/image_480.webp`, { method: "HEAD", signal: AbortSignal.timeout(6000) }); cdn = r.ok; } catch { cdn = false; }

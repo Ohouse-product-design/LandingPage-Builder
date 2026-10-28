@@ -52,7 +52,7 @@ harness/
 | 3 | 플레이스홀더 | 회색 이미지 박스 + 리포트 `warn` |
 
 권한이 없을 때 할 일:
-1. `node harness/bin/lp.mjs doctor` 로 현재 상태 확인 (원본 / CDN 도달 여부)
+1. `node harness/bin/lp.mjs doctor` 로 현재 상태 확인 (원본 유무·**카탈로그 커버리지**·CDN 도달 여부). 커버리지 95% 미만이면 오래된 사본 → `git pull`
 2. `#ai_frontier` 에 **bucketplace/design-assets 읽기 권한** 요청 (Product Design 팀원은 대부분 보유)
 3. 급하면 권한 있는 팀원에게 `node harness/bin/lp.mjs pack-assets` 결과(`ods-assets-pack.tgz`, 약 40MB)를 받아 `tar -xzf` 후 `DESIGN_ASSETS_ROOT=<풀린 폴더>` 로 지정 (또는 `~/design-assets` 에 배치)
 4. CDN 도 막힌 환경(사내 프록시 등)이면 플레이스홀더로 시안을 먼저 보고, 에셋은 권한 확보 후 재빌드
