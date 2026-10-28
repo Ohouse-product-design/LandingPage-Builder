@@ -10,3 +10,13 @@ out
 storybook-static
 vendor/
 public/ods-static/
+
+# lp harness
+harness/.build/
+harness/out/**/shot-*.png
+harness/out/**/*.src
+vendor/
+harness/out/**/*.html
+harness/out/**/doc.json
+harness/out/**/report.json
+harness/out/**/asset-sheet.png
