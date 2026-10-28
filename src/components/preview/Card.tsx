@@ -156,6 +156,9 @@ export default function Card({ usage, layout, cells, viewport, cardType, preview
 // ---------------------------------------------------------------------------
 
 const GRID_FIXED_GAP_PX = 8;
+/** imgcard 카드 폭 범위 — max 300 (디자인 요청), min 260 (태블릿에서 3열+고아 카드 방지) */
+const IMGCARD_MAX_PX = 300;
+const IMGCARD_MIN_PX = 260;
 
 function GridLayout({
   usage,
@@ -179,10 +182,18 @@ function GridLayout({
         : "grid-cols-2"
       : "grid-cols-2";
 
+  // imgcard: 카드 최대 폭 300px (데스크톱 2열 시 카드가 ~600px 로 과대해지는 문제) —
+  // 들어가는 만큼 열을 채우고(1280 → 4열, 768 → 2열) 남는 폭은 좌측 정렬로 비운다.
+  const isImgcard = usage === "imgcard";
   return (
     <div
-      className={cn("grid w-full", gridCols)}
-      style={{ gap: `${GRID_FIXED_GAP_PX}px` }}
+      className={cn("grid w-full", !isImgcard && gridCols)}
+      style={{
+        gap: `${GRID_FIXED_GAP_PX}px`,
+        ...(isImgcard
+          ? { gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${IMGCARD_MIN_PX}px), ${IMGCARD_MAX_PX}px))`, justifyContent: "start" }
+          : null),
+      }}
     >
       {cells.map((cell) => (
         <div key={cell.id} className="min-w-0 w-full">
@@ -226,7 +237,8 @@ function CarouselLayout({
   cardType?: ImgcardType;
   previewAsset?: CardPreviewAssetBinding;
 }) {
-  const cardWidth = settings.cardWidth[viewport] ?? 320;
+  const rawWidth = settings.cardWidth[viewport] ?? 320;
+  const cardWidth = usage === "imgcard" ? Math.min(rawWidth, IMGCARD_MAX_PX) : rawWidth;
 
   const renderedCells = settings.autoScroll ? [...cells, ...cells] : cells;
   const durationSec = (settings.autoScrollDurationMs ?? 30000) / 1000;
@@ -521,15 +533,16 @@ function CardBgFullImgCell({
         />
       ) : null}
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50" />
-      {tag && (
-        <p className="absolute bottom-[60px] left-0 w-full px-5 text-left font-pretendard text-[10px] leading-[14px] tracking-[-0.3px] text-white/70">
-          {tag}
-        </p>
-      )}
       <p className="absolute bottom-3 right-5 font-pretendard text-[10px] font-medium leading-[14px] tracking-[-0.3px] text-white/40">
         AI Generated
       </p>
       <div className="absolute bottom-0 left-0 w-full px-5 pb-[24px] pt-[40px] text-white">
+        {/* tag 는 타이틀 바로 위 흐름에 둔다 (absolute 고정 시 body 2줄과 겹치던 문제 수정) */}
+        {tag && (
+          <p className="mb-1 text-left font-pretendard text-[10px] leading-[14px] tracking-[-0.3px] text-white/70">
+            {tag}
+          </p>
+        )}
         {title && (
           <h3 className="overflow-hidden text-ellipsis whitespace-nowrap font-pretendard text-[20px] font-semibold leading-7 tracking-[-0.3px]">
             {title}
@@ -889,13 +902,12 @@ function CardFaqCell({ cell }: { cell: CardCell }) {
           )}
         />
       </button>
-      {open && (
-        <div className="border-t border-ods-border-light px-5 py-4">
-          <p className="whitespace-pre-line font-pretendard text-[14px] leading-5 tracking-[-0.3px] text-ods-text-secondary">
-            {answer}
-          </p>
-        </div>
-      )}
+      {/* 닫힘 상태도 DOM 에 남겨 SSR(정적 HTML export)에서 답변이 유실되지 않게 한다 */}
+      <div data-faq-answer hidden={!open} className="border-t border-ods-border-light px-5 py-4">
+        <p className="whitespace-pre-line font-pretendard text-[14px] leading-5 tracking-[-0.3px] text-ods-text-secondary">
+          {answer}
+        </p>
+      </div>
     </div>
   );
 }

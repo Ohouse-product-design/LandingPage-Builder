@@ -1,0 +1,181 @@
+{
+ "source": {
+  "type": "text",
+  "ref": "examples/move-in-cleaning.brief.md — PM 메모(이사청소 LP)"
+ },
+ "intent": {
+  "purpose": "신청 유도",
+  "target": "입주 전 새집 청소를 맡기려는 이사 예정 고객",
+  "primaryAction": "청소 견적 신청",
+  "tone": [
+   "신뢰",
+   "안심",
+   "간결"
+  ]
+ },
+ "assumptions": [
+  "후기 섹션 제외 — 기획서에 실제 후기가 없음. 후기 데이터가 있으면 review 섹션 추가 권장",
+  "5% 할인: 다른 할인과 중복 적용 여부·적용 기간 확인 필요",
+  "평균 가격(24평 32만원)의 집계 기준·시점 각주 필요",
+  "cross-sell 링크(이사·인터넷·정리수납) 이동 URL 미정 → '#' 처리"
+ ],
+ "meta": {
+  "slug": "move-in-cleaning",
+  "title": "입주청소 견적 비교 · 오늘의집 이사청소",
+  "description": "검증된 청소 전문업체 견적을 한 번에 비교하고, 아쉬운 곳은 48시간 안에 무료로 다시 청소해요.",
+  "category": "moving",
+  "brand": "오늘의집"
+ },
+ "cta": {
+  "label": "청소 견적 받기",
+  "href": "#apply"
+ },
+ "sections": [
+  {
+   "preset": "hero",
+   "eyebrow": "오늘의집 이사청소",
+   "title": "입주 전 새집 청소,\n검증된 전문가가 끝내요",
+   "subtitle": "견적 비교부터 재청소 보장까지 한 번에",
+   "cta": "청소 견적 받기",
+   "asset": {
+    "query": "청소 도구",
+    "alt": "청소 도구"
+   }
+  },
+  {
+   "preset": "usp",
+   "subtitle": "새집 청소, 이게 걱정이죠",
+   "title": "오늘의집이\n끝까지 책임져요",
+   "items": [
+    {
+     "tag": "검증",
+     "title": "검증된 업체만",
+     "body": "오늘의집 심사를 통과한 업체만 연결해요",
+     "asset": {
+      "query": "책임보장 방패"
+     }
+    },
+    {
+     "tag": "재청소",
+     "title": "아쉬운 곳은 다시",
+     "body": "48시간 안에 말하면 무료로 다시 청소해요",
+     "asset": {
+      "query": "시계 시간"
+     }
+    },
+    {
+     "tag": "가격",
+     "title": "평균 가격 공개",
+     "body": "24평 평균 32만원, 미리 보고 정해요",
+     "asset": {
+      "query": "계산기 견적"
+     }
+    },
+    {
+     "tag": "할인",
+     "title": "이사와 함께면 5% 할인",
+     "body": "이사랑 같이 신청하면 청소비를 아껴요",
+     "asset": {
+      "file": "examples/gen/coupon-percent.png",
+      "prompt": "퍼센트 할인 쿠폰 — ODS 3D 블루 톤 (Figma AI)",
+      "alt": "할인 쿠폰"
+     }
+    }
+   ]
+  },
+  {
+   "preset": "process",
+   "subtitle": "이렇게 진행돼요",
+   "title": "신청하고 고르면\n청소는 끝",
+   "items": [
+    {
+     "title": "견적 신청",
+     "body": "평수와 이사 날짜만 알려주세요",
+     "asset": {
+      "file": "examples/gen/phone-form.png",
+      "prompt": "신청 폼이 보이는 스마트폰 — ODS 3D 블루 톤 (Figma AI)",
+      "alt": "견적 신청 화면"
+     }
+    },
+    {
+     "title": "견적 비교",
+     "body": "도착한 업체 견적을 한눈에 비교해요",
+     "asset": {
+      "query": "알림 벨"
+     }
+    },
+    {
+     "title": "예약 확정",
+     "body": "원하는 업체와 날짜를 골라요",
+     "asset": {
+      "file": "examples/gen/calendar-check.png",
+      "prompt": "체크된 날짜가 있는 탁상 달력 — ODS 3D 블루 톤 (Figma AI)",
+      "alt": "예약 달력"
+     }
+    },
+    {
+     "title": "청소 · 검수",
+     "body": "청소 후 직접 확인하고 마무리해요",
+     "asset": {
+      "file": "examples/gen/clipboard-check.png",
+      "prompt": "체크리스트 클립보드 — ODS 3D 블루 톤 (Figma AI)",
+      "alt": "검수 체크리스트"
+     }
+    }
+   ]
+  },
+  {
+   "preset": "cross-sell",
+   "subtitle": "새집 준비를 한 번에",
+   "title": "이사청소와 함께\n많이 찾는 서비스",
+   "items": [
+    {
+     "title": "이사",
+     "body": "검증된 업체 견적을 한 번에 비교해요",
+     "asset": {
+      "query": "이사 트럭"
+     },
+     "href": "#"
+    },
+    {
+     "title": "인터넷 설치",
+     "body": "새집 인터넷, 혜택까지 비교해요",
+     "asset": {
+      "query": "인터넷 와이파이"
+     },
+     "href": "#"
+    },
+    {
+     "title": "정리수납",
+     "body": "짐 정리까지 전문가에게 맡겨요",
+     "asset": {
+      "query": "정리 수납 박스"
+     },
+     "href": "#"
+    }
+   ]
+  },
+  {
+   "preset": "faq",
+   "title": "자주 묻는 질문",
+   "items": [
+    {
+     "q": "청소 시간은 얼마나 걸리나요?",
+     "a": "24평 기준 5~6시간 정도 걸려요. 집 크기와 상태에 따라 달라질 수 있어요."
+    },
+    {
+     "q": "청소 전에 준비할 게 있나요?",
+     "a": "짐이 들어오기 전 빈집 상태면 가장 좋아요. 물과 전기를 쓸 수 있게만 해주세요."
+    },
+    {
+     "q": "추가 비용이 생길 수 있나요?",
+     "a": "곰팡이 제거나 스티커 제거처럼 추가 작업이 필요하면 생길 수 있어요. 견적 단계에서 미리 확인해 드려요."
+    },
+    {
+     "q": "예약을 취소할 수 있나요?",
+     "a": "청소 3일 전까지는 무료로 취소할 수 있어요. 그 이후에는 업체 정책에 따라 달라져요."
+    }
+   ]
+  }
+ ]
+}
