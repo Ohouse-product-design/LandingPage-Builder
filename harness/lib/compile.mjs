@@ -27,7 +27,7 @@ export const PRESET_RULES = {
 /** 변형별 고정 레이아웃·개수 (기본 usage 가 아닐 때 PRESET_RULES 대신 적용) */
 export const USAGE_RULES = {
   linkcard: { layouts: { grid: (n) => GRID(1, 2, Math.min(3, n)), list: () => LIST }, defaultLayout: "grid", count: [2, 4], rows: [2, 5] },
-  pillcard: { layouts: { list: () => LIST, grid: () => GRID(1, 2, 2) }, defaultLayout: "list", count: [2, 5] },
+  pillcard: { layouts: { list: () => LIST }, defaultLayout: "list", count: [2, 5] },
   kvcard: { layouts: { list: () => LIST }, defaultLayout: "list", count: [1, 1], rows: [3, 8] },
   stepcard: { layouts: { list: () => LIST }, defaultLayout: "list", count: [2, 5] },
 };

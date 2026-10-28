@@ -145,6 +145,7 @@ export default function Card({ usage, layout, cells, viewport, cardType, preview
           settings={effective.settings}
           cardType={cardType}
           previewAsset={previewAsset}
+          centered={titleLayout === "center"}
         />
       );
   }
@@ -330,6 +331,7 @@ function ListLayout({
   settings: _settings,
   cardType,
   previewAsset,
+  centered,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
@@ -337,15 +339,29 @@ function ListLayout({
   settings: Extract<CardLayoutSettings, { type: "list" }>["settings"];
   cardType?: ImgcardType;
   previewAsset?: CardPreviewAssetBinding;
+  centered?: boolean;
 }) {
   if (usage === "stepcard") {
     return (
-      <div className="flex w-full flex-col rounded-ods-16 bg-ods-surface-gray px-5 py-6">
+      <div className={cn("flex w-full flex-col rounded-ods-16 bg-ods-surface-gray px-5 py-6", viewport !== "mobile" && "max-w-[640px]", centered && "mx-auto")}>
         {cells.map((cell, i) => (
           <div key={cell.id} className="relative flex w-full gap-4">
             {i < cells.length - 1 && (
               <div aria-hidden className="absolute left-5 top-10 h-[calc(100%-32px)] w-px -translate-x-1/2 bg-ods-border" />
             )}
+            <CellRenderer cell={cell} usage={usage} viewport={viewport} cardType={cardType} previewAsset={previewAsset} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (usage === "pillcard" || usage === "kvcard") {
+    // 세로형 읽기 컴포넌트: 데스크톱에서도 1열, 읽기 폭 640 제한
+    return (
+      <div className={cn("flex w-full flex-col", viewport !== "mobile" && "max-w-[640px]", centered && "mx-auto")} style={{ gap: `${ROW_FIXED_GAP_PX}px` }}>
+        {cells.map((cell) => (
+          <div key={cell.id} className="min-w-0 w-full">
             <CellRenderer cell={cell} usage={usage} viewport={viewport} cardType={cardType} previewAsset={previewAsset} />
           </div>
         ))}
