@@ -6,7 +6,7 @@ Claude 가 기획서를 해석해 작성하는 **유일한 산출물**. HTML·CS
 
 ```jsonc
 {
-  "source":  { "type": "notion|doc|text", "ref": "<노션 URL 또는 파일명/요약>" },
+  "source":  { "type": "url|doc|text", "ref": "<기획서 URL 또는 파일명/요약>" },
   "intent":  { "purpose": "신청 유도", "target": "이사 앞둔 신혼부부", "primaryAction": "견적 신청", "tone": ["신뢰", "간결"] },
   "assumptions": ["기획서에 없어서 가정한 내용 — 리뷰 셸에 그대로 노출"],
   "titleLayout": "center" | "split",         // 필수 · 페이지당 하나. center=[타이틀][에셋] 중앙 정렬 / split=[타이틀][에셋] 일렬(좌 텍스트·우 에셋)

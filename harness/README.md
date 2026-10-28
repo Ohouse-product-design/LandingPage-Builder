@@ -42,6 +42,24 @@ harness/
   out/<slug>/               spec.json · doc.json · report.json · page.html · preview.html · asset-sheet.png · gen/
 ```
 
+## ODS 에셋 원본 — 읽기 권한이 없을 때
+`bucketplace/design-assets` 읽기 권한이 없으면 `setup.sh` 가 원본을 받지 못한다. 그래도 빌드는 되고, 에셋은 아래 순서로 채워진다.
+
+| 순위 | 방법 | 결과 |
+|---|---|---|
+| 1 | 원본 (`~/design-assets`, `~/.lp-draft/design-assets`, `DESIGN_ASSETS_ROOT`) | 480w 원본 임베드 (정상) |
+| 2 | **CDN 폴백** `asset.ohousecdn.com/static/<Asset>/image_480.webp` — 자동, `~/.lp-draft/cdn-cache` 에 캐시 | 대부분 정상 (일부 미배포 에셋은 실패) |
+| 3 | 플레이스홀더 | 회색 이미지 박스 + 리포트 `warn` |
+
+권한이 없을 때 할 일:
+1. `node harness/bin/lp.mjs doctor` 로 현재 상태 확인 (원본 / CDN 도달 여부)
+2. `#ai_frontier` 에 **bucketplace/design-assets 읽기 권한** 요청 (Product Design 팀원은 대부분 보유)
+3. 급하면 권한 있는 팀원에게 `node harness/bin/lp.mjs pack-assets` 결과(`ods-assets-pack.tgz`, 약 40MB)를 받아 `tar -xzf` 후 `DESIGN_ASSETS_ROOT=<풀린 폴더>` 로 지정 (또는 `~/design-assets` 에 배치)
+4. CDN 도 막힌 환경(사내 프록시 등)이면 플레이스홀더로 시안을 먼저 보고, 에셋은 권한 확보 후 재빌드
+
+## 마켓플레이스 임베드본
+`node harness/bin/pack-plugin.mjs <dest>` 가 렌더에 필요한 `src` 서브셋 + 하네스 런타임 + 최소 package.json 을 묶어 독립 폴더를 만든다 (Next 앱·빌더 어드민 제외, 약 2MB). 마켓플레이스 `plugins/product-design/skills/lp-draft/harness/` 가 이 결과물이며, 레포 쪽이 원본이다 — 하네스를 고치면 다시 pack 해서 MR.
+
 ## 빠른 시작
 ```bash
 bash harness/setup.sh                                   # 의존성 · design-assets · 인덱스 · 번들

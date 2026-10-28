@@ -20,12 +20,14 @@ export function loadIndex() {
 }
 
 export function designAssetsRoot() {
+  // DESIGN_ASSETS_ROOT 를 명시했는데 없으면 폴백 탐색 없이 null (테스트·강제 CDN 모드)
+  if (process.env.DESIGN_ASSETS_ROOT) return fs.existsSync(path.join(process.env.DESIGN_ASSETS_ROOT, "assets")) ? process.env.DESIGN_ASSETS_ROOT : null;
   const cands = [
-    process.env.DESIGN_ASSETS_ROOT,
     path.join(os.homedir(), "design-assets"),
-    "/home/claude/design-assets",
     path.join(here, "../../vendor/design-assets"),
-  ].filter(Boolean);
+    path.join(here, "../vendor/design-assets"),
+    path.join(os.homedir(), ".lp-draft", "design-assets"),
+  ];
   for (const c of cands) if (fs.existsSync(path.join(c, "assets"))) return c;
   return null;
 }
@@ -114,7 +116,32 @@ export function searchAssets(query, { role = "media", limit = 5, exclude = [], p
 }
 
 const _cache = new Map();
-/** ODS 에셋 id 또는 로컬 파일 경로 → data URI */
+/** design-assets 원본이 없을 때 쓰는 CDN 폴백 (프로덕션 정적 경로 규칙). 결과는 ~/.lp-draft/cdn-cache 에 캐시 */
+const CDN = "https://asset.ohousecdn.com/static";
+const CACHE_DIR = path.join(os.homedir(), ".lp-draft", "cdn-cache");
+export const cdnState = { tried: 0, ok: 0, fail: 0 };
+async function fetchCdnAsset(hit) {
+  const cands = hit.kind === "svg"
+    ? [`${CDN}/${hit.id}/${hit.slug}.svg`]
+    : [`${CDN}/${hit.id}/image_480.webp`, `${CDN}/${hit.id}/image_480.png`];
+  fs.mkdirSync(CACHE_DIR, { recursive: true });
+  for (const url of cands) {
+    const local = path.join(CACHE_DIR, `${hit.id}${path.extname(url)}`);
+    if (fs.existsSync(local)) return local;
+    cdnState.tried++;
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      if (!r.ok) continue;
+      fs.writeFileSync(local, Buffer.from(await r.arrayBuffer()));
+      cdnState.ok++;
+      return local;
+    } catch { /* 다음 후보 */ }
+  }
+  cdnState.fail++;
+  return null;
+}
+
+/** ODS 에셋 id 또는 로컬 파일 경로 → data URI (원본 없음·CDN 실패 시 null → 호출부가 플레이스홀더) */
 export async function toDataUri(ref, { width = 480 } = {}) {
   const key = `${ref}@${width}`;
   if (_cache.has(key)) return _cache.get(key);
@@ -122,8 +149,8 @@ export async function toDataUri(ref, { width = 480 } = {}) {
   const hit = findAsset(ref);
   if (hit) {
     const root = designAssetsRoot();
-    if (!root) throw new Error("design-assets 원본을 찾을 수 없습니다 (DESIGN_ASSETS_ROOT 설정 필요)");
-    file = path.join(root, "assets", hit.file);
+    if (root && fs.existsSync(path.join(root, "assets", hit.file))) file = path.join(root, "assets", hit.file);
+    else file = await fetchCdnAsset(hit);
   } else {
     // 생성형 에셋: 절대경로 · cwd 기준 · harness 기준 순으로 탐색
     for (const c of [ref, path.resolve(ref), path.join(here, "..", ref)]) if (fs.existsSync(c)) { file = c; break; }

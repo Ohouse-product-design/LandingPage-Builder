@@ -9,7 +9,7 @@ description: 노션·문서·URL·자연어 기획안을 받아 ODS 컴포넌트
 레이아웃·스타일·에셋 일관성은 Claude 의 감각이 아니라 하네스가 결정적으로 보장한다.
 
 ```
-기획안(노션 / 문서 / 기존 페이지 URL / 텍스트)
+기획안(문서 URL / 첨부 문서 / 기존 페이지 URL / 텍스트)
   └─(Claude) 1 brief 해석 → 2 섹션 구성 → 3 UX 라이팅 → spec.json
         └─(lp build) compile: titleLayout 주입 · 카드 변형 자동 채택 · 프리셋 규칙 강제 · ODS 에셋 검색 · 가독성 줄바꿈
               → validate: 글자수·필수·CTA·금기어·문체·레이아웃 택1
@@ -80,7 +80,7 @@ node harness/bin/lp.mjs sheet harness/out/<slug>
 | 증상 | 조치 |
 |---|---|
 | `titleLayout` error | 스펙 최상위에 center/split 추가 (섹션별 지정 제거) |
-| `design-assets 원본 없음` | setup.sh 재실행 / DESIGN_ASSETS_ROOT |
+| `design-assets 원본 없음` → CDN 폴백 실패 | `lp doctor` → 권한 요청 / 팀원 `pack-assets` 수령 / 플레이스홀더로 먼저 리뷰 |
 | Figma image.url 403 | 허용 목록 밖 → 미리보기(256px) 자동 사용. 원본 필요 시 claude.ai Capabilities 에 figma.com 허용 요청 |
 | render-QA 브라우저 실행 불가 | 시스템 playwright 확인, `--no-qa` 로 빌드는 가능 |
 | 카드 변형이 기대와 다름 | 아이템 형태(링크/설명 유무/단위/단계 수)를 표에 맞추거나 `card:` 로 명시 |
