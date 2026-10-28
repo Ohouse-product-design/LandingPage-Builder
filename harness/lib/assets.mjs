@@ -85,7 +85,7 @@ export function searchAssets(query, { role = "media", limit = 5, exclude = [], p
     if (/Disabled|Dev$/.test(a.id)) s -= 2;
     // 한 페이지 안 일러스트 톤 통일: 기본은 ODS 3D 일러스트, 실사(Photographic)는 '사진/실사' 요청 시에만
     const photoAsked = tokens.some((t) => /사진|실사|photo/.test(t));
-    if (/^AssetPhotographic/.test(a.id) && !photoAsked) s -= 4;
+    if (/^AssetPhoto/.test(a.id) && !photoAsked) s -= 4; // Photographic·Photo…Isometric(실사) 은 요청 시에만
     // 팔레트 통일: 같은 오브젝트의 컬러 바리에이션 중 페이지 팔레트(기본 GenuineBlue) 우선
     if (palette && a.id.includes(palette)) s += 1;
     else if (OFF_PALETTE.test(a.id)) s -= role === "icon" ? 2 : 1;
