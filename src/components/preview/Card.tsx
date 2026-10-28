@@ -635,7 +635,7 @@ function CardReviewCell({ cell }: { cell: CardCell; onRequestSlotEdit?: () => vo
 
 /**
  * 프로세스 스텝 — Figma `card_process/md` (node 34:2983) 스펙 적용.
- * - 컨테이너 260px 높이 그라데이션 배경, `px-5 pb-5` rounded-12. `justify-between` 으로 그래픽·텍스트를 카드 안에서 위·아래 배치.
+ * - 컨테이너 최소 260px(콘텐츠에 맞춰 늘어남, 같은 행은 h-full 로 높이 동일) 그라데이션 배경, `px-5 pb-5` rounded-12. `justify-between` 으로 그래픽·텍스트를 카드 안에서 위·아래 배치.
  * - imgGraphic 영역 : `max-w-[240px]` 래퍼에 `pt-2`(8px), 내부 `240×160` 박스. media 가 있으면 이미지, 없으면 placeholder chip 표시.
  * - title  : Heading20 SemiBold 20/28 -0.3 #141414 opacity-80, 1줄 ellipsis.
  *            stepNumber 가 별도로 있으면 "{n}. {title}" 으로 prefix.
@@ -662,7 +662,7 @@ function CardLeadingAssetCell({
   return (
     <div
       // 디자인 시안: 좌측 정렬(items-start), 하단 패딩 20px(pb-5)
-      className="flex h-[260px] w-full flex-col items-start justify-between gap-4 rounded-ods-12 px-5 pb-5"
+      className="flex h-full min-h-[260px] w-full flex-col items-start justify-between gap-4 rounded-ods-12 px-5 pb-5"
       style={{
         backgroundImage:
           "linear-gradient(173.759deg, rgba(239,239,239,0.2) 1.5877%, rgba(139,195,235,0.2) 92.346%), linear-gradient(90deg, rgb(245,245,245) 0%, rgb(245,245,245) 100%)",
