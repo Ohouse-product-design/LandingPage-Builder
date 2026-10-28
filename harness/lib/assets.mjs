@@ -20,12 +20,14 @@ export function loadIndex() {
 }
 
 export function designAssetsRoot() {
+  // DESIGN_ASSETS_ROOT 를 명시했는데 없으면 폴백 탐색 없이 null (테스트·강제 CDN 모드)
+  if (process.env.DESIGN_ASSETS_ROOT) return fs.existsSync(path.join(process.env.DESIGN_ASSETS_ROOT, "assets")) ? process.env.DESIGN_ASSETS_ROOT : null;
   const cands = [
-    process.env.DESIGN_ASSETS_ROOT,
     path.join(os.homedir(), "design-assets"),
-    "/home/claude/design-assets",
     path.join(here, "../../vendor/design-assets"),
-  ].filter(Boolean);
+    path.join(here, "../vendor/design-assets"),
+    path.join(os.homedir(), ".lp-draft", "design-assets"),
+  ];
   for (const c of cands) if (fs.existsSync(path.join(c, "assets"))) return c;
   return null;
 }
@@ -74,6 +76,13 @@ export function searchAssets(query, { role = "media", limit = 5, exclude = [], p
       if (/Large|Isometric|View\d/.test(a.id)) s += 0.6;
       if (/Small|Shortcut/i.test(a.id) || kws.includes("숏컷")) s -= 1.5;
       if (a.kind === "svg") s -= 3; // 평면 SVG 는 3D 일러스트 슬롯에 섞지 않음
+    } else if (role === "icon-small") {
+      // pillcard·stepcard 아이콘: ODS 숏컷(Small SVG) 언어를 우선, 3D 일러스트는 차선
+      if (a.kind === "svg") s += 2.5;
+      if (/Small/.test(a.id) || kws.includes("숏컷")) s += 1.5;
+      if (a.kind === "image") s -= 2;
+      // 숏컷 아이콘 색: 한 리스트 안에서 블루·그레이 계열로 모이게 (웜 컬러는 차선)
+      if (/GenuineBlue/.test(a.id)) s += 1; else if (/DarkBlue|DavyGray/.test(a.id)) s += 0.5; else if (/MangoOrange|CoralRed|CandyPink|Violet|TanYellow|JadeGreen/.test(a.id)) s -= 1;
     } else if (role === "icon") {
       // 리스트 카드 아이콘도 페이지 일러스트 언어(3D)에 맞춘다 — 평면 SVG 는 차선
       if (a.kind === "image") s += 1;
@@ -85,7 +94,7 @@ export function searchAssets(query, { role = "media", limit = 5, exclude = [], p
     if (/Disabled|Dev$/.test(a.id)) s -= 2;
     // 한 페이지 안 일러스트 톤 통일: 기본은 ODS 3D 일러스트, 실사(Photographic)는 '사진/실사' 요청 시에만
     const photoAsked = tokens.some((t) => /사진|실사|photo/.test(t));
-    if (/^AssetPhotographic/.test(a.id) && !photoAsked) s -= 4;
+    if (/^AssetPhoto/.test(a.id) && !photoAsked) s -= 4; // Photographic·Photo…Isometric(실사) 은 요청 시에만
     // 팔레트 통일: 같은 오브젝트의 컬러 바리에이션 중 페이지 팔레트(기본 GenuineBlue) 우선
     if (palette && a.id.includes(palette)) s += 1;
     else if (OFF_PALETTE.test(a.id)) s -= role === "icon" ? 2 : 1;
@@ -107,7 +116,32 @@ export function searchAssets(query, { role = "media", limit = 5, exclude = [], p
 }
 
 const _cache = new Map();
-/** ODS 에셋 id 또는 로컬 파일 경로 → data URI */
+/** design-assets 원본이 없을 때 쓰는 CDN 폴백 (프로덕션 정적 경로 규칙). 결과는 ~/.lp-draft/cdn-cache 에 캐시 */
+const CDN = "https://asset.ohousecdn.com/static";
+const CACHE_DIR = path.join(os.homedir(), ".lp-draft", "cdn-cache");
+export const cdnState = { tried: 0, ok: 0, fail: 0 };
+async function fetchCdnAsset(hit) {
+  const cands = hit.kind === "svg"
+    ? [`${CDN}/${hit.id}/${hit.slug}.svg`]
+    : [`${CDN}/${hit.id}/image_480.webp`, `${CDN}/${hit.id}/image_480.png`];
+  fs.mkdirSync(CACHE_DIR, { recursive: true });
+  for (const url of cands) {
+    const local = path.join(CACHE_DIR, `${hit.id}${path.extname(url)}`);
+    if (fs.existsSync(local)) return local;
+    cdnState.tried++;
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      if (!r.ok) continue;
+      fs.writeFileSync(local, Buffer.from(await r.arrayBuffer()));
+      cdnState.ok++;
+      return local;
+    } catch { /* 다음 후보 */ }
+  }
+  cdnState.fail++;
+  return null;
+}
+
+/** ODS 에셋 id 또는 로컬 파일 경로 → data URI (원본 없음·CDN 실패 시 null → 호출부가 플레이스홀더) */
 export async function toDataUri(ref, { width = 480 } = {}) {
   const key = `${ref}@${width}`;
   if (_cache.has(key)) return _cache.get(key);
@@ -115,8 +149,8 @@ export async function toDataUri(ref, { width = 480 } = {}) {
   const hit = findAsset(ref);
   if (hit) {
     const root = designAssetsRoot();
-    if (!root) throw new Error("design-assets 원본을 찾을 수 없습니다 (DESIGN_ASSETS_ROOT 설정 필요)");
-    file = path.join(root, "assets", hit.file);
+    if (root && fs.existsSync(path.join(root, "assets", hit.file))) file = path.join(root, "assets", hit.file);
+    else file = await fetchCdnAsset(hit);
   } else {
     // 생성형 에셋: 절대경로 · cwd 기준 · harness 기준 순으로 탐색
     for (const c of [ref, path.resolve(ref), path.join(here, "..", ref)]) if (fs.existsSync(c)) { file = c; break; }

@@ -89,7 +89,9 @@ export type CardSlotName =
   | "body"       // 카드 본문/설명
   | "meta"       // 부가 정보 (작성자/날짜/위치 등)
   | "rating"     // 별점
-  | "cta";       // 카드 클릭 시 이동 액션
+  | "cta"        // 카드 클릭 시 이동 액션
+  | "links"      // linkcard: 링크 행 목록
+  | "rows";      // kvcard: 라벨·값 행 목록
 
 /** 슬롯의 콘텐츠. union 으로 슬롯별 데이터 형태가 결정됨. */
 export type CardSlotContent =
@@ -97,7 +99,13 @@ export type CardSlotContent =
   | { kind: "text"; text: string; maxLines?: number }
   | { kind: "rating"; value: number; max?: number }
   | { kind: "meta"; items: string[] }
-  | { kind: "cta"; label: string; url: string };
+  | { kind: "cta"; label: string; url: string }
+  /** linkcard 행: 텍스트 + 우측 액션 아이콘(download | audio | link | arrow) */
+  | { kind: "links"; items: { label: string; url?: string; actions?: LinkAction[] }[] }
+  /** kvcard 행: 좌 라벨 · 우 값(굵게). highlight 로 대표 행 강조 */
+  | { kind: "rows"; items: { label: string; value: string; highlight?: boolean }[] };
+
+export type LinkAction = "download" | "audio" | "link" | "arrow";
 
 export type CardCellTheme = "grey" | "blue" | "green";
 
@@ -163,7 +171,11 @@ export type CardUsagePresetId =
   | "reviewcard"
   | "listcard"
   | "tablecard"
-  | "faqcard";
+  | "faqcard"
+  | "linkcard"   // 링크 묶음 (그룹 제목 + 더보기 + 링크 행) — 자료실·IR·메뉴 허브
+  | "pillcard"   // 혜택 필 (아이콘 + 한 줄 굵은 제목)
+  | "kvcard"     // 조건 표 (좌 레일 + 라벨·값 행) — 금리·요금·수수료
+  | "stepcard";  // 세로 단계 (아이콘 + 제목 + 보조문 + 연결선) — 안내·절차
 
 /**
  * imgcard 의 서브 변형. usage === "imgcard" 일 때만 의미 있음.
@@ -290,10 +302,78 @@ export const CARD_USAGE_PRESETS: Record<CardUsagePresetId, CardUsagePreset> = {
     defaultLayout: "list",
     minWidth: 320,
   },
+
+  // ── 추가 변형 4종 (2026-10) — 레퍼런스: IR 주요정보 / 적금 혜택 필 / 금리 표 / K-패스 안내 ──
+
+  linkcard: {
+    id: "linkcard",
+    label: "Link Group Card",
+    description: "회색 카드 안에 그룹 제목 + 더보기 화살표, 아래 링크 행 3~5개(텍스트 + 액션 아이콘). 자료실·IR·고객센터 메뉴 허브",
+    slotSpec: {
+      title: { maxChar: 10, maxLine: 1, required: true, allowedKinds: ["text"], label: "그룹 제목" },
+      cta: { allowedKinds: ["cta"], label: "더보기 링크 (화살표)" },
+      links: { required: true, allowedKinds: ["links"], label: "링크 행 (3~5개, 행 텍스트 ≤24자)" },
+    },
+    defaultCell: () => ({
+      title: { kind: "text", text: "자료" },
+      links: { kind: "links", items: [{ label: "항목 1", actions: ["download"] }, { label: "항목 2", actions: ["download"] }, { label: "항목 3", actions: ["download"] }] },
+    }),
+    allowedLayouts: ["grid", "list"],
+    defaultLayout: "grid",
+    minWidth: 280,
+  },
+
+  pillcard: {
+    id: "pillcard",
+    label: "Benefit Pill",
+    description: "테두리 있는 가로 카드. 좌 아이콘 48px + 한 줄 굵은 제목 (설명 없음). 혜택·보장 요약 3~5개",
+    slotSpec: {
+      icon: { required: true, allowedKinds: ["asset"], label: "아이콘 (ODS Small)" },
+      title: { maxChar: 14, maxLine: 1, required: true, allowedKinds: ["text"], label: "혜택 한 줄" },
+    },
+    defaultCell: () => ({ title: { kind: "text", text: "" } }),
+    allowedLayouts: ["list", "grid"],
+    defaultLayout: "list",
+    minWidth: 300,
+  },
+
+  kvcard: {
+    id: "kvcard",
+    label: "Key-Value Rows",
+    description: "좌측 그라데이션 레일 + 점, 행마다 라벨(좌)·값(우, 굵게). 금리·요금·수수료·기간별 조건 (단일 카드)",
+    slotSpec: {
+      title: { maxChar: 24, maxLine: 1, allowedKinds: ["text"], label: "표 제목 (선택)" },
+      rows: { required: true, allowedKinds: ["rows"], label: "행 (3~8개, 라벨 ≤12 · 값 ≤10)" },
+    },
+    defaultCell: () => ({
+      rows: { kind: "rows", items: [{ label: "조건 1", value: "값" }, { label: "조건 2", value: "값" }, { label: "조건 3", value: "값" }] },
+    }),
+    allowedLayouts: ["list"],
+    defaultLayout: "list",
+    minWidth: 320,
+  },
+
+  stepcard: {
+    id: "stepcard",
+    label: "Vertical Steps",
+    description: "회색 컨테이너 안에 아이콘 40px + 굵은 제목 + 보조 문장, 얇은 세로 연결선. 안내·절차 2~5단계",
+    slotSpec: {
+      icon: { allowedKinds: ["asset"], label: "아이콘 (ODS Small)" },
+      stepNumber: { maxChar: 4, maxLine: 1, allowedKinds: ["text"], label: "단계 번호 (아이콘 없을 때)" },
+      title: { maxChar: 20, maxLine: 2, required: true, allowedKinds: ["text"], label: "단계 제목" },
+      body: { maxChar: 24, maxLine: 1, allowedKinds: ["text"], label: "보조 문장" },
+    },
+    defaultCell: () => ({ title: { kind: "text", text: "" }, body: { kind: "text", text: "" } }),
+    allowedLayouts: ["list"],
+    defaultLayout: "list",
+    minWidth: 300,
+  },
 };
 
 /** tablecard 의 row 개수 제한 (CellSlotEditor 에서 강제) */
 export const TABLECARD_ROW_LIMITS = { min: 4, max: 6 } as const;
+export const KVCARD_ROW_LIMITS = { min: 3, max: 8 } as const;
+export const LINKCARD_ROW_LIMITS = { min: 2, max: 5 } as const;
 
 /** faqcard 의 cell 개수 제한 (Cells 리스트 add/remove 버튼에서 강제) */
 export const FAQCARD_CELL_LIMITS = { min: 4, max: 10 } as const;

@@ -16,7 +16,7 @@
 import { useMemo, useState } from "react";
 
 import { cn } from "@/lib/cn";
-import { IconChevronDown, IconPhoto, IconStar, IconStarFilled } from "@bucketplace/icons";
+import { IconArrowDownToLine, IconArrowRight, IconChevronDown, IconHeadset, IconLink, IconPhoto, IconStar, IconStarFilled } from "@bucketplace/icons";
 import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import {
   CARD_USAGE_PRESETS,
@@ -29,6 +29,7 @@ import {
   type ImgcardType,
 } from "@/schema/card";
 import type { Viewport } from "@/schema/doc";
+import type { LinkAction } from "@/schema/card";
 import OdsAssetRenderer from "./OdsAssetRenderer";
 
 // ---------------------------------------------------------------------------
@@ -54,6 +55,8 @@ interface CardProps {
   cardType?: ImgcardType;
   /** 빌더 프리뷰: 에셋 클릭 시 슬롯 교체 모달 */
   previewAsset?: CardPreviewAssetBinding;
+  /** 페이지 타이틀 레이아웃 — center 면 카드 그리드도 중앙 정렬 */
+  titleLayout?: "center" | "split";
 }
 
 /**
@@ -107,7 +110,7 @@ function resolveLayoutWithFallback(
   return layout;
 }
 
-export default function Card({ usage, layout, cells, viewport, cardType, previewAsset }: CardProps) {
+export default function Card({ usage, layout, cells, viewport, cardType, previewAsset, titleLayout }: CardProps) {
   const effective = resolveLayoutWithFallback(usage, layout, viewport);
   switch (effective.type) {
     case "grid":
@@ -119,6 +122,7 @@ export default function Card({ usage, layout, cells, viewport, cardType, preview
           settings={effective.settings}
           cardType={cardType}
           previewAsset={previewAsset}
+          centered={titleLayout === "center"}
         />
       );
     case "carousel":
@@ -141,6 +145,7 @@ export default function Card({ usage, layout, cells, viewport, cardType, preview
           settings={effective.settings}
           cardType={cardType}
           previewAsset={previewAsset}
+          centered={titleLayout === "center"}
         />
       );
   }
@@ -167,6 +172,7 @@ function GridLayout({
   settings: _settings,
   cardType,
   previewAsset,
+  centered,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
@@ -174,13 +180,16 @@ function GridLayout({
   settings: Extract<CardLayoutSettings, { type: "grid" }>["settings"];
   cardType?: ImgcardType;
   previewAsset?: CardPreviewAssetBinding;
+  centered?: boolean;
 }) {
   const gridCols =
-    usage === "listcard"
+    usage === "listcard" || usage === "pillcard"
       ? viewport === "mobile"
         ? "grid-cols-1"
         : "grid-cols-2"
-      : "grid-cols-2";
+      : usage === "linkcard"
+        ? viewport === "mobile" ? "grid-cols-1" : viewport === "tablet" ? "grid-cols-2" : "grid-cols-3"
+        : "grid-cols-2";
 
   // imgcard: 카드 최대 폭 300px (데스크톱 2열 시 카드가 ~600px 로 과대해지는 문제) —
   // 들어가는 만큼 열을 채우고(1280 → 4열, 768 → 2열) 남는 폭은 좌측 정렬로 비운다.
@@ -191,7 +200,7 @@ function GridLayout({
       style={{
         gap: `${GRID_FIXED_GAP_PX}px`,
         ...(isImgcard
-          ? { gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${IMGCARD_MIN_PX}px), ${IMGCARD_MAX_PX}px))`, justifyContent: "start" }
+          ? { gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${IMGCARD_MIN_PX}px), ${IMGCARD_MAX_PX}px))`, justifyContent: centered ? "center" : "start" }
           : null),
       }}
     >
@@ -322,6 +331,7 @@ function ListLayout({
   settings: _settings,
   cardType,
   previewAsset,
+  centered,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
@@ -329,7 +339,36 @@ function ListLayout({
   settings: Extract<CardLayoutSettings, { type: "list" }>["settings"];
   cardType?: ImgcardType;
   previewAsset?: CardPreviewAssetBinding;
+  centered?: boolean;
 }) {
+  if (usage === "stepcard") {
+    return (
+      <div className={cn("flex w-full flex-col rounded-ods-16 bg-ods-surface-gray px-5 py-6", viewport !== "mobile" && "max-w-[640px]", centered && "mx-auto")}>
+        {cells.map((cell, i) => (
+          <div key={cell.id} className="relative flex w-full gap-4">
+            {i < cells.length - 1 && (
+              <div aria-hidden className="absolute left-5 top-10 h-[calc(100%-32px)] w-px -translate-x-1/2 bg-ods-border" />
+            )}
+            <CellRenderer cell={cell} usage={usage} viewport={viewport} cardType={cardType} previewAsset={previewAsset} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (usage === "pillcard" || usage === "kvcard") {
+    // 세로형 읽기 컴포넌트: 데스크톱에서도 1열, 읽기 폭 640 제한
+    return (
+      <div className={cn("flex w-full flex-col", viewport !== "mobile" && "max-w-[640px]", centered && "mx-auto")} style={{ gap: `${ROW_FIXED_GAP_PX}px` }}>
+        {cells.map((cell) => (
+          <div key={cell.id} className="min-w-0 w-full">
+            <CellRenderer cell={cell} usage={usage} viewport={viewport} cardType={cardType} previewAsset={previewAsset} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   if (usage === "listcard") {
     const isMobile = viewport === "mobile";
     return (
@@ -419,6 +458,15 @@ function CellRenderer({
       return <CardTableCell cell={cell} />;
     case "faqcard":
       return <CardFaqCell cell={cell} />;
+    case "linkcard":
+      return <CardLinkGroupCell cell={cell} />;
+    case "pillcard":
+      return <CardPillCell cell={cell} onRequestSlotEdit={slotEdit("icon")} />;
+    case "kvcard":
+      return <CardKvCell cell={cell} />;
+    case "stepcard":
+      // stepcard 는 ListLayout 이 컨테이너·연결선을 그리고 셀은 행만 렌더
+      return <CardStepCell cell={cell} onRequestSlotEdit={slotEdit("icon")} />;
   }
 }
 
@@ -481,6 +529,13 @@ function renderRichText(text: string): React.ReactNode {
     }
     return <span key={i}>{part}</span>;
   });
+}
+
+function asLinks(c?: CardSlotContent) {
+  return c?.kind === "links" ? c.items : null;
+}
+function asRows(c?: CardSlotContent) {
+  return c?.kind === "rows" ? c.items : null;
 }
 
 function asCta(c?: CardSlotContent): { label: string; url: string } | null {
@@ -630,7 +685,7 @@ function CardReviewCell({ cell }: { cell: CardCell; onRequestSlotEdit?: () => vo
 
 /**
  * 프로세스 스텝 — Figma `card_process/md` (node 34:2983) 스펙 적용.
- * - 컨테이너 260px 높이 그라데이션 배경, `px-5 pb-5` rounded-12. `justify-between` 으로 그래픽·텍스트를 카드 안에서 위·아래 배치.
+ * - 컨테이너 최소 260px(콘텐츠에 맞춰 늘어남, 같은 행은 h-full 로 높이 동일) 그라데이션 배경, `px-5 pb-5` rounded-12. `justify-between` 으로 그래픽·텍스트를 카드 안에서 위·아래 배치.
  * - imgGraphic 영역 : `max-w-[240px]` 래퍼에 `pt-2`(8px), 내부 `240×160` 박스. media 가 있으면 이미지, 없으면 placeholder chip 표시.
  * - title  : Heading20 SemiBold 20/28 -0.3 #141414 opacity-80, 1줄 ellipsis.
  *            stepNumber 가 별도로 있으면 "{n}. {title}" 으로 prefix.
@@ -657,7 +712,7 @@ function CardLeadingAssetCell({
   return (
     <div
       // 디자인 시안: 좌측 정렬(items-start), 하단 패딩 20px(pb-5)
-      className="flex h-[260px] w-full flex-col items-start justify-between gap-4 rounded-ods-12 px-5 pb-5"
+      className="flex h-full min-h-[260px] w-full flex-col items-start justify-between gap-4 rounded-ods-12 px-5 pb-5"
       style={{
         backgroundImage:
           "linear-gradient(173.759deg, rgba(239,239,239,0.2) 1.5877%, rgba(139,195,235,0.2) 92.346%), linear-gradient(90deg, rgb(245,245,245) 0%, rgb(245,245,245) 100%)",
@@ -865,6 +920,163 @@ function CardTableCell({ cell }: { cell: CardCell }) {
             )}
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 링크 묶음 카드 — 레퍼런스: IR "주요 투자정보"
+//   surface-gray 컨테이너 radius-16, 그룹 제목(title-lg) + 더보기 원형 화살표,
+//   링크 행(body-lg) 3~5개는 border 구분선, 우측 액션 아이콘(download/audio/link/arrow)
+// ---------------------------------------------------------------------------
+
+const LINK_ACTION_ICON = {
+  download: IconArrowDownToLine,
+  audio: IconHeadset,
+  link: IconLink,
+  arrow: IconArrowRight,
+} as const;
+
+function CardLinkGroupCell({ cell }: { cell: CardCell }) {
+  const title = asText(slot(cell, "title"));
+  const more = asCta(slot(cell, "cta"));
+  const links = asLinks(slot(cell, "links")) ?? [];
+  return (
+    <div className="flex h-full w-full flex-col rounded-ods-16 bg-ods-surface-gray px-5 pb-2 pt-6">
+      <div className="mb-8 flex items-center gap-2">
+        {title && (
+          <h3 className="font-pretendard text-ods-title-lg font-semibold text-ods-text-primary">{title}</h3>
+        )}
+        {more && (
+          <a
+            href={more.url || "#"}
+            aria-label={more.label || `${title ?? ""} 더보기`}
+            className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-ods-border-light text-ods-text-primary"
+          >
+            <IconArrowRight size={14} />
+          </a>
+        )}
+      </div>
+      <ul className="m-0 flex list-none flex-col p-0">
+        {links.map((l, i) => (
+          <li key={i} className="flex items-center justify-between gap-3 border-t border-ods-border py-4">
+            <a href={l.url || "#"} className="min-w-0 flex-1 truncate font-pretendard text-ods-body-lg text-ods-text-primary">
+              {l.label}
+            </a>
+            <span className="flex shrink-0 items-center gap-4 text-ods-text-primary">
+              {((l.actions && l.actions.length ? l.actions : ["arrow"]) as LinkAction[]).map((a) => {
+                const Icon = LINK_ACTION_ICON[a] ?? IconArrowRight;
+                return <Icon key={a} size={18} aria-label={a} />;
+              })}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 혜택 필 — 레퍼런스: 적금 "매달 자동이체로 편하게"
+//   테두리 1px border-default, radius-16, 좌 아이콘 48px + 한 줄 굵은 제목(title-md)
+// ---------------------------------------------------------------------------
+
+function CardPillCell({ cell, onRequestSlotEdit }: { cell: CardCell; onRequestSlotEdit?: () => void }) {
+  const icon = asAsset(slot(cell, "icon"));
+  const title = asText(slot(cell, "title"));
+  return (
+    <div className="flex w-full items-center gap-5 rounded-ods-16 border border-ods-border bg-white px-6 py-5">
+      <div className="flex size-12 shrink-0 items-center justify-center">
+        {icon ? (
+          <OdsAssetRenderer asset={icon} size={48} className="size-12 object-contain" onRequestSlotEdit={onRequestSlotEdit} />
+        ) : (
+          <IconPhoto size={28} className="text-ods-text-tertiary" />
+        )}
+      </div>
+      <p className="min-w-0 flex-1 truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
+        {title}
+      </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 조건 표 — 레퍼런스: 적금 "기간별 금리"
+//   좌측 그라데이션 레일(primary 저투명도) + 흰 점, 행: 라벨(body-lg, secondary) · 값(title-lg, 우측, tabular-nums)
+// ---------------------------------------------------------------------------
+
+function CardKvCell({ cell }: { cell: CardCell }) {
+  const title = asText(slot(cell, "title"));
+  const rows = asRows(slot(cell, "rows")) ?? [];
+  const rail = cell.theme !== "grey"; // theme:"grey" 로 레일 끔 (하네스 rail:false)
+  return (
+    <div className="w-full">
+      {title && (
+        <h3 className="mb-4 font-pretendard text-ods-title-md font-semibold text-ods-text-primary">{title}</h3>
+      )}
+      <div className="relative">
+        {rail && (
+          <div
+            aria-hidden
+            className="absolute bottom-0 left-0 top-0 w-3 rounded-full"
+            style={{ background: "linear-gradient(180deg, rgba(0,161,255,0.22) 0%, rgba(0,161,255,0.06) 100%)" }}
+          />
+        )}
+        <ul className={cn("m-0 flex list-none flex-col p-0", rail && "pl-10")}>
+          {rows.map((r, i) => (
+            <li key={i} className="relative flex items-baseline justify-between gap-4 py-4">
+              {rail && (
+                <span aria-hidden className="absolute -left-10 top-1/2 size-3 -translate-y-1/2 translate-x-0 rounded-full bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.06)]" />
+              )}
+              <span className="min-w-0 flex-1 truncate font-pretendard text-ods-body-lg text-ods-text-secondary">{r.label}</span>
+              <span
+                className={cn(
+                  "shrink-0 font-pretendard text-ods-title-lg font-bold tracking-[-0.3px]",
+                  r.highlight ? "text-ods-primary" : "text-ods-text-primary"
+                )}
+                style={{ fontVariantNumeric: "tabular-nums" }}
+              >
+                {r.value}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 세로 단계 — 레퍼런스: K-패스 "이미 쓰던 카드가 있어도"
+//   ListLayout(stepcard) 가 surface-gray 컨테이너와 세로 연결선을 그리고, 셀은 아이콘 40px + 제목(title-md) + 보조(body-md tertiary)
+// ---------------------------------------------------------------------------
+
+function CardStepCell({ cell, onRequestSlotEdit }: { cell: CardCell; onRequestSlotEdit?: () => void }) {
+  const icon = asAsset(slot(cell, "icon"));
+  const stepNumber = asText(slot(cell, "stepNumber"));
+  const title = asText(slot(cell, "title"));
+  const body = asText(slot(cell, "body"));
+  return (
+    <div className="flex w-full gap-4 py-3">
+      <div className="relative z-[1] flex size-10 shrink-0 items-center justify-center rounded-full bg-ods-surface-gray">
+        {icon ? (
+          <OdsAssetRenderer asset={icon} size={40} className="size-10 object-contain" onRequestSlotEdit={onRequestSlotEdit} />
+        ) : (
+          <span className="flex size-8 items-center justify-center rounded-full bg-ods-primary font-pretendard text-[13px] font-bold text-white">
+            {stepNumber ?? ""}
+          </span>
+        )}
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col gap-1 pt-2">
+        {title && (
+          <p className="whitespace-pre-line font-pretendard text-[17px] font-semibold leading-[22px] tracking-[-0.3px] text-ods-text-primary">
+            {title}
+          </p>
+        )}
+        {body && (
+          <p className="truncate font-pretendard text-ods-body-md text-ods-text-tertiary">{body}</p>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 {
+ "titleLayout": "split",
  "source": {
   "type": "text",
   "ref": "examples/move-in-cleaning.brief.md — PM 메모(이사청소 LP)"

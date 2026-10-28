@@ -42,6 +42,24 @@ harness/
   out/<slug>/               spec.json · doc.json · report.json · page.html · preview.html · asset-sheet.png · gen/
 ```
 
+## ODS 에셋 원본 — 읽기 권한이 없을 때
+`bucketplace/design-assets` 읽기 권한이 없으면 `setup.sh` 가 원본을 받지 못한다. 그래도 빌드는 되고, 에셋은 아래 순서로 채워진다.
+
+| 순위 | 방법 | 결과 |
+|---|---|---|
+| 1 | 원본 (`~/design-assets`, `~/.lp-draft/design-assets`, `DESIGN_ASSETS_ROOT`) | 480w 원본 임베드 (정상) |
+| 2 | **CDN 폴백** `asset.ohousecdn.com/static/<Asset>/image_480.webp` — 자동, `~/.lp-draft/cdn-cache` 에 캐시 | 대부분 정상 (일부 미배포 에셋은 실패) |
+| 3 | 플레이스홀더 | 회색 이미지 박스 + 리포트 `warn` |
+
+권한이 없을 때 할 일:
+1. `node harness/bin/lp.mjs doctor` 로 현재 상태 확인 (원본 / CDN 도달 여부)
+2. `#ai_frontier` 에 **bucketplace/design-assets 읽기 권한** 요청 (Product Design 팀원은 대부분 보유)
+3. 급하면 권한 있는 팀원에게 `node harness/bin/lp.mjs pack-assets` 결과(`ods-assets-pack.tgz`, 약 40MB)를 받아 `tar -xzf` 후 `DESIGN_ASSETS_ROOT=<풀린 폴더>` 로 지정 (또는 `~/design-assets` 에 배치)
+4. CDN 도 막힌 환경(사내 프록시 등)이면 플레이스홀더로 시안을 먼저 보고, 에셋은 권한 확보 후 재빌드
+
+## 마켓플레이스 임베드본
+`node harness/bin/pack-plugin.mjs <dest>` 가 렌더에 필요한 `src` 서브셋 + 하네스 런타임 + 최소 package.json 을 묶어 독립 폴더를 만든다 (Next 앱·빌더 어드민 제외, 약 2MB). 마켓플레이스 `plugins/product-design/skills/lp-draft/harness/` 가 이 결과물이며, 레포 쪽이 원본이다 — 하네스를 고치면 다시 pack 해서 MR.
+
 ## 빠른 시작
 ```bash
 bash harness/setup.sh                                   # 의존성 · design-assets · 인덱스 · 번들
@@ -49,9 +67,22 @@ node harness/bin/lp.mjs build harness/examples/moving.spec.json --shots
 open harness/out/moving-1person/preview.html
 ```
 
+## 카드 변형 9종과 자동 채택
+`imgcard(bgfullimg|leading-asset) · reviewcard · listcard · tablecard · faqcard` + **`linkcard · pillcard · kvcard · stepcard`** (2026-10 추가, `src/schema/card.ts` 단일 Card usage).
+`lib/compile.mjs chooseCardUsage` 가 아이템 형태 신호로 결정적으로 고르고(`links[]` → linkcard, 설명 없는 ≤14자+아이콘 → pillcard, 단일 카드 '라벨: 값'+단위 → kvcard, ≥5단계/아이콘만/보조문 안내 → stepcard), 스펙 `card:` 로 허용 목록 안에서 override. 근거는 리포트 `info`. 필·단계 아이콘은 `icon-small` 역할로 ODS 숏컷(Small SVG) 우선.
+
+## 레이아웃·줄바꿈 규칙
+- `titleLayout` 은 페이지당 하나(`center` | `split`). compile 이 모든 섹션 props 에 같은 값을 주입하고, 섹션별 지정은 validate 에서 error.
+  - center: 히어로 세로 스택 중앙, 섹션 타이틀 중앙, imgcard 그리드 중앙 정렬
+  - split: 히어로 좌 텍스트·CTA / 우 에셋(360px), 모바일은 좌정렬 세로 스택, 섹션 타이틀 좌측
+- 타이틀 줄바꿈(`lib/linebreak.mjs`): Pretendard SemiBold 실측 글자폭(`catalog/font-widths.json`) × font-size 로 모바일 폭을 재고, 쉼표·조사 뒤 우선 / 수식어 뒤·1글자 고아 회피 / 줄 길이 편차 최소로 2줄 분할. 카드 타이틀은 폭 초과 시 warn.
+
 ## 빌더 소스 변경 (이 하네스 도입 시 함께 반영)
 - `Card.tsx` FAQ 답변: 닫힘 상태도 `hidden` 으로 DOM 유지 (정적 export 에서 답변 유실 방지, 빌더 동작 동일)
 - `Card.tsx` bgfullimg 태그: absolute 고정 → 타이틀 위 흐름 배치 (본문 2줄일 때 겹침 수정)
+- `card.ts` + `Card.tsx` + `Card.stories.tsx`: 변형 4종(linkcard·pillcard·kvcard·stepcard) 슬롯 `links`/`rows`, 셀 렌더러, 스토리. `ods-icons.tsx` 에 IconArrowDownToLine·IconHeadset·IconLink(design-assets 원본 패스) 추가, IconArrowRight 원본 패스로 교체
+- `StickyCtaTemplate.tsx`: fixed + spacer, ATF(히어로) 지나간 뒤 노출(240ms 트랜지션), 흰색 dim 그라데이션, 모바일 100% / PC max-width 480. 빌더는 컴포넌트 effect, 정적 export 는 page 스크립트가 같은 규칙으로 토글. PC 에서도 기본 노출
+- `SectionTitleBlock.tsx` / `HeroTemplate.tsx` / `Card.tsx`: `props.titleLayout`(center | split) 분기 — 히어로 split 변형(좌 텍스트/우 에셋), 섹션 타이틀 중앙 정렬, imgcard 그리드 중앙 정렬. 타이틀에 `text-wrap: balance`
 - `Card.tsx` imgcard 카드 폭 260–300px: grid 는 `auto-fill` 로 들어가는 만큼 열 생성(1280→4열, 768→2열), carousel 카드폭도 300 상한
 
 ## 카탈로그 오너 확인 필요

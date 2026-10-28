@@ -6,6 +6,8 @@
  *   lp assets "<키워드>" [--role icon|media] [--limit 8]   ODS 에셋 검색
  *   lp validate <spec.json>            가이드 검증만 (JSON 리포트)
  *   lp build <spec.json> [--out dir]   compile → validate → render → out/<slug>/{page,preview}.html
+ *   lp doctor                          환경 점검 (node·sharp·폰트 도구·playwright·design-assets·CDN 폴백)
+ *   lp pack-assets [--out file.tgz]    design-assets 원본(480w·svg·adf)만 묶어 읽기 권한 없는 팀원에게 전달
  *   lp sheet <out/slug>                 선택된 에셋 컨택트시트(PNG) — 톤 일관성 육안 검수용
  *   lp gen-import --name <이름> [--url <figma image.url>] [--file <미리보기 경로>] [--slug <slug>]
  *                                      Figma AI 생성 이미지 → 배경 제거·480px 정규화 → spec 에 넣을 file 경로 출력
@@ -13,7 +15,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { compileSpec, PRESET_RULES } from "../lib/compile.mjs";
+import { compileSpec, PRESET_RULES, USAGE_RULES } from "../lib/compile.mjs";
 import { validateSpec, LIMITS, BANNED } from "../lib/validate.mjs";
 import { searchAssets, designAssetsRoot } from "../lib/assets.mjs";
 
@@ -23,8 +25,9 @@ const flag = (n, d) => { const i = rest.indexOf(`--${n}`); return i >= 0 ? rest[
 const readSpec = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
 
 if (cmd === "catalog") {
-  const out = { presets: {}, limits: LIMITS, banned: BANNED };
-  for (const [k, r] of Object.entries(PRESET_RULES)) out.presets[k] = { card: r.usage, cardTypes: r.cardTypes, layouts: Object.keys(r.layouts), defaultLayout: r.defaultLayout, items: r.count, recommended: r.recommended };
+  const out = { titleLayout: { required: true, options: { center: "[타이틀] [에셋] 중앙 정렬 (히어로 세로 스택, 섹션 타이틀·카드 중앙)", split: "[타이틀] [에셋] 일렬 정렬 (히어로 좌 텍스트/우 에셋, 섹션 타이틀 좌측)" }, rule: "페이지당 하나, 섹션별 변경 불가" }, presets: {}, limits: LIMITS, banned: BANNED };
+  for (const [k, r] of Object.entries(PRESET_RULES)) out.presets[k] = { card: r.usage, allowedCards: r.allowedUsages, cardTypes: r.cardTypes, layouts: Object.keys(r.layouts), defaultLayout: r.defaultLayout, items: r.count, recommended: r.recommended };
+  out.cardVariants = { linkcard: "그룹 제목 + 더보기 + 링크 행(액션: download|audio|link|arrow) — items[].links[] 있으면 자동", pillcard: "아이콘 + ≤14자 제목 한 줄 — usp 에서 설명 없는 짧은 혜택이면 자동", kvcard: "레일 + '라벨: 값' 행 — table 단일 카드에 단위 값이면 자동 (rail:false 로 레일 끔)", stepcard: "아이콘 + 제목 + 보조문 세로 단계 — process ≥5단계/아이콘만/layout:list, usp 안내형이면 자동" };
   console.log(JSON.stringify(out, null, 1));
 } else if (cmd === "assets") {
   const q = rest.filter((x, i) => !x.startsWith("--") && !rest[i - 1]?.startsWith("--")).join(" ");
@@ -33,14 +36,14 @@ if (cmd === "catalog") {
   if (!res.length) console.log("(결과 없음 → 생성형 이미지 대상)");
 } else if (cmd === "validate") {
   const spec = readSpec(rest[0]);
-  const { assetLog, notes } = compileSpec(spec);
-  console.log(JSON.stringify(validateSpec(spec, { assetLog, notes }), null, 1));
+  const { assetLog, notes, breaks, cardChoices } = compileSpec(spec);
+  console.log(JSON.stringify(validateSpec(spec, { assetLog, notes, breaks, cardChoices }), null, 1));
 } else if (cmd === "build") {
-  if (!designAssetsRoot()) console.warn("⚠ design-assets 원본 없음 — 에셋이 플레이스홀더로 표시됩니다 (README 'ODS 에셋 원본' 참고)");
+  if (!designAssetsRoot()) console.warn("⚠ design-assets 원본 없음 — CDN 폴백으로 에셋을 받습니다 (실패한 슬롯은 플레이스홀더). `lp doctor` 로 확인");
   const specPath = rest[0];
   const spec = readSpec(specPath);
-  const { doc, assetLog, notes, where } = compileSpec(spec);
-  const report = validateSpec(spec, { assetLog, notes });
+  const { doc, assetLog, notes, where, breaks, cardChoices } = compileSpec(spec);
+  const report = validateSpec(spec, { assetLog, notes, breaks, cardChoices });
   const { assemble } = await import("../lib/assemble.mjs");
   const { page, makePreview, stats } = await assemble(doc, { report, spec, assetLog });
   const outDir = flag("out", path.join(here, "../out", doc.meta.slug));
@@ -55,11 +58,44 @@ if (cmd === "catalog") {
     for (const l of ["error", "warn", "info"]) report.summary[l] = report.issues.filter((i) => i.level === l).length;
     report.ok = report.summary.error === 0;
   }
+  const { cdnState } = await import("../lib/assets.mjs");
+  if (cdnState.tried) {
+    report.issues.push({ level: cdnState.fail ? "warn" : "info", where: "assets", msg: `design-assets 원본 없음 → CDN 폴백 ${cdnState.ok}개 성공${cdnState.fail ? `, ${cdnState.fail}개 실패(플레이스홀더)` : ""}` });
+    for (const l of ["error", "warn", "info"]) report.summary[l] = report.issues.filter((i) => i.level === l).length;
+  }
   const preview = makePreview(report);
   fs.writeFileSync(path.join(outDir, "preview.html"), preview);
   fs.writeFileSync(path.join(outDir, "report.json"), JSON.stringify({ ...report, assetLog }, null, 1));
-  console.log(JSON.stringify({ outDir, ...stats, previewKB: Math.round(preview.length / 1024), summary: report.summary, ok: report.ok }, null, 1));
+  console.log(JSON.stringify({ outDir, ...stats, previewKB: Math.round(preview.length / 1024), summary: report.summary, ok: report.ok, cdnFallback: cdnState.tried ? cdnState : undefined }, null, 1));
   for (const i of report.issues.filter((i) => i.level !== "info")) console.log(`  [${i.level}] ${i.where} — ${i.msg}`);
+} else if (cmd === "doctor") {
+  const { execSync } = await import("node:child_process");
+  const ok = (b) => (b ? "✓" : "✗");
+  const tryRun = (c) => { try { return execSync(c, { stdio: ["ignore", "pipe", "ignore"] }).toString().trim(); } catch { return null; } };
+  const root = designAssetsRoot();
+  const lines = [];
+  lines.push(`${ok(true)} node ${process.version}`);
+  let sharpOk = false; try { await import("sharp"); sharpOk = true; } catch {}
+  lines.push(`${ok(sharpOk)} sharp (에셋 변환)${sharpOk ? "" : " — npm install 필요"}`);
+  const pyft = tryRun("pyftsubset --help >/dev/null 2>&1 && echo ok") || tryRun("python3 -c 'import fontTools,brotli;print(\"ok\")'");
+  lines.push(`${ok(!!pyft)} fonttools+brotli (Pretendard 서브셋)${pyft ? "" : " — pip install fonttools brotli (없어도 빌드는 되지만 폰트가 시스템 폰트로 대체)"}`);
+  const pw = tryRun("npm root -g") ; let pwOk = false; try { const { createRequire } = await import("node:module"); const r = createRequire((pw || "") + "/"); r("playwright"); pwOk = true; } catch { try { await import("playwright"); pwOk = true; } catch {} }
+  lines.push(`${ok(pwOk)} playwright (렌더 QA)${pwOk ? "" : " — 없으면 --no-qa 로 빌드"}`);
+  lines.push(`${ok(!!root)} design-assets 원본 ${root ? `(${root}, ${fs.readdirSync(path.join(root, "assets")).length} assets)` : "— 없음 → CDN 폴백 사용"}`);
+  const { findAsset } = await import("../lib/assets.mjs");
+  const probe = findAsset("AssetBellLargeGenuineBlueView2");
+  let cdn = null; try { const r = await fetch(`https://asset.ohousecdn.com/static/${probe.id}/image_480.webp`, { method: "HEAD", signal: AbortSignal.timeout(6000) }); cdn = r.ok; } catch { cdn = false; }
+  lines.push(`${ok(cdn)} CDN 폴백 (asset.ohousecdn.com)${cdn ? "" : " — 접근 불가. 원본도 없으면 에셋이 플레이스홀더로 렌더"}`);
+  lines.push(`${ok(fs.existsSync(path.join(here, "../.build/render.mjs")))} 렌더 번들 (없으면 첫 build 때 자동 생성)`);
+  console.log(lines.join("\n"));
+  if (!root && !cdn) { console.log("\n→ design-assets 읽기 권한이 없다면: ① #ai_frontier 에 bucketplace/design-assets 읽기 권한 요청 ② 권한 있는 팀원에게 `lp pack-assets` 결과(ods-assets-pack.tgz)를 받아 풀고 DESIGN_ASSETS_ROOT 로 지정"); }
+} else if (cmd === "pack-assets") {
+  const root = designAssetsRoot();
+  if (!root) { console.error("design-assets 원본이 없어 묶을 수 없습니다"); process.exit(1); }
+  const { execSync } = await import("node:child_process");
+  const out = flag("out", path.resolve("ods-assets-pack.tgz"));
+  execSync(`tar -czf "${out}" -C "${root}" --exclude='*_120w*' --exclude='*_240w*' --exclude='*_960w*' --exclude='*_1440w*' --exclude='*_1920w*' --exclude='*.avif' assets`, { stdio: "inherit" });
+  console.log(`${out} (${Math.round(fs.statSync(out).size / 1048576)} MB) — 받는 쪽: tar -xzf 후 DESIGN_ASSETS_ROOT=<풀린 폴더> 또는 ~/design-assets 에 배치`);
 } else if (cmd === "sheet") {
   const dir = rest[0];
   const rep = JSON.parse(fs.readFileSync(path.join(dir, "report.json"), "utf8"));

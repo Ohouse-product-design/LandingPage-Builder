@@ -455,8 +455,11 @@ Section
 | locked | true |
 | maxPerPage | 1 |
 | props | `label` |
-| 위치 | `sticky bottom-0 z-10` |
-| button | full width, `radius.8`, `#00A1FF`, 14px semibold |
+| 위치 | `fixed bottom-0 z-20` + 문서 흐름 spacer 76px |
+| 노출 | ATF(히어로) 하단이 뷰포트 위로 지나간 뒤 노출. translateY/opacity 240ms ease-out (reduced-motion 즉시) |
+| 배경 | 흰색 dim 그라데이션 `rgba(255,255,255,0) → .86(36%) → .98` |
+| 폭 | 모바일 100%, 태블릿·PC `max-width 480` 중앙 |
+| button | `radius.8`, `#00A1FF`, 16px semibold, 그림자 primary 28% |
 
 ### 3-4. `footer`
 

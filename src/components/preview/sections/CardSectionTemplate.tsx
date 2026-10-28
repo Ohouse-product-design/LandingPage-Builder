@@ -5,7 +5,7 @@ import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import type { CardProps } from "@/schema/card";
 import type { ComponentInstance, Section, Viewport } from "@/schema/doc";
 import Card from "../Card";
-import SectionTitleBlock, { containerPad } from "./SectionTitleBlock";
+import SectionTitleBlock, { containerPad, titleLayoutOf } from "./SectionTitleBlock";
 
 export type CardSectionBg = "white" | "gray" | "light";
 
@@ -44,6 +44,7 @@ export default function CardSectionTemplate({
           cells={cardProps.cells}
           cardType={cardProps.cardType}
           viewport={viewport}
+          titleLayout={titleLayoutOf(section)}
           previewAsset={
             onRequestAssetSlot && cardInstance
               ? {
