@@ -74,6 +74,13 @@ export function searchAssets(query, { role = "media", limit = 5, exclude = [], p
       if (/Large|Isometric|View\d/.test(a.id)) s += 0.6;
       if (/Small|Shortcut/i.test(a.id) || kws.includes("숏컷")) s -= 1.5;
       if (a.kind === "svg") s -= 3; // 평면 SVG 는 3D 일러스트 슬롯에 섞지 않음
+    } else if (role === "icon-small") {
+      // pillcard·stepcard 아이콘: ODS 숏컷(Small SVG) 언어를 우선, 3D 일러스트는 차선
+      if (a.kind === "svg") s += 2.5;
+      if (/Small/.test(a.id) || kws.includes("숏컷")) s += 1.5;
+      if (a.kind === "image") s -= 2;
+      // 숏컷 아이콘 색: 한 리스트 안에서 블루·그레이 계열로 모이게 (웜 컬러는 차선)
+      if (/GenuineBlue/.test(a.id)) s += 1; else if (/DarkBlue|DavyGray/.test(a.id)) s += 0.5; else if (/MangoOrange|CoralRed|CandyPink|Violet|TanYellow|JadeGreen/.test(a.id)) s -= 1;
     } else if (role === "icon") {
       // 리스트 카드 아이콘도 페이지 일러스트 언어(3D)에 맞춘다 — 평면 SVG 는 차선
       if (a.kind === "image") s += 1;

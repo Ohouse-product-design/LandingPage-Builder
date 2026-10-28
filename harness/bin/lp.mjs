@@ -13,7 +13,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { compileSpec, PRESET_RULES } from "../lib/compile.mjs";
+import { compileSpec, PRESET_RULES, USAGE_RULES } from "../lib/compile.mjs";
 import { validateSpec, LIMITS, BANNED } from "../lib/validate.mjs";
 import { searchAssets, designAssetsRoot } from "../lib/assets.mjs";
 
@@ -24,7 +24,8 @@ const readSpec = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
 
 if (cmd === "catalog") {
   const out = { titleLayout: { required: true, options: { center: "[타이틀] [에셋] 중앙 정렬 (히어로 세로 스택, 섹션 타이틀·카드 중앙)", split: "[타이틀] [에셋] 일렬 정렬 (히어로 좌 텍스트/우 에셋, 섹션 타이틀 좌측)" }, rule: "페이지당 하나, 섹션별 변경 불가" }, presets: {}, limits: LIMITS, banned: BANNED };
-  for (const [k, r] of Object.entries(PRESET_RULES)) out.presets[k] = { card: r.usage, cardTypes: r.cardTypes, layouts: Object.keys(r.layouts), defaultLayout: r.defaultLayout, items: r.count, recommended: r.recommended };
+  for (const [k, r] of Object.entries(PRESET_RULES)) out.presets[k] = { card: r.usage, allowedCards: r.allowedUsages, cardTypes: r.cardTypes, layouts: Object.keys(r.layouts), defaultLayout: r.defaultLayout, items: r.count, recommended: r.recommended };
+  out.cardVariants = { linkcard: "그룹 제목 + 더보기 + 링크 행(액션: download|audio|link|arrow) — items[].links[] 있으면 자동", pillcard: "아이콘 + ≤14자 제목 한 줄 — usp 에서 설명 없는 짧은 혜택이면 자동", kvcard: "레일 + '라벨: 값' 행 — table 단일 카드에 단위 값이면 자동 (rail:false 로 레일 끔)", stepcard: "아이콘 + 제목 + 보조문 세로 단계 — process ≥5단계/아이콘만/layout:list, usp 안내형이면 자동" };
   console.log(JSON.stringify(out, null, 1));
 } else if (cmd === "assets") {
   const q = rest.filter((x, i) => !x.startsWith("--") && !rest[i - 1]?.startsWith("--")).join(" ");
@@ -33,14 +34,14 @@ if (cmd === "catalog") {
   if (!res.length) console.log("(결과 없음 → 생성형 이미지 대상)");
 } else if (cmd === "validate") {
   const spec = readSpec(rest[0]);
-  const { assetLog, notes, breaks } = compileSpec(spec);
-  console.log(JSON.stringify(validateSpec(spec, { assetLog, notes, breaks }), null, 1));
+  const { assetLog, notes, breaks, cardChoices } = compileSpec(spec);
+  console.log(JSON.stringify(validateSpec(spec, { assetLog, notes, breaks, cardChoices }), null, 1));
 } else if (cmd === "build") {
   if (!designAssetsRoot()) console.warn("⚠ design-assets 원본 없음 — 에셋이 플레이스홀더로 표시됩니다 (README 'ODS 에셋 원본' 참고)");
   const specPath = rest[0];
   const spec = readSpec(specPath);
-  const { doc, assetLog, notes, where, breaks } = compileSpec(spec);
-  const report = validateSpec(spec, { assetLog, notes, breaks });
+  const { doc, assetLog, notes, where, breaks, cardChoices } = compileSpec(spec);
+  const report = validateSpec(spec, { assetLog, notes, breaks, cardChoices });
   const { assemble } = await import("../lib/assemble.mjs");
   const { page, makePreview, stats } = await assemble(doc, { report, spec, assetLog });
   const outDir = flag("out", path.join(here, "../out", doc.meta.slug));

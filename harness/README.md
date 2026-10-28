@@ -49,6 +49,10 @@ node harness/bin/lp.mjs build harness/examples/moving.spec.json --shots
 open harness/out/moving-1person/preview.html
 ```
 
+## 카드 변형 9종과 자동 채택
+`imgcard(bgfullimg|leading-asset) · reviewcard · listcard · tablecard · faqcard` + **`linkcard · pillcard · kvcard · stepcard`** (2026-10 추가, `src/schema/card.ts` 단일 Card usage).
+`lib/compile.mjs chooseCardUsage` 가 아이템 형태 신호로 결정적으로 고르고(`links[]` → linkcard, 설명 없는 ≤14자+아이콘 → pillcard, 단일 카드 '라벨: 값'+단위 → kvcard, ≥5단계/아이콘만/보조문 안내 → stepcard), 스펙 `card:` 로 허용 목록 안에서 override. 근거는 리포트 `info`. 필·단계 아이콘은 `icon-small` 역할로 ODS 숏컷(Small SVG) 우선.
+
 ## 레이아웃·줄바꿈 규칙
 - `titleLayout` 은 페이지당 하나(`center` | `split`). compile 이 모든 섹션 props 에 같은 값을 주입하고, 섹션별 지정은 validate 에서 error.
   - center: 히어로 세로 스택 중앙, 섹션 타이틀 중앙, imgcard 그리드 중앙 정렬
@@ -58,6 +62,7 @@ open harness/out/moving-1person/preview.html
 ## 빌더 소스 변경 (이 하네스 도입 시 함께 반영)
 - `Card.tsx` FAQ 답변: 닫힘 상태도 `hidden` 으로 DOM 유지 (정적 export 에서 답변 유실 방지, 빌더 동작 동일)
 - `Card.tsx` bgfullimg 태그: absolute 고정 → 타이틀 위 흐름 배치 (본문 2줄일 때 겹침 수정)
+- `card.ts` + `Card.tsx` + `Card.stories.tsx`: 변형 4종(linkcard·pillcard·kvcard·stepcard) 슬롯 `links`/`rows`, 셀 렌더러, 스토리. `ods-icons.tsx` 에 IconArrowDownToLine·IconHeadset·IconLink(design-assets 원본 패스) 추가, IconArrowRight 원본 패스로 교체
 - `SectionTitleBlock.tsx` / `HeroTemplate.tsx` / `Card.tsx`: `props.titleLayout`(center | split) 분기 — 히어로 split 변형(좌 텍스트/우 에셋), 섹션 타이틀 중앙 정렬, imgcard 그리드 중앙 정렬. 타이틀에 `text-wrap: balance`
 - `Card.tsx` imgcard 카드 폭 260–300px: grid 는 `auto-fill` 로 들어가는 만큼 열 생성(1280→4열, 768→2열), carousel 카드폭도 300 상한
 

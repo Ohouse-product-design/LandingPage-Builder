@@ -132,6 +132,11 @@ const usageFixture: Record<CardUsagePresetId, Section> = {
   // tablecard: 동일 base 를 쓰되 cells 만 tablecardCells 로 교체
   tablecard: fixtureByPreset.usp,
   faqcard: fixtureByPreset.faq,
+  // 추가 변형 4종은 각 스토리의 render 에서 전용 cells 로 교체 (base 는 usp)
+  linkcard: fixtureByPreset.usp,
+  pillcard: fixtureByPreset.usp,
+  kvcard: fixtureByPreset.usp,
+  stepcard: fixtureByPreset.process,
 };
 // imgcard cardType="leading-asset" 일 때 사용할 step 형식 데이터
 const imgcardLeadingAssetFixture = fixtureByPreset.process;
@@ -327,3 +332,53 @@ export const TablecardOneRow: Story = {
   },
 };
 
+
+// ---------------------------------------------------------------------------
+// 추가 변형 4종 (2026-10) — 레퍼런스: IR 주요정보 / 적금 혜택 필 / 금리 표 / K-패스 안내
+// 하네스(harness/lib/compile.mjs chooseCardUsage) 가 기획 맥락 신호로 자동 채택한다.
+// ---------------------------------------------------------------------------
+
+const linkcardCells: CardCell[] = [
+  { id: "lk-1", slots: { title: { kind: "text", text: "실적발표" }, cta: { kind: "cta", label: "더보기", url: "#" }, links: { kind: "links", items: [
+    { label: "2026년 2분기 실적발표", actions: ["audio", "download"] }, { label: "2026년 1분기 실적발표", actions: ["audio", "download"] }, { label: "2025년 4분기 실적발표", actions: ["audio", "download"] } ] } } },
+  { id: "lk-2", slots: { title: { kind: "text", text: "경영공시" }, cta: { kind: "cta", label: "더보기", url: "#" }, links: { kind: "links", items: [
+    { label: "2026년 상반기 현황", actions: ["download"] }, { label: "2026년 1분기 현황", actions: ["download"] }, { label: "2025년 현황", actions: ["download"] } ] } } },
+  { id: "lk-3", slots: { title: { kind: "text", text: "IR행사" }, cta: { kind: "cta", label: "더보기", url: "#" }, links: { kind: "links", items: [
+    { label: "UBS Korea Summit", actions: ["download"] }, { label: "하나증권 국내 NDR", actions: ["download"] }, { label: "모간스탠리증권 해외 NDR", actions: ["download"] } ] } } },
+];
+const pillcardCells: CardCell[] = [
+  { id: "pl-1", slots: { icon: { kind: "asset", asset: { type: "svg", alt: "", assetId: "AssetCalendarSmallDavyGray" } }, title: { kind: "text", text: "매달 자동이체로 편하게" } } },
+  { id: "pl-2", slots: { icon: { kind: "asset", asset: { type: "svg", alt: "", assetId: "AssetCheckDocumentSmallGenuineBlue" } }, title: { kind: "text", text: "급할 땐 미리빼기 2번" } } },
+  { id: "pl-3", slots: { icon: { kind: "asset", asset: { type: "svg", alt: "", assetId: "AssetCalculatorSmallDarkBlue" } }, title: { kind: "text", text: "저금액 변경 가능" } } },
+];
+const kvcardCells: CardCell[] = [
+  { id: "kv-1", slots: { rows: { kind: "rows", items: [
+    { label: "1~3개월", value: "연 1.8%" }, { label: "3~6개월", value: "연 3.3%" }, { label: "6~9개월", value: "연 3.4%" },
+    { label: "9~12개월", value: "연 3.5%" }, { label: "12~24개월", value: "연 3.8%", highlight: true }, { label: "24~36개월", value: "연 3%" } ] } } },
+];
+const stepcardCells: CardCell[] = [
+  { id: "st-1", slots: { icon: { kind: "asset", asset: { type: "svg", alt: "", assetId: "AssetCheckDocumentSmallGenuineBlue" } }, title: { kind: "text", text: "이미 쓰던 카드가 있어도" } } },
+  { id: "st-2", slots: { icon: { kind: "asset", asset: { type: "svg", alt: "", assetId: "AssetBoltTruckSmallGenuineBlue" } }, title: { kind: "text", text: "앱에서 쉽게 옮겨드릴게요" }, body: { kind: "text", text: "별도 앱·웹 설치나 방문 필요 없어요" } } },
+  { id: "st-3", slots: { icon: { kind: "asset", asset: { type: "svg", alt: "", assetId: "AssetWonSignCircleSmallDavyGray" } }, title: { kind: "text", text: "탑승 내역도 옮겨지니\n걱정 마세요" }, body: { kind: "text", text: "모두 합산해 빠짐없이 교통비 환급" } } },
+];
+
+export const LinkcardGrid: Story = {
+  name: "linkcard · grid 3열 (IR 주요 투자정보)",
+  args: { usage: "linkcard", layoutType: "grid", viewport: "desktop" },
+  render: (args) => <Card {...toCardProps(args)} cells={linkcardCells} />,
+};
+export const PillcardList: Story = {
+  name: "pillcard · list (혜택 필)",
+  args: { usage: "pillcard", layoutType: "list", viewport: "mobile" },
+  render: (args) => <Card {...toCardProps(args)} cells={pillcardCells} />,
+};
+export const KvcardRail: Story = {
+  name: "kvcard · 레일 (기간별 금리)",
+  args: { usage: "kvcard", layoutType: "list", viewport: "mobile" },
+  render: (args) => <Card {...toCardProps(args)} cells={kvcardCells} />,
+};
+export const StepcardVertical: Story = {
+  name: "stepcard · 세로 단계 (안내)",
+  args: { usage: "stepcard", layoutType: "list", viewport: "mobile" },
+  render: (args) => <Card {...toCardProps(args)} cells={stepcardCells} />,
+};
