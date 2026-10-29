@@ -12,7 +12,7 @@
 import type { CSSProperties } from "react";
 
 import { cn } from "@/lib/cn";
-import { IconChevronDown } from "@bucketplace/icons";
+import { IconChevronDown, IconPhoto } from "@bucketplace/icons";
 import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import type { Section, Viewport } from "@/schema/doc";
 import OdsAssetRenderer from "../OdsAssetRenderer";
@@ -79,8 +79,9 @@ export default function HeroTemplate({
           onRequestSlotEdit={onHeroBgEdit}
         />
       ) : (
-        <div className="flex size-full items-center justify-center bg-ods-surface-light text-[11px] text-ods-text-tertiary">
-          히어로 이미지
+        <div className="flex size-full flex-col items-center justify-center gap-1 rounded-ods-12 bg-ods-surface-light text-[11px] text-ods-text-tertiary" aria-label="히어로 에셋 미정">
+          <IconPhoto size={22} />
+          에셋 미정
         </div>
       )}
     </div>

@@ -702,30 +702,24 @@ function CardLeadingAssetCell({
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
   const media = asAsset(slot(cell, "media"));
-  const displayTitle = stepNumber && title ? `${stepNumber}. ${title}` : title;
-  // 디자인 시안 (Figma 1:49) 의 기본 그래픽 에셋 — 이미지 슬롯이 비어 있을 때도 항상 에셋 렌더
-  const fallbackAsset: import("@/schema/doc").AssetRef = {
-    type: "image",
-    alt: "그래픽",
-    assetId: "AssetMotionFaceSmilingCapHeadsetLargeAnimatedImage",
-  };
+  const displayTitle = title; // 넘버링은 leading 컴포넌트가 담당 (접두어 중복 방지)
   return (
     <div
-      // 디자인 시안: 좌측 정렬(items-start), 하단 패딩 20px(pb-5)
-      className="flex h-full min-h-[260px] w-full flex-col items-start justify-between gap-4 rounded-ods-12 px-5 pb-5"
+      // 디자인 시안: 좌측 정렬(items-start), 하단 패딩 20px(pb-5). 카드 안 에셋은 40×40 고정 (2026-10 규칙)
+      className="flex h-full min-h-[180px] w-full flex-col items-start justify-between gap-6 rounded-ods-12 px-5 pb-5 pt-5"
       style={{
         backgroundImage:
           "linear-gradient(173.759deg, rgba(239,239,239,0.2) 1.5877%, rgba(139,195,235,0.2) 92.346%), linear-gradient(90deg, rgb(245,245,245) 0%, rgb(245,245,245) 100%)",
       }}
     >
-      <div className="flex w-full max-w-[240px] shrink-0 flex-col items-start pt-2">
-        <div className="relative h-[160px] w-full overflow-hidden">
-          <OdsAssetRenderer
-            asset={media ?? fallbackAsset}
-            className="absolute inset-0 flex h-full w-full items-center justify-center object-contain"
-            onRequestSlotEdit={onRequestSlotEdit}
-          />
-        </div>
+      <div className="flex size-10 shrink-0 items-center justify-center">
+        {stepNumber && !media ? (
+          <LeadingNumber n={stepNumber} />
+        ) : media ? (
+          <OdsAssetRenderer asset={media} size={CARD_ASSET_PX} className="size-10 object-contain" onRequestSlotEdit={onRequestSlotEdit} />
+        ) : (
+          <div className="flex size-10 items-center justify-center rounded-ods-8 bg-white/70 text-ods-text-tertiary" aria-label="에셋 미정"><IconPhoto size={18} /></div>
+        )}
       </div>
       <div className="flex w-full shrink-0 flex-col gap-1 text-left tracking-[-0.3px] text-ods-text-primary">
         {displayTitle && (
@@ -739,6 +733,38 @@ function CardLeadingAssetCell({
           </p>
         )}
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 에셋 사이즈 규칙 (2026-10 디자인 결정)
+//   - 리스트 leading icon(listcard·pillcard·stepcard 좌측): bg 박스 40×40 안에 에셋 최대 24×24
+//   - 카드 안 에셋(leading-asset 카드): 40×40 고정
+//   - 프로세스: 에셋 대신 넘버링 leading 컴포넌트
+//   - 에셋은 Storybook/ODS 카탈로그에 정의된 것만. 없으면 placeholder(IconPhoto)로 비운다
+// ---------------------------------------------------------------------------
+export const LEADING_ICON_PX = 24;
+export const CARD_ASSET_PX = 40;
+
+/** 리스트 leading icon — bg 박스 + 24px 에셋. 에셋 없으면 placeholder */
+function LeadingIcon({ asset, tone = "gray", onRequestSlotEdit }: { asset: import("@/schema/doc").AssetRef | null; tone?: "gray" | "white"; onRequestSlotEdit?: () => void }) {
+  return (
+    <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-ods-8", tone === "gray" ? "bg-ods-surface-gray" : "bg-white")}>
+      {asset ? (
+        <OdsAssetRenderer asset={asset} size={LEADING_ICON_PX} className="size-6 object-contain" onRequestSlotEdit={onRequestSlotEdit} />
+      ) : (
+        <IconPhoto size={18} className="text-ods-text-tertiary" aria-label="에셋 미정" />
+      )}
+    </div>
+  );
+}
+
+/** 넘버링 leading — 프로세스 단계 (에셋 대신) */
+function LeadingNumber({ n }: { n: string }) {
+  return (
+    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ods-primary font-pretendard text-[15px] font-bold leading-none tracking-[-0.3px] text-white" style={{ fontVariantNumeric: "tabular-nums" }}>
+      {n}
     </div>
   );
 }
@@ -766,24 +792,12 @@ function ListCell({
     [title, cta?.label].filter(Boolean).join(" — ") || "서비스 카드";
 
   return (
-    <div className="flex h-[96px] w-full min-w-0 flex-row items-stretch overflow-hidden rounded-ods-8 bg-white text-left shadow-none transition-shadow hover:shadow-sm">
-      <div className="relative h-full w-24 shrink-0 bg-ods-surface-light">
-        {iconAsset || onRequestSlotEdit ? (
-          <OdsAssetRenderer
-            asset={iconAsset ?? { type: "image", alt: "아이콘 슬롯" }}
-            className="absolute inset-0 size-full object-cover"
-            onRequestSlotEdit={onRequestSlotEdit}
-          />
-        ) : (
-          <div className="flex size-full items-center justify-center text-ods-text-tertiary">
-            <IconPhoto size={28} />
-          </div>
-        )}
-      </div>
+    <div className="flex min-h-[96px] w-full min-w-0 flex-row items-center gap-4 overflow-hidden rounded-ods-8 bg-white px-4 text-left shadow-none transition-shadow hover:shadow-sm">
+      <LeadingIcon asset={iconAsset} onRequestSlotEdit={onRequestSlotEdit} />
       <a
         href={cta?.url ?? "#"}
         aria-label={label}
-        className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1 bg-white px-4 py-5 no-underline"
+        className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1 bg-white py-5 no-underline"
       >
         {title ? (
           <p className="truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
@@ -987,13 +1001,7 @@ function CardPillCell({ cell, onRequestSlotEdit }: { cell: CardCell; onRequestSl
   const title = asText(slot(cell, "title"));
   return (
     <div className="flex w-full items-center gap-5 rounded-ods-16 border border-ods-border bg-white px-6 py-5">
-      <div className="flex size-12 shrink-0 items-center justify-center">
-        {icon ? (
-          <OdsAssetRenderer asset={icon} size={48} className="size-12 object-contain" onRequestSlotEdit={onRequestSlotEdit} />
-        ) : (
-          <IconPhoto size={28} className="text-ods-text-tertiary" />
-        )}
-      </div>
+      <LeadingIcon asset={icon} onRequestSlotEdit={onRequestSlotEdit} />
       <p className="min-w-0 flex-1 truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
         {title}
       </p>
@@ -1059,14 +1067,8 @@ function CardStepCell({ cell, onRequestSlotEdit }: { cell: CardCell; onRequestSl
   const body = asText(slot(cell, "body"));
   return (
     <div className="flex w-full gap-4 py-3">
-      <div className="relative z-[1] flex size-10 shrink-0 items-center justify-center rounded-full bg-ods-surface-gray">
-        {icon ? (
-          <OdsAssetRenderer asset={icon} size={40} className="size-10 object-contain" onRequestSlotEdit={onRequestSlotEdit} />
-        ) : (
-          <span className="flex size-8 items-center justify-center rounded-full bg-ods-primary font-pretendard text-[13px] font-bold text-white">
-            {stepNumber ?? ""}
-          </span>
-        )}
+      <div className="relative z-[1] shrink-0">
+        {icon ? <LeadingIcon asset={icon} tone="white" onRequestSlotEdit={onRequestSlotEdit} /> : <LeadingNumber n={stepNumber ?? ""} />}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1 pt-2">
         {title && (

@@ -20,7 +20,7 @@ description: 노션·문서·URL·자연어 기획안을 받아 ODS 컴포넌트
   └─(Claude) 5 Artifact 퍼블리시 → 링크 전달
 ```
 
-**Claude 가 하지 않는 것:** HTML/CSS 직접 작성, 카탈로그 밖 레이아웃 발명, 카드 변형 직접 선택(형태만 맞춤), 원문에 없는 숫자 창작.
+**Claude 가 하지 않는 것:** HTML/CSS 직접 작성, 카탈로그 밖 레이아웃 발명, 카드 변형 직접 선택(형태만 맞춤), 카탈로그 밖 에셋 생성·대체, 원문에 없는 숫자 창작.
 
 ## 0. 환경 준비 (세션당 1회)
 
@@ -59,14 +59,14 @@ node harness/bin/lp.mjs build harness/out/<slug>/spec.json --shots
 node harness/bin/lp.mjs sheet harness/out/<slug>
 ```
 - `asset-sheet.png` 로 톤(ODS 3D 제뉴인 블루 / 숏컷 Small SVG)·중복·의미 확인 → `prompts/03-assets.md`
-- `생성 필요` 슬롯만 Figma AI `generate_image`(ODS 3D 스타일 프롬프트) → `lp gen-import --name <n> --slug <slug> --url <image.url> --file <미리보기>` → 스펙 `{file, prompt, alt}` → 재빌드. 생성은 크레딧이 들므로 플랜을 모르면 처음 한 번 묻는다.
+- **에셋은 카탈로그(Storybook 정의 ODS)에서만.** 맞는 게 없으면 플레이스홀더로 비워두고, 답변에 "에셋 미정 N곳 — 어느 슬롯·어떤 의미·후보 유무"를 피드백한다(`references/03-assets.md` 형식). 임의 생성·유사 에셋 대체 금지. 생성형은 디자이너가 승인해 `allowGeneratedAssets: true` 를 줬을 때만.
 - `shot-mobile.png`·`shot-desktop.png` 를 한 번만 보고 명백한 깨짐만 확인.
 - 컴포넌트 자체 문제(패딩·폭·정렬)는 `src/components/preview/*` 에서 고치고 README "빌더 소스 변경" 에 기록. 하네스 CSS 덧칠 금지.
 
 ## 5. 퍼블리시 + 전달
 
 - `harness/out/<slug>/preview.html` 을 Artifact 로 퍼블리시(첫 publish `icon: layout`, description 한 문장). 같은 LP 수정은 같은 file_path 재퍼블리시로 링크 유지. "다시 제작"은 `<slug>-v2` 로 새 링크(비교용).
-- 답변: 프리뷰 링크 + 섹션 구성 한 줄 + `가정한 내용`/`확인 필요` 핵심 1–3개. 단계 나열 금지.
+- 답변: 프리뷰 링크 + 섹션 구성 한 줄 + `가정한 내용`/`확인 필요` 핵심 1–3개 + **에셋 미정 목록**(있으면). 단계 나열 금지.
 - `page.html` 은 개발 핸드오프용 단일 파일(요청 시 전달). 예제로 남길 스펙은 `harness/examples/` 에 복사.
 - 레포 반영 요청 시: 브랜치 커밋 → push → PR (GraphQL 불가 → `gh api repos/.../pulls`).
 

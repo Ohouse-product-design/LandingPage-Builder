@@ -95,9 +95,7 @@
      "title": "신축 첫 입주",
      "body": "공사 먼지와 분진이 곳곳에 남아 있어요",
      "asset": {
-      "file": "examples/gen/apartment-new.png",
-      "prompt": "새로 지은 아파트 — ODS 3D 블루 톤 (Figma AI)",
-      "alt": "신축 아파트"
+      "query": "신축 아파트"
      }
     },
     {
@@ -180,9 +178,7 @@
      "title": "간단 신청",
      "body": "평수와 집 구조만 고르면 30초면 끝나요",
      "asset": {
-      "file": "examples/gen/phone-form.png",
-      "prompt": "신청 폼이 보이는 스마트폰 — ODS 3D 블루 톤 (Figma AI)",
-      "alt": "신청 화면"
+      "query": "신청 화면"
      }
     },
     {
@@ -196,9 +192,7 @@
      "title": "비교 후 선택",
      "body": "견적을 비교하고 마음에 드는 곳을 골라요",
      "asset": {
-      "file": "examples/gen/clipboard-check.png",
-      "prompt": "체크리스트 클립보드 — ODS 3D 블루 톤 (Figma AI)",
-      "alt": "견적 비교"
+      "query": "견적 비교"
      }
     }
    ]

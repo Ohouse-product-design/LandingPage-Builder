@@ -130,6 +130,8 @@ export function validateSpec(spec, { assetLog = [], notes = [], breaks = [], car
     if (b.overflow) push("warn", b.where, `실측 글자폭 기준 ${b.maxLinePx}px > ${b.limitPx}px (${b.maxLines ?? ""}줄 제한) — 모바일에서 잘림`, "핵심어를 앞으로 당기고 짧게");
     else push("info", b.where, `가독성 줄바꿈 적용: ${JSON.stringify(b.to)}`);
   }
+  const ph = assetLog.filter((a) => a.source === "placeholder");
+  if (ph.length) push("warn", "assets", `플레이스홀더 ${ph.length}곳 — 카탈로그에 맞는 에셋이 없어 비워둠. 디자이너에게 요청: ${ph.map((a) => `${a.where}${a.query ? `("${a.query}")` : ""}`).join(", ")}`);
   for (const a of assetLog) if (a.level) push(a.level, a.where, `${a.note}${a.query ? ` · query="${a.query}"` : ""}${a.candidates?.length ? ` · 후보: ${a.candidates.join(", ")}` : ""}`);
   for (const n of notes) push("info", "compile", n);
 
