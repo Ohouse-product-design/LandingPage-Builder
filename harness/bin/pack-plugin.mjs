@@ -98,7 +98,10 @@ echo "▸ npm 의존성"; npm install --no-audit --no-fund >/dev/null
 echo "▸ 폰트 서브셋 도구"; python3 -c "import fontTools, brotli" 2>/dev/null || pip3 install -q fonttools brotli 2>/dev/null || pip3 install -q --break-system-packages fonttools brotli || true
 echo "▸ 렌더 QA 브라우저"; npx playwright install chromium >/dev/null 2>&1 || echo "  (playwright 브라우저 설치 실패 — --no-qa 로 빌드 가능)"
 echo "▸ design-assets 원본 (선택)"
-if [ -d "$HOME/design-assets/assets" ] || [ -n "\${DESIGN_ASSETS_ROOT:-}" ]; then echo "  → 있음"; else
+if [ -n "\${DESIGN_ASSETS_ROOT:-}" ]; then echo "  → DESIGN_ASSETS_ROOT=$DESIGN_ASSETS_ROOT";
+elif [ -d "$HOME/design-assets/.git" ]; then echo "  → ~/design-assets 최신화"; git -C "$HOME/design-assets" pull -q --ff-only 2>/dev/null || echo "  (pull 실패 — 권한/네트워크 확인, 오래된 사본이면 일부 에셋이 CDN 폴백)";
+elif [ -d "$HOME/.lp-draft/design-assets/.git" ]; then git -C "$HOME/.lp-draft/design-assets" fetch -q --depth 1 origin && git -C "$HOME/.lp-draft/design-assets" -c gc.auto=0 checkout -q FETCH_HEAD 2>/dev/null && echo "  → ~/.lp-draft/design-assets 최신화";
+else
   if git ls-remote https://github.com/bucketplace/design-assets >/dev/null 2>&1; then
     mkdir -p "$HOME/.lp-draft" && git clone --depth 1 --filter=blob:none --no-checkout https://github.com/bucketplace/design-assets "$HOME/.lp-draft/design-assets"
     git -C "$HOME/.lp-draft/design-assets" sparse-checkout init --no-cone

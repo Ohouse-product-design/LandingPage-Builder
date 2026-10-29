@@ -6,6 +6,7 @@
  *  - header / hero / sticky-cta / footer 는 자동 보정 (누락 시 추가, 순서 고정)
  *  - 에셋은 ODS 카탈로그 id 로만 해석 (query → 검색, 실패 시 생성형 슬롯으로 표시)
  */
+import path from "node:path";
 import { findAsset, searchAssets, objectKey } from "./assets.mjs";
 import { breakLines, SLOT_METRICS } from "./linebreak.mjs";
 
@@ -18,7 +19,8 @@ const LIST = { type: "list", settings: { gap: 16, align: "start" } };
 /** 섹션 프리셋 → 허용 패턴. 기본값은 seed.ts(디자이너 승인 캐노니컬)와 동일 */
 export const PRESET_RULES = {
   usp: { usage: "imgcard", allowedUsages: ["imgcard", "pillcard", "stepcard", "linkcard"], cardTypes: ["bgfullimg", "leading-asset"], defaultCardType: "bgfullimg", layouts: { grid: (n) => GRID(1, 2, n >= 4 ? 4 : n), carousel: () => CAROUSEL }, defaultLayout: "grid", count: [2, 6], recommended: 4 },
-  process: { usage: "imgcard", allowedUsages: ["imgcard", "stepcard"], cardTypes: ["leading-asset"], defaultCardType: "leading-asset", layouts: { grid: (n) => GRID(1, 2, n >= 4 ? 4 : n), carousel: () => CAROUSEL }, defaultLayout: "grid", count: [3, 5], recommended: 4 },
+  // 프로세스는 넘버링 leading 컴포넌트로만 구성 (에셋 없음, 2026-10 규칙). grid=카드형(leading-asset+번호) / list=세로 단계(stepcard+번호)
+  process: { usage: "imgcard", allowedUsages: ["imgcard", "stepcard"], cardTypes: ["leading-asset"], defaultCardType: "leading-asset", numbered: true, layouts: { grid: (n) => GRID(1, 2, n >= 4 ? 4 : n), carousel: () => CAROUSEL }, defaultLayout: "grid", count: [3, 5], recommended: 4 },
   review: { usage: "reviewcard", allowedUsages: ["reviewcard"], layouts: { carousel: () => CAROUSEL, grid: () => GRID(1, 2, 4) }, defaultLayout: "carousel", count: [3, 8], recommended: 4 },
   "cross-sell": { usage: "listcard", allowedUsages: ["listcard", "linkcard"], layouts: { list: () => LIST, grid: () => GRID(1, 2, 2) }, defaultLayout: "list", count: [2, 4], recommended: 3 },
   table: { usage: "tablecard", allowedUsages: ["tablecard", "kvcard"], layouts: { grid: (n) => GRID(1, n >= 2 ? 2 : 1, n >= 2 ? 2 : 1, 2) }, defaultLayout: "grid", count: [1, 2], recommended: 2 },
@@ -68,7 +70,7 @@ export function chooseCardUsage(preset, s) {
     const subtexts = items.filter((it) => it.body).length;
     const bigMedia = items.some((it) => it.asset && (typeof it.asset === "object" ? it.asset.file || it.asset.query?.includes("3D") : false));
     const iconOnly = items.every((it) => it.icon && !it.asset);
-    if (preset === "process" && (n >= 5 || iconOnly || (s.layout === "list"))) return { usage: "stepcard", reason: n >= 5 ? `단계 ${n}개(≥5) → 세로 단계` : iconOnly ? `큰 이미지 없이 아이콘만 → 세로 단계` : `layout: list 요청 → 세로 단계` };
+    if (preset === "process" && (n >= 5 || s.layout === "list" || items.some((it) => it.body && [...String(it.body)].length > 24))) return { usage: "stepcard", reason: n >= 5 ? `단계 ${n}개(≥5) → 세로 단계(넘버링)` : s.layout === "list" ? `layout: list 요청 → 세로 단계(넘버링)` : `보조 문장이 길어 세로 단계(넘버링)` };
     if (preset === "usp" && iconOnly && subtexts >= 1 && n <= 5 && !bigMedia) return { usage: "stepcard", reason: `아이콘 + 보조 문장 있는 안내 ${n}개 → 세로 단계` };
   }
   return { usage: rule.usage, reason: `기본 ${rule.usage}` };
@@ -85,7 +87,12 @@ function resolveAsset(spec, { role, alt, used, log, where }) {
   const s = typeof spec === "string" ? (spec.startsWith("Asset") ? { id: spec } : { query: spec }) : spec;
   const a = { alt: s.alt || alt || "", type: "image" };
   if (s.file) {
-    // 생성형 AI 로 만든 로컬 파일 (harness/out/<slug>/gen/*.png)
+    // 생성형(임의) 에셋은 기본 차단 — Storybook/ODS 카탈로그에 정의된 에셋만 사용 (2026-10 규칙).
+    // 예외: spec.allowGeneratedAssets === true 일 때만 허용 (디자이너 승인 하에)
+    if (!ALLOW_GENERATED.value) {
+      log.push({ where, source: "placeholder", level: "warn", note: `생성형 에셋 '${path.basename(s.file)}' 은 사용하지 않음 → 플레이스홀더. 카탈로그 에셋으로 교체하거나 디자이너에게 에셋 제작 요청`, query: s.prompt });
+      return null; // 슬롯을 비워 컴포넌트의 placeholder 가 보이게
+    }
     log.push({ where, source: "generated", file: s.file, prompt: s.prompt });
     return { ...a, url: `file:${s.file}` };
   }
@@ -105,14 +112,16 @@ function resolveAsset(spec, { role, alt, used, log, where }) {
       log.push({ where, source: "ods-search", query: s.query, id: best.id, score: best.score, alternatives: rest.slice(0, 3).map((r) => r.id) });
       return { ...a, assetId: best.id, type: best.kind === "svg" ? "svg" : "image" };
     }
-    log.push({ where, source: "needs-generation", query: s.query, level: "warn", note: "ODS 카탈로그에 적합한 에셋 없음 → 생성형 이미지 필요", candidates: [best, ...rest].filter(Boolean).slice(0, 3).map((r) => `${r.id}(${r.score})`) });
+    log.push({ where, source: "placeholder", query: s.query, level: "warn", note: "카탈로그(Storybook 정의 ODS 에셋)에 맥락에 맞는 에셋 없음 → 플레이스홀더로 비움. 디자이너에게 에셋 요청", candidates: [best, ...rest].filter(Boolean).slice(0, 3).map((r) => `${r.id}(${r.score})`) });
   }
-  return { ...a, placeholder: true };
+  return null; // 슬롯을 비워 컴포넌트의 placeholder 가 보이게 (임의 에셋 대체 금지)
 }
 
 const PALETTE = { value: "GenuineBlue" };
+const ALLOW_GENERATED = { value: false };
 export function compileSpec(spec) {
   PALETTE.value = spec.assetPalette ?? "GenuineBlue";
+  ALLOW_GENERATED.value = spec.allowGeneratedAssets === true;
   // 타이틀 레이아웃: 페이지에 하나만. 섹션별 지정은 무시하고 notes 로 알린다 (validate 가 error 처리)
   const titleLayout = TITLE_LAYOUTS.includes(spec.titleLayout) ? spec.titleLayout : "split";
   const breaks = []; // 자동 줄바꿈 기록 → 리포트
@@ -185,13 +194,18 @@ export function compileSpec(spec) {
     let cardType = rule.cardTypes ? (rule.cardTypes.includes(s.cardType) ? s.cardType : rule.defaultCardType) : undefined;
     if (s.cardType && rule.cardTypes && !rule.cardTypes.includes(s.cardType)) notes.push(`${id}: cardType '${s.cardType}' 보정 → ${cardType}`);
 
+    const secWhere = where[id];
     const cells = items.map((it, i) => {
       const where = `${id}.items[${i}]`;
       const c = { id: `${id}-c${i + 1}`, slots: {} };
       if (rule.usage === "imgcard") {
         Object.assign(c.slots, { tag: text(it.tag), stepNumber: text(it.step ?? (p === "process" ? String(i + 1).padStart(2, "0") : undefined)), title: text(it.title), body: text(it.body) });
-        const m = resolveAsset(it.asset, { role: "media", alt: it.title, used, log: assetLog, where });
-        if (m) c.slots.media = { kind: "asset", asset: m };
+        if (p === "process") {
+          if ((it.asset || it.icon) && i === 0) notes.push(`${secWhere}: 프로세스는 넘버링 leading 으로만 구성 — 아이템의 asset/icon 은 무시됨`);
+        } else {
+          const m = resolveAsset(it.asset, { role: "media", alt: it.title, used, log: assetLog, where });
+          if (m) c.slots.media = { kind: "asset", asset: m };
+        }
       } else if (rule.usage === "reviewcard") {
         const metaItems = [...(it.meta || []), it.author].filter(Boolean);
         Object.assign(c.slots, { rating: { kind: "rating", value: Math.max(1, Math.min(5, Number(it.rating ?? 5))), max: 5 }, title: text(it.title), body: text(it.body), meta: metaItems.length ? { kind: "meta", items: metaItems } : undefined });
@@ -217,8 +231,12 @@ export function compileSpec(spec) {
         if (it.rail === false || s.rail === false) c.theme = "grey"; // 레일 끔
       } else if (rule.usage === "stepcard") {
         Object.assign(c.slots, { stepNumber: text(it.step ?? String(i + 1)), title: text(it.title), body: text(it.body) });
-        const ic = resolveAsset(it.icon || it.asset, { role: "icon-small", alt: it.title, used, log: assetLog, where });
-        if (ic) c.slots.icon = { kind: "asset", asset: ic };
+        if (p === "process") {
+          if ((it.asset || it.icon) && i === 0) notes.push(`${secWhere}: 프로세스는 넘버링 leading 으로만 구성 — 아이템의 asset/icon 은 무시됨`);
+        } else {
+          const ic = resolveAsset(it.icon || it.asset, { role: "icon-small", alt: it.title, used, log: assetLog, where });
+          if (ic) c.slots.icon = { kind: "asset", asset: ic };
+        }
       }
       for (const k of Object.keys(c.slots)) if (c.slots[k] === undefined) delete c.slots[k];
       return c;

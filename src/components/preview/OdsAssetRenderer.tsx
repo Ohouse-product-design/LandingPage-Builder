@@ -7,18 +7,16 @@ import type { ReactNode } from "react";
  *
  * - `assetId` 가 `src/catalog/ods-assets.json` 의 ODS 컴포넌트명과 일치하면 라이브러리 타입(image/lottie)에 맞춰 렌더
  * - StillImage: `@bucketplace/assets/image` (tsconfig shim 또는 사내 패키지)
- * - 비어 있는 image 슬롯 기본값: `AssetGiftLargeStillImage`
+ * - 비어 있는 슬롯: 임의 에셋으로 채우지 않고 중립 placeholder (2026-10 규칙 — Storybook/ODS 정의 에셋만 사용)
  * - Lottie: 공개 샘플 JSON URL 매핑 후 `lottie-react`
  * - `Icon*` / ODS 아이콘 카탈로그명: 로컬 `ods-icons` SVG
  */
 
-import {
-  AssetGiftLargeStillImage,
-  BucketplaceCatalogStillImage,
-} from "@bucketplace/assets/image";
+import { BucketplaceCatalogStillImage } from "@bucketplace/assets/image";
 
 import { cn } from "@/lib/cn";
 import * as OdsIcons from "@bucketplace/icons";
+import { IconPhoto } from "@bucketplace/icons";
 import {
   getOdsLibraryAssetByAssetId,
   getOdsLibraryIconByAssetId,
@@ -122,7 +120,9 @@ export default function OdsAssetRenderer({
   const name = asset.assetId;
   if (!name) {
     return withSlotEdit(
-      <AssetGiftLargeStillImage className={imgClass} />,
+      <div className={cn("flex items-center justify-center rounded-ods-8 bg-ods-surface-light text-ods-text-tertiary", className ?? "h-full w-full")} aria-label="에셋 미정" title="에셋 미정 — 카탈로그 에셋으로 교체 필요">
+        <IconPhoto size={18} />
+      </div>,
       onRequestSlotEdit
     );
   }
@@ -158,7 +158,9 @@ function PlaceholderCard({
 }) {
   if (type === "image") {
     return (
-      <AssetGiftLargeStillImage className={className ?? "h-full w-full object-cover"} />
+      <div className={cn("flex items-center justify-center rounded-ods-8 bg-ods-surface-light text-ods-text-tertiary", className ?? "h-full w-full")} aria-label="에셋 미정">
+        <IconPhoto size={18} />
+      </div>
     );
   }
   return (

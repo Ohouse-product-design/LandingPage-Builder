@@ -52,7 +52,7 @@ harness/
 | 3 | 플레이스홀더 | 회색 이미지 박스 + 리포트 `warn` |
 
 권한이 없을 때 할 일:
-1. `node harness/bin/lp.mjs doctor` 로 현재 상태 확인 (원본 / CDN 도달 여부)
+1. `node harness/bin/lp.mjs doctor` 로 현재 상태 확인 (원본 유무·**카탈로그 커버리지**·CDN 도달 여부). 커버리지 95% 미만이면 오래된 사본 → `git pull`
 2. `#ai_frontier` 에 **bucketplace/design-assets 읽기 권한** 요청 (Product Design 팀원은 대부분 보유)
 3. 급하면 권한 있는 팀원에게 `node harness/bin/lp.mjs pack-assets` 결과(`ods-assets-pack.tgz`, 약 40MB)를 받아 `tar -xzf` 후 `DESIGN_ASSETS_ROOT=<풀린 폴더>` 로 지정 (또는 `~/design-assets` 에 배치)
 4. CDN 도 막힌 환경(사내 프록시 등)이면 플레이스홀더로 시안을 먼저 보고, 에셋은 권한 확보 후 재빌드
@@ -71,6 +71,10 @@ open harness/out/moving-1person/preview.html
 `imgcard(bgfullimg|leading-asset) · reviewcard · listcard · tablecard · faqcard` + **`linkcard · pillcard · kvcard · stepcard`** (2026-10 추가, `src/schema/card.ts` 단일 Card usage).
 `lib/compile.mjs chooseCardUsage` 가 아이템 형태 신호로 결정적으로 고르고(`links[]` → linkcard, 설명 없는 ≤14자+아이콘 → pillcard, 단일 카드 '라벨: 값'+단위 → kvcard, ≥5단계/아이콘만/보조문 안내 → stepcard), 스펙 `card:` 로 허용 목록 안에서 override. 근거는 리포트 `info`. 필·단계 아이콘은 `icon-small` 역할로 ODS 숏컷(Small SVG) 우선.
 
+## 에셋 규칙 (2026-10)
+- Storybook/ODS 카탈로그에 정의된 에셋만. 없으면 플레이스홀더 + 리포트 `warn`(어느 슬롯이 비었는지) — 임의 생성·유사 대체 금지. 생성형은 `allowGeneratedAssets: true` 일 때만
+- 리스트 leading icon: bg 박스 40 안에 에셋 ≤24 · 카드 안 에셋: 40 고정 · 프로세스: 넘버링 leading(에셋 없음) · bgfullimg·히어로는 예외
+
 ## 레이아웃·줄바꿈 규칙
 - `titleLayout` 은 페이지당 하나(`center` | `split`). compile 이 모든 섹션 props 에 같은 값을 주입하고, 섹션별 지정은 validate 에서 error.
   - center: 히어로 세로 스택 중앙, 섹션 타이틀 중앙, imgcard 그리드 중앙 정렬
@@ -81,6 +85,7 @@ open harness/out/moving-1person/preview.html
 - `Card.tsx` FAQ 답변: 닫힘 상태도 `hidden` 으로 DOM 유지 (정적 export 에서 답변 유실 방지, 빌더 동작 동일)
 - `Card.tsx` bgfullimg 태그: absolute 고정 → 타이틀 위 흐름 배치 (본문 2줄일 때 겹침 수정)
 - `card.ts` + `Card.tsx` + `Card.stories.tsx`: 변형 4종(linkcard·pillcard·kvcard·stepcard) 슬롯 `links`/`rows`, 셀 렌더러, 스토리. `ods-icons.tsx` 에 IconArrowDownToLine·IconHeadset·IconLink(design-assets 원본 패스) 추가, IconArrowRight 원본 패스로 교체
+- `Card.tsx`/`OdsAssetRenderer.tsx`/`HeroTemplate.tsx`: `LeadingIcon`(bg 40 + 에셋 24)·`LeadingNumber`, leading-asset 카드 에셋 40 고정, 빈 슬롯은 선물 이미지 대신 중립 placeholder
 - `StickyCtaTemplate.tsx`: fixed + spacer, ATF(히어로) 지나간 뒤 노출(240ms 트랜지션), 흰색 dim 그라데이션, 모바일 100% / PC max-width 480. 빌더는 컴포넌트 effect, 정적 export 는 page 스크립트가 같은 규칙으로 토글. PC 에서도 기본 노출
 - `SectionTitleBlock.tsx` / `HeroTemplate.tsx` / `Card.tsx`: `props.titleLayout`(center | split) 분기 — 히어로 split 변형(좌 텍스트/우 에셋), 섹션 타이틀 중앙 정렬, imgcard 그리드 중앙 정렬. 타이틀에 `text-wrap: balance`
 - `Card.tsx` imgcard 카드 폭 260–300px: grid 는 `auto-fill` 로 들어가는 만큼 열 생성(1280→4열, 768→2열), carousel 카드폭도 300 상한

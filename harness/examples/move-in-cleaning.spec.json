@@ -77,9 +77,7 @@
      "title": "이사와 함께면 5% 할인",
      "body": "이사랑 같이 신청하면 청소비를 아껴요",
      "asset": {
-      "file": "examples/gen/coupon-percent.png",
-      "prompt": "퍼센트 할인 쿠폰 — ODS 3D 블루 톤 (Figma AI)",
-      "alt": "할인 쿠폰"
+      "query": "할인 쿠폰"
      }
     }
    ]
@@ -93,9 +91,7 @@
      "title": "견적 신청",
      "body": "평수와 이사 날짜만 알려주세요",
      "asset": {
-      "file": "examples/gen/phone-form.png",
-      "prompt": "신청 폼이 보이는 스마트폰 — ODS 3D 블루 톤 (Figma AI)",
-      "alt": "견적 신청 화면"
+      "query": "견적 신청 화면"
      }
     },
     {
@@ -109,18 +105,14 @@
      "title": "예약 확정",
      "body": "원하는 업체와 날짜를 골라요",
      "asset": {
-      "file": "examples/gen/calendar-check.png",
-      "prompt": "체크된 날짜가 있는 탁상 달력 — ODS 3D 블루 톤 (Figma AI)",
-      "alt": "예약 달력"
+      "query": "예약 달력"
      }
     },
     {
      "title": "청소 · 검수",
      "body": "청소 후 직접 확인하고 마무리해요",
      "asset": {
-      "file": "examples/gen/clipboard-check.png",
-      "prompt": "체크리스트 클립보드 — ODS 3D 블루 톤 (Figma AI)",
-      "alt": "검수 체크리스트"
+      "query": "검수 체크리스트"
      }
     }
    ]

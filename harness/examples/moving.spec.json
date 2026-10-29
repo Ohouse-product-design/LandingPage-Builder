@@ -54,9 +54,7 @@
      "title": "현장 추가 요금",
      "body": "계약 외 청구 시 최대 200% 보상해요",
      "asset": {
-      "file": "examples/gen/wallet-coins.png",
-      "prompt": "지갑과 동전 — ODS 3D 블루 톤 (Figma AI)",
-      "alt": "지갑과 동전"
+      "query": "지갑과 동전"
      }
     },
     {
@@ -160,9 +158,7 @@
      "title": "견적 신청",
      "body": "이사 날짜와 짐 양만 알려주세요",
      "asset": {
-      "file": "examples/gen/phone-form.png",
-      "prompt": "신청 폼이 보이는 스마트폰 — ODS 3D 블루 톤 (Figma AI)",
-      "alt": "견적 신청 화면"
+      "query": "견적 신청 화면"
      }
     },
     {

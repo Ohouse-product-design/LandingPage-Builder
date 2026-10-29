@@ -52,7 +52,7 @@ gaps           : 원문에 없는 것 → assumptions 로 기록
 | 고객 문제 → 해결, 핵심 가치·혜택 3–4개 | `usp` (bgfullimg) | 기능·화면 설명형이면 `cardType: leading-asset` |
 | 타사/기존 방식 비교, 요금제·보장 범위 | `table` | 비교 2열 / 단일 요약 1열 |
 | 후기, 사례, 평점 | `review` | 원문에 없으면 예시 + assumptions |
-| 이용 방법, 단계, "어떻게" | `process` | 3–5단계 |
+| 이용 방법, 단계, "어떻게" | `process` | 3–5단계. **넘버링 leading 으로만** 구성(에셋 없음). 4단계 이하·짧은 설명 → 카드형, 5단계↑·긴 설명·`layout: list` → 세로 단계 |
 | 함께 쓰면 좋은 서비스, 연계 상품 | `cross-sell` | 2–4개 |
 | 조건·가격·환불 등 반복 질문 | `faq` | 4개 이상 |
 | 상담/신청 폼을 페이지 안에서 받음 | `cta-form` | 외부 신청 플로우로 보내면 생략 |
@@ -66,7 +66,7 @@ gaps           : 원문에 없는 것 → assumptions 로 기록
 | 자료실·IR·고객센터 메뉴처럼 **카테고리별 링크 묶음** 2–4개 | `usp`/`cross-sell` · `items[].links[{label, url, actions}]` (actions: download·audio·link·arrow) + `moreHref` | `linkcard` | 주요 투자정보 |
 | 혜택·보장 **한 줄 요약** 3–5개 | `usp` · `title ≤14자` + `icon` 만 (body·tag 없음) | `pillcard` | 적금 혜택 필 |
 | 금리·요금·수수료·기간별 **조건 표** (비교 아님) | `table` · 카드 1개 · `rows: ["1~3개월: 연 1.8%", …]` 값에 단위 · `rail:false` 로 레일 끔 · `{label,value,highlight}` 로 대표 행 강조 | `kvcard` | 기간별 금리 |
-| 이전·절차 **안내 단계**(보조 문장 있음), 5단계 이상, 큰 이미지 없음 | `process` 5단계↑ / `layout: "list"` / `icon` 만 · 또는 `usp` 에 `icon` + `body` | `stepcard` | K-패스 안내 |
+| 절차·안내 **세로 단계** — `process` 는 넘버링, `usp` 안내형은 아이콘(24) + 보조 문장 | `process` 5단계↑ / `layout: "list"` / 긴 보조문 · 또는 `usp` 에 `icon` + `body` | `stepcard` | K-패스 안내 |
 | 그 외 | 기존 규칙 | `imgcard · tablecard · listcard …` | |
 
 같은 페이지 안에서 같은 맥락이면 같은 변형을 쓴다 (혜택 필 두 섹션 ✗ → 하나로 합치기).
