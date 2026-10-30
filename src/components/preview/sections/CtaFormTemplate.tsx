@@ -2,13 +2,14 @@
 
 import { cn } from "@/lib/cn";
 import type { Section } from "@/schema/doc";
-import SectionTitleBlock, { containerPad } from "./SectionTitleBlock";
+import SectionTitleBlock, { containerPad, contentWidth } from "./SectionTitleBlock";
 
 export default function CtaFormTemplate({ section }: { section: Section }) {
   const fields = section.slots["fields"] ?? [];
   const submit = (section.props["submitLabel"] as string) ?? "신청";
   return (
     <div className={cn(containerPad, "bg-ods-surface-light")}>
+      <div className={contentWidth("content")}>
       <SectionTitleBlock section={section} />
       <div className="rounded-ods-12 bg-white p-5">
         {fields.length === 0 ? (
@@ -30,6 +31,7 @@ export default function CtaFormTemplate({ section }: { section: Section }) {
         <button className="mt-2 w-full rounded-ods-8 bg-ods-primary py-3 text-[14px] font-semibold text-white">
           {submit}
         </button>
+      </div>
       </div>
     </div>
   );

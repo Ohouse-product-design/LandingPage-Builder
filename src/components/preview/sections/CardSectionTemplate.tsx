@@ -5,7 +5,7 @@ import type { AssetSlotModalOpenContext } from "@/schema/asset-modal-context";
 import type { CardProps } from "@/schema/card";
 import type { ComponentInstance, Section, Viewport } from "@/schema/doc";
 import Card from "../Card";
-import SectionTitleBlock, { containerPad, titleLayoutOf } from "./SectionTitleBlock";
+import SectionTitleBlock, { containerPad, contentWidth, titleLayoutOf } from "./SectionTitleBlock";
 
 export type CardSectionBg = "white" | "gray" | "light";
 
@@ -36,6 +36,7 @@ export default function CardSectionTemplate({
 
   return (
     <div className={cn(containerPad, bgClass)}>
+      <div className={contentWidth(cardProps?.layout.type === "carousel" ? "carousel" : "content")}>
       <SectionTitleBlock section={section} />
       {cardProps ? (
         <Card
@@ -60,6 +61,7 @@ export default function CardSectionTemplate({
           카드 컨테이너가 비어있습니다 — 인스펙터에서 추가하세요
         </div>
       )}
+      </div>
     </div>
   );
 }

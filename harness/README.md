@@ -80,7 +80,8 @@ open harness/out/moving-1person/preview.html
 - 짧은 텍스트 usp(제목 ≤127px@20px, 설명 ≤2줄) 3개↑ → 밀도 카드 그리드(모바일 2열, 데스크톱 160 고정 4열, 카드 높이 132)
 - 2×n 그리드 홀수 개 → 가로 한 줄(`ROW`, carousel autoScroll:false): 들어가면 그대로(`safe center`), 넘치면 가로 스크롤 스냅. CarouselLayout 수동 모드 스크롤 버그(outer overflow-hidden) 수정
 - 같은 섹션은 한 에셋 스타일만(flat 숏컷 / 3d / photo): 슬롯 역할이 스타일을 정하고(≤24 flat, >24 3d, '실사' 요청 시 photo) 검색은 그 스타일만 후보, 다른 스타일 id 지정은 비움+warn, 혼용은 validate error
-- 캐로셀이 아닌 콘텐츠 컨테이너는 데스크톱·태블릿 max-width 720 (`data-layout="content"`; 캐로셀 섹션은 1256 유지)
+- 섹션 배경(회색 등)은 full width, 콘텐츠만 폭 제한 — 컴포넌트 `contentWidth()` 래퍼(캐로셀 아닌 섹션 720 / 캐로셀 1256). CSS 로 section>div 폭을 제한하지 않는다
+- 목업 섹션: 흰색 컨테이너, 폰 상단 패딩 32, 섹션 리빌과 함께 폰 scale .95→1(0.9s, `data-mockup-phone`)
 - 같은 섹션 에셋의 시각 크기 통일: `toDataUri(..., {normalize:true})` 가 투명 여백 trim + 정사각 contain (SVG viewBox 재작성, 비트맵 trim/extend). 리스트 leading icon 은 흰 배경 박스 없이 24 (흰 배경 위 listcard 만 gray 박스)
 - 섹션 스크롤 리빌(기본): 콘텐츠 섹션(`data-reveal`, header·sticky·footer 제외)이 뷰포트에 들어오면 28px 아래에서 올라오며 나타남(0.6s). IntersectionObserver 가 `html.lp-reveal` 을 붙였을 때만 숨기므로 JS 없음·reduced-motion·QA 캡처(`__LP_NO_REVEAL`)는 그대로 보임
 - 리스트 타입 카드 안쪽 패딩 25 (기존 20 의 125%)

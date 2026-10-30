@@ -42,3 +42,11 @@ export default function SectionTitleBlock({ section }: { section: Section }) {
  * 수직 패딩은 디바이스별 디자인 의도를 유지.
  */
 export const containerPad = "px-4 py-8 md:py-12 lg:py-[60px]";
+
+/**
+ * 콘텐츠 컨테이너 폭 (2026-10): 배경(회색 등)은 섹션 full width, 안쪽 콘텐츠만 폭 제한.
+ *   content  : 캐로셀이 아닌 섹션 — max 720
+ *   carousel : 가로 스크롤 섹션 — max 1256
+ */
+export const contentWidth = (kind: "content" | "carousel" = "content") =>
+  kind === "carousel" ? "mx-auto w-full max-w-[1256px]" : "mx-auto w-full max-w-[720px]";
