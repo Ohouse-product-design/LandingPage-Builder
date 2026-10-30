@@ -13,7 +13,7 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { findAsset, toDataUri, PLACEHOLDER_URI, TRANSPARENT_URI } from "./assets.mjs";
-import { findScreen, fetchScreenImage } from "./screens.mjs";
+import { findScreen, resolveScreenImage } from "./screens.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(here, "../..");
@@ -38,11 +38,23 @@ async function loadRenderer() {
   return import(bundle + `?t=${Date.now()}`);
 }
 
+/** 목업 화면 이미지(PNG/webp) → 폰 화면 비율(402:874)로 상단 기준 크롭, 804px 폭 webp */
+async function screenToDataUri(file) {
+  const sharp = (await import("sharp")).default;
+  const img = sharp(file); const meta = await img.metadata();
+  const targetH = Math.round(meta.width * (874 / 402));
+  let pipe = sharp(file);
+  if (meta.height > targetH) pipe = pipe.extract({ left: 0, top: 0, width: meta.width, height: targetH });
+  const buf = await pipe.resize({ width: 804, withoutEnlargement: true }).webp({ quality: 84 }).toBuffer();
+  return "data:image/webp;base64," + buf.toString("base64");
+}
+
 /** doc 안 모든 AssetRef 를 data URI 키로 치환. 반환: { doc, assets: {key: uri} } */
 async function embedAssets(doc) {
   const d = structuredClone(doc);
   const assets = {};
   const screenMisses = [];
+  const screenSources = [];
   let k = 0;
   const put = (uri) => {
     const hit = Object.entries(assets).find(([, v]) => v === uri);
@@ -60,9 +72,9 @@ async function embedAssets(doc) {
       // 스크린 디렉토리 화면: 캐시(~/.lp-draft/screens) → 다운로드 시도 → 실패 시 슬롯 비움(컴포넌트 '화면 미정' placeholder)
       const [, sid, , env] = a.url.match(/^screen:(.+)\/([0-9a-f]+)\/([a-z0-9-]+)$/) || [];
       const s = sid ? findScreen(sid) : null;
-      const file = s ? await fetchScreenImage(s, env) : null;
-      if (file) { const buf = fs.readFileSync(file); uri = "data:image/webp;base64," + buf.toString("base64"); }
-      else { screenMisses.push({ where: a.screenId || sid, url: a.screenUrl }); uri = null; }
+      const r = await resolveScreenImage(s, { env: env || undefined, file: a.screenFile || null });
+      if (r) { uri = await screenToDataUri(r.file); screenSources.push({ where: a.screenId || a.screenFile, source: r.source, file: r.file }); }
+      else { screenMisses.push({ where: a.screenId || sid || a.screenFile, url: a.screenUrl }); uri = null; }
       if (!uri) { a.url = undefined; return; }
       a.url = `lp-asset://${put(uri)}`; return;
     }
@@ -81,7 +93,7 @@ async function embedAssets(doc) {
   }
   // 화면 이미지를 못 받은 목업 슬롯은 제거 → 컴포넌트가 '화면 미정' placeholder 표시
   for (const s of d.sections) if (s.preset === "mockup") s.assets = (s.assets || []).filter((x) => x.asset?.url);
-  return { doc: d, assets, put, screenMisses };
+  return { doc: d, assets, put, screenMisses, screenSources };
 }
 
 /** SSR 결과에 남은 외부 이미지(CDN/Figma) → data URI 키 */
@@ -166,7 +178,7 @@ window.addEventListener('message',function(e){var d=e.data||{};if(d.type==='lp:o
 
 export async function assemble(doc, { report = null, spec = null, assetLog = [] } = {}) {
   const { renderSections } = await loadRenderer();
-  const { doc: embedded, assets, put, screenMisses } = await embedAssets(doc);
+  const { doc: embedded, assets, put, screenMisses, screenSources } = await embedAssets(doc);
   let body = "";
   for (const vp of VIEWPORTS) body += `<div class="lp-vp lp-vp-${vp}" data-viewport="${vp}">${renderSections(embedded, vp)}</div>\n`;
   body = await rewriteExternal(body, put);
@@ -189,7 +201,7 @@ ${body}
 </body></html>`;
 
   const makePreview = (finalReport = report) => buildPreviewShell({ page, doc, report: finalReport, spec, assetLog, font });
-  return { page, makePreview, stats: { pageKB: Math.round(page.length / 1024), assets: Object.keys(assets).length }, screenMisses };
+  return { page, makePreview, stats: { pageKB: Math.round(page.length / 1024), assets: Object.keys(assets).length }, screenMisses, screenSources };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -7,6 +7,10 @@
  *       thumb-<env>.webp     804×1748 (iPhone 17 2x) — 목업에 쓰는 이미지
  *
  *   인덱스: catalog/ohouse-screens-index.json  (`lp screens sync` 가 디렉토리에서 재생성, 네트워크가 막힌 환경은 커밋본 사용)
+ *   Loom 플러그인(bucketplace-loom)이 있으면 그쪽이 1순위:
+ *       - 화면 찾기: loom MCP list_screens({track}) / get_screen(id)
+ *       - 이미지: workbench_sketch_new({slug, screen:id}) → workbench_compile_check({project:"sketches/<slug>", screenKey:id, shot:true, query:{env:"ios27-iphone-17"}})
+ *                 → PNG 가 ~/Loom/tracks/sketches/projects/<slug>/.loom/shots/ 에 생김. 스펙 screen.file 로 넘기거나, 하네스가 ~/Loom 의 shots 를 화면 slug 로 자동 탐색
  *   이미지 캐시: ~/.lp-draft/screens/<hash>-<env>.webp  (또는 catalog/screens/, LP_SCREENS_DIR)
  *   네트워크가 막힌 환경(사내 프록시 등)에서 캐시에 없으면 placeholder + 리포트 warn — 임의 화면으로 대체하지 않음
  */
@@ -19,6 +23,29 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export const SCREENS_ROOT = "https://static-contents.datapl.datahou.se/v2/common/ohouse-design/";
 export const SCREENS_INDEX = path.join(here, "..", "catalog", "ohouse-screens-index.json");
 export const DEFAULT_ENV = "ios27-iphone-17";
+
+export function loomHome() { return process.env.LOOM_HOME || path.join(os.homedir(), "Loom"); }
+/** Loom 작업 폴더의 compile_check 캡처(.loom/shots/*.png) 중 화면 slug·env 가 맞는 최신 파일 */
+export function findLoomShot(screenId, env = DEFAULT_ENV) {
+  const root = loomHome();
+  if (!fs.existsSync(root)) return null;
+  const slug = screenId.split("/").pop();
+  const hits = [];
+  const walk = (dir, depth) => {
+    if (depth > 7) return;
+    let ents = []; try { ents = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of ents) {
+      const f = path.join(dir, e.name);
+      if (e.isDirectory()) { if (e.name === "node_modules" || e.name === ".loom-engines" || e.name === ".cache") continue; walk(f, depth + 1); }
+      else if (/\.png$/i.test(e.name) && dir.includes(`${path.sep}.loom${path.sep}shots`) && e.name.includes(slug)) {
+        hits.push({ f, mtime: fs.statSync(f).mtimeMs, envMatch: e.name.includes(env) ? 1 : 0 });
+      }
+    }
+  };
+  walk(root, 0);
+  hits.sort((a, b) => b.envMatch - a.envMatch || b.mtime - a.mtime);
+  return hits[0]?.f || null;
+}
 
 export function screensCacheDirs() {
   return [process.env.LP_SCREENS_DIR, path.join(here, "..", "catalog", "screens"), path.join(os.homedir(), ".lp-draft", "screens")].filter(Boolean);
@@ -71,7 +98,14 @@ export function screenCacheFile(s, env = screenImageEnv(s)) {
   return null;
 }
 
-/** 캐시 → 없으면 다운로드 시도(사내 프록시 환경은 실패) → null */
+/** 지정 file → Loom 캡처(~/Loom 안의 .loom/shots) → 캐시 → 다운로드 시도(사내 프록시 환경은 실패) → null. 반환 {file, source} */
+export async function resolveScreenImage(s, { env = screenImageEnv(s), file = null } = {}) {
+  if (file) { for (const c of [file, path.resolve(file), file.replace(/^~/, os.homedir())]) if (fs.existsSync(c)) return { file: c, source: "file" }; }
+  const loom = s ? findLoomShot(s.id, env) : null;
+  if (loom) return { file: loom, source: "loom" };
+  const f = s ? await fetchScreenImage(s, env) : null;
+  return f ? { file: f, source: screenCacheFile(s, env) === f ? "cache" : "download" } : null;
+}
 export async function fetchScreenImage(s, env = screenImageEnv(s)) {
   const cached = screenCacheFile(s, env);
   if (cached) return cached;

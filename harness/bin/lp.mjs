@@ -54,8 +54,9 @@ if (cmd === "catalog") {
   const { doc, assetLog, notes, where, breaks, cardChoices } = compileSpec(spec);
   const report = validateSpec(spec, { assetLog, notes, breaks, cardChoices });
   const { assemble } = await import("../lib/assemble.mjs");
-  const { page, makePreview, stats, screenMisses = [] } = await assemble(doc, { report, spec, assetLog });
-  for (const m of screenMisses) report.issues.push({ level: "warn", where: `screen ${m.where}`, msg: `스크린 디렉토리 화면 이미지를 받지 못해 '화면 미정' placeholder — 네트워크가 열린 곳에서 \`lp screens sync\` 후 재빌드하거나 ${m.url} 을 ~/.lp-draft/screens/ 에 저장` });
+  const { page, makePreview, stats, screenMisses = [], screenSources = [] } = await assemble(doc, { report, spec, assetLog });
+  for (const s of screenSources) report.issues.push({ level: "info", where: `screen ${s.where}`, msg: `화면 이미지 출처: ${s.source === "loom" ? "Loom 플러그인 캡처" : s.source === "file" ? "지정 파일" : s.source === "cache" ? "로컬 캐시" : "스크린 디렉토리 다운로드"} — ${s.file}` });
+  for (const m of screenMisses) report.issues.push({ level: "warn", where: `screen ${m.where}`, msg: `스크린 디렉토리 화면 이미지를 받지 못해 '화면 미정' placeholder — Loom 플러그인이 있으면 workbench_compile_check(shot:true) 로 찍은 PNG 를 screen.file 로 지정(~/Loom 의 .loom/shots 는 자동 탐색), 없으면 네트워크가 열린 곳에서 \`lp screens sync\` 후 재빌드하거나 ${m.url} 을 ~/.lp-draft/screens/ 에 저장` });
   const outDir = flag("out", path.join(here, "../out", doc.meta.slug));
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, "doc.json"), JSON.stringify(doc, null, 1));
@@ -73,6 +74,8 @@ if (cmd === "catalog") {
     report.issues.push({ level: cdnState.fail ? "warn" : "info", where: "assets", msg: `design-assets 원본 없음 → CDN 폴백 ${cdnState.ok}개 성공${cdnState.fail ? `, ${cdnState.fail}개 실패(플레이스홀더)` : ""}` });
     for (const l of ["error", "warn", "info"]) report.summary[l] = report.issues.filter((i) => i.level === l).length;
   }
+  for (const l of ["error", "warn", "info"]) report.summary[l] = report.issues.filter((i) => i.level === l).length;
+  report.ok = report.summary.error === 0;
   const preview = makePreview(report);
   fs.writeFileSync(path.join(outDir, "preview.html"), preview);
   fs.writeFileSync(path.join(outDir, "report.json"), JSON.stringify({ ...report, assetLog }, null, 1));

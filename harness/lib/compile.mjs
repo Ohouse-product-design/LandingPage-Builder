@@ -215,8 +215,12 @@ export function compileSpec(spec) {
         if (best && best.score >= 4) { hit = best; assetLog.push({ where: `${id}.screen`, source: "screen-search", query: sc.query, id: best.id, score: best.score, alternatives: rest.map((r) => r.id) }); }
         else assetLog.push({ where: `${id}.screen`, source: "placeholder", level: "warn", query: sc.query, note: "스크린 디렉토리에 맥락에 맞는 화면 없음 → 화면 미정. `lp screens \"키워드\"` 로 찾아 id 지정", candidates: [best, ...rest].filter(Boolean).map((r) => `${r.id}(${r.score})`) });
       } else assetLog.push({ where: `${id}.screen`, source: "placeholder", level: "warn", note: "목업 섹션에 screen(query|id) 없음 → 화면 미정" });
-      if (hit) assetLog.push({ where: `${id}.screen`, source: "screen", id: hit.id, title: hit.title });
-      const screenAsset = hit ? { alt: sc.alt || hit.title, type: "image", url: `screen:${hit.id}/${hit.hash}/${screenImageEnv(hit)}`, screenId: hit.id, screenUrl: screenImageUrl(hit) } : null;
+      if (hit) assetLog.push({ where: `${id}.screen`, source: "screen", id: hit.id, title: hit.title, ...(sc.file ? { file: sc.file } : {}) });
+      // Loom 캡처 파일만 있고 인덱스 id 가 없어도 허용 (screen: { file, alt })
+      const screenAsset = hit
+        ? { alt: sc.alt || hit.title, type: "image", url: `screen:${hit.id}/${hit.hash}/${screenImageEnv(hit)}`, screenId: hit.id, screenUrl: screenImageUrl(hit), ...(sc.file ? { screenFile: sc.file } : {}) }
+        : sc.file ? { alt: sc.alt || "서비스 화면", type: "image", url: `screen:file`, screenFile: sc.file } : null;
+      if (!hit && sc.file) { assetLog.pop(); assetLog.push({ where: `${id}.screen`, source: "screen-file", file: sc.file }); }
       out.push({ ...base, props: { ...TL, tag: s.tag || "", sectionTitle: autoBreak(`${where[id]}.title`, s.title || "", { mobile: { w: 375 - 32, f: 24 }, desktop: { w: 720 - 32, f: 30 }, maxLines: 2 }, { preferTwoLinesFrom: 12 }), sectionSubtitle: s.body || s.subtitle || "" }, assets: screenAsset ? [{ slotName: "screen", asset: screenAsset }] : [] });
       continue;
     }

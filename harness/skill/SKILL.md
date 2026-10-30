@@ -60,6 +60,11 @@ node harness/bin/lp.mjs sheet harness/out/<slug>
 ```
 - `asset-sheet.png` 로 톤(ODS 3D 제뉴인 블루 / 숏컷 Small SVG)·중복·의미 확인 → `prompts/03-assets.md`
 - **에셋은 카탈로그(Storybook 정의 ODS)에서만.** 맞는 게 없으면 플레이스홀더로 비워두고, 답변에 "에셋 미정 N곳 — 어느 슬롯·어떤 의미·후보 유무"를 피드백한다(`references/03-assets.md` 형식). 임의 생성·유사 에셋 대체 금지. 생성형은 디자이너가 승인해 `allowGeneratedAssets: true` 를 줬을 때만.
+- **목업 섹션(`mockup`) 화면은 Loom 플러그인에서 가져온다.** 기획에 "실제 화면·앱에서 이렇게" 맥락이 있으면 `mockup` 섹션을 두고, 화면은 임의 이미지가 아니라 Loom(Ohouse Design) 정본에서:
+  1. 세션에 `loom` MCP 가 있으면 `list_screens({ track })` / `get_screen(id)` 로 화면 id 를 찾는다(없으면 `node harness/bin/lp.mjs screens "키워드"` 로 로컬 인덱스 검색).
+  2. `workbench_sketch_new({ slug: "lp-<화면slug>", screen: "<id>" })` → `workbench_compile_check({ project: "sketches/lp-<화면slug>", screenKey: "<id>", shot: true, query: { env: "ios27-iphone-17" } })` 로 PNG 를 찍는다(`~/Loom/.../.loom/shots/`).
+  3. 스펙에 `"screen": { "id": "<id>", "file": "<PNG 경로>" }` — file 을 생략해도 하네스가 `~/Loom` 의 shots 를 화면 slug 로 자동 탐색한다(`LOOM_HOME` 존중).
+  4. Loom 플러그인이 없고 네트워크도 막혀 이미지를 못 받으면 '화면 미정' placeholder 로 두고 답변에 "화면 미정 — `/loom-setup` 후 재빌드" 로 피드백한다. 다른 화면·스크린샷으로 대체하지 않는다.
 - `shot-mobile.png`·`shot-desktop.png` 를 한 번만 보고 명백한 깨짐만 확인.
 - 컴포넌트 자체 문제(패딩·폭·정렬)는 `src/components/preview/*` 에서 고치고 README "빌더 소스 변경" 에 기록. 하네스 CSS 덧칠 금지.
 
