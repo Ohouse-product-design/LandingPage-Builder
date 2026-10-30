@@ -9,7 +9,7 @@
 import path from "node:path";
 import { findAsset, searchAssets, objectKey, assetStyle, styleForRole, TINT_NAMES, TINT_PALETTES } from "./assets.mjs";
 import { breakLines, textWidthPx, SLOT_METRICS } from "./linebreak.mjs";
-import { searchScreens, findScreen, screenImageEnv, screenImageUrl } from "./screens.mjs";
+import { searchScreens, findScreen, screenImageEnv, screenImageUrl, findLoomShot } from "./screens.mjs";
 
 export const TITLE_LAYOUTS = ["center", "split"];
 
@@ -209,7 +209,12 @@ export function compileSpec(spec) {
       // 목업 섹션: 실제 서비스 화면 소개. screen 은 스크린 디렉토리에서만 (query 검색 | id 지정) — 없으면 placeholder + warn
       const sc = typeof s.screen === "string" ? { query: s.screen } : (s.screen || {});
       let hit = null;
-      if (sc.id) { hit = findScreen(sc.id); if (!hit) assetLog.push({ where: `${id}.screen`, source: "placeholder", level: "warn", note: `스크린 디렉토리에 없는 id '${sc.id}' → 화면 미정` }); }
+      if (sc.id) {
+        hit = findScreen(sc.id);
+        // 인덱스에 없어도 Loom 플러그인 캡처(~/Loom)가 있으면 그 화면으로 (인덱스는 부분본일 수 있음)
+        if (!hit && !sc.file) { const loom = findLoomShot(sc.id); if (loom) { sc.file = loom; sc.fromLoom = true; } }
+        if (!hit && !sc.file) assetLog.push({ where: `${id}.screen`, source: "placeholder", level: "warn", note: `스크린 디렉토리 인덱스·Loom 캡처 모두에 없는 id '${sc.id}' → 화면 미정` });
+      }
       else if (sc.query) {
         const [best, ...rest] = searchScreens(sc.query, { limit: 4 });
         if (best && best.score >= 4) { hit = best; assetLog.push({ where: `${id}.screen`, source: "screen-search", query: sc.query, id: best.id, score: best.score, alternatives: rest.map((r) => r.id) }); }
@@ -219,7 +224,7 @@ export function compileSpec(spec) {
       // Loom 캡처 파일만 있고 인덱스 id 가 없어도 허용 (screen: { file, alt })
       const screenAsset = hit
         ? { alt: sc.alt || hit.title, type: "image", url: `screen:${hit.id}/${hit.hash}/${screenImageEnv(hit)}`, screenId: hit.id, screenUrl: screenImageUrl(hit), ...(sc.file ? { screenFile: sc.file } : {}) }
-        : sc.file ? { alt: sc.alt || "서비스 화면", type: "image", url: `screen:file`, screenFile: sc.file } : null;
+        : sc.file ? { alt: sc.alt || sc.id || "서비스 화면", type: "image", url: `screen:file`, screenFile: sc.file, screenId: sc.id, ...(sc.fromLoom ? { screenSource: "loom" } : {}) } : null;
       if (!hit && sc.file) { assetLog.pop(); assetLog.push({ where: `${id}.screen`, source: "screen-file", file: sc.file }); }
       out.push({ ...base, props: { ...TL, tag: s.tag || "", sectionTitle: autoBreak(`${where[id]}.title`, s.title || "", { mobile: { w: 375 - 32, f: 24 }, desktop: { w: 720 - 32, f: 30 }, maxLines: 2 }, { preferTwoLinesFrom: 12 }), sectionSubtitle: s.body || s.subtitle || "" }, assets: screenAsset ? [{ slotName: "screen", asset: screenAsset }] : [] });
       continue;

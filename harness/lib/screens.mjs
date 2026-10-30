@@ -99,7 +99,7 @@ export function screenCacheFile(s, env = screenImageEnv(s)) {
 }
 
 /** 지정 file → Loom 캡처(~/Loom 안의 .loom/shots) → 캐시 → 다운로드 시도(사내 프록시 환경은 실패) → null. 반환 {file, source} */
-export async function resolveScreenImage(s, { env = screenImageEnv(s), file = null } = {}) {
+export async function resolveScreenImage(s, { env = s ? screenImageEnv(s) : DEFAULT_ENV, file = null } = {}) {
   if (file) { for (const c of [file, path.resolve(file), file.replace(/^~/, os.homedir())]) if (fs.existsSync(c)) return { file: c, source: "file" }; }
   const loom = s ? findLoomShot(s.id, env) : null;
   if (loom) return { file: loom, source: "loom" };

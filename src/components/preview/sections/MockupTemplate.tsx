@@ -82,8 +82,8 @@ export default function MockupTemplate({
                 <span className="font-pretendard text-[13px] tracking-[-0.3px]">화면 미정</span>
               </div>
             )}
-            {/* 다이내믹 아일랜드 */}
-            <div className="absolute left-1/2 top-3 h-[26px] w-[90px] -translate-x-1/2 rounded-full bg-[#1C1C1E]" />
+            {/* 다이내믹 아일랜드 — Loom 캡처는 상태 바를 포함하므로 placeholder 일 때만 그린다 */}
+            {!screen && <div className="absolute left-1/2 top-3 h-[26px] w-[90px] -translate-x-1/2 rounded-full bg-[#1C1C1E]" />}
           </div>
         </div>
       </div>

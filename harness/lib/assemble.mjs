@@ -73,7 +73,7 @@ async function embedAssets(doc) {
       const [, sid, , env] = a.url.match(/^screen:(.+)\/([0-9a-f]+)\/([a-z0-9-]+)$/) || [];
       const s = sid ? findScreen(sid) : null;
       const r = await resolveScreenImage(s, { env: env || undefined, file: a.screenFile || null });
-      if (r) { uri = await screenToDataUri(r.file); screenSources.push({ where: a.screenId || a.screenFile, source: r.source, file: r.file }); }
+      if (r) { uri = await screenToDataUri(r.file); screenSources.push({ where: a.screenId || a.screenFile, source: a.screenSource || r.source, file: r.file }); }
       else { screenMisses.push({ where: a.screenId || sid || a.screenFile, url: a.screenUrl }); uri = null; }
       if (!uri) { a.url = undefined; return; }
       a.url = `lp-asset://${put(uri)}`; return;
