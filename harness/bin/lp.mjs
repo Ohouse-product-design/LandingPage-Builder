@@ -6,7 +6,7 @@
  *   lp assets "<키워드>" [--role icon|media] [--limit 8]   ODS 에셋 검색
  *   lp screens "<키워드>" [--limit 8]  스크린 디렉토리 화면 검색 (목업 섹션용) · lp screens sync 로 인덱스 재생성(네트워크 필요)
  *   lp validate <spec.json>            가이드 검증만 (JSON 리포트)
- *   lp build <spec.json> [--out dir] [--force]   compile → validate → render → out/<slug>/{page,preview}.html (--out 의 기존 산출물은 --force 로만 덮어씀)
+ *   lp build <spec.json> [--out dir] [--force]   compile → validate → render → out/<slug>/{page,preview}.html (기본 폴더는 직전 산출물을 prev/ 에 보관, --out 의 기존 산출물은 --force 로만 덮어씀)
  *   lp doctor                          환경 점검 (node·sharp·폰트 도구·playwright·design-assets·CDN 폴백)
  *   lp pack-assets [--out file.tgz]    design-assets 원본(480w·svg·adf)만 묶어 읽기 권한 없는 팀원에게 전달
  *   lp sheet <out/slug>                 선택된 에셋 컨택트시트(PNG) — 톤 일관성 육안 검수용
@@ -63,6 +63,11 @@ if (cmd === "catalog") {
   const existing = ["doc.json", "page.html", "preview.html", "report.json"].filter((f) => fs.existsSync(path.join(outDir, f)));
   if (!isDefaultOut && existing.length && !rest.includes("--force")) { console.error(`${outDir} 에 기존 산출물(${existing.join(", ")})이 있습니다 — 덮어쓰려면 --force`); process.exit(2); }
   fs.mkdirSync(outDir, { recursive: true });
+  // 기본 out/<slug>/ 는 수정 루프로 반복 빌드하는 폴더 — 직전 산출물을 prev/ 에 보관해 조용히 잃지 않게 한다 (한 세대)
+  if (isDefaultOut && existing.length) {
+    const prev = path.join(outDir, "prev"); fs.mkdirSync(prev, { recursive: true });
+    for (const f of existing) fs.copyFileSync(path.join(outDir, f), path.join(prev, f));
+  }
   fs.writeFileSync(path.join(outDir, "doc.json"), JSON.stringify(doc, null, 1));
   fs.writeFileSync(path.join(outDir, "page.html"), page);
   // 렌더 QA (실 브라우저 3폭) → 리포트 병합
