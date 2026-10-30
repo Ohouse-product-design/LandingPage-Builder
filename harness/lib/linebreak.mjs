@@ -107,8 +107,8 @@ export const SLOT_METRICS = {
   leadingTitle:  { mobile: { w: 300 - 40, f: 20 }, maxLines: 1 },
   reviewTitle:   { mobile: { w: 280 - 32, f: 16 }, maxLines: 2 },
   listcardTitle: { mobile: { w: 375 - 32 - 16 - 56 - 48, f: 16 }, maxLines: 1 },
-  pillTitle:     { mobile: { w: 375 - 32 - 48 - 40 - 20, f: 18 }, maxLines: 1 },   // px-6 + icon 박스 40 + gap 20
-  pillBody:      { mobile: { w: 375 - 32 - 48 - 40 - 20, f: 15 }, maxLines: 1 },   // 서브타이틀 1줄
+  pillTitle:     { mobile: { w: 375 - 32 - 48 - 24 - 16, f: 18 }, maxLines: 1 },   // px-6 + icon 24(박스 없음) + gap 16
+  pillBody:      { mobile: { w: 375 - 32 - 48 - 24 - 16, f: 15 }, maxLines: 1 },   // 서브타이틀 1줄
   stepTitle:     { mobile: { w: 375 - 32 - 40 - 40 - 16, f: 17 }, maxLines: 2 },   // container px-5 + icon 40 + gap 16
   linkGroupTitle:{ mobile: { w: 375 - 32 - 40 - 36, f: 20 }, maxLines: 1 },
 };

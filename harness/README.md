@@ -75,6 +75,7 @@ open harness/out/moving-1person/preview.html
 - Storybook/ODS 카탈로그에 정의된 에셋만. 없으면 플레이스홀더 + 리포트 `warn`(어느 슬롯이 비었는지) — 임의 생성·유사 대체 금지. 생성형은 `allowGeneratedAssets: true` 일 때만
 - 슬롯 크기로 역할 결정: **24 이하 → 아이콘(숏컷 SVG)**, 24 초과 → 3D 에셋. 리스트 leading icon: bg 박스 40 안에 ≤24 · 카드 안 에셋: 40 고정 · 프로세스: 넘버링 leading(에셋 없음) · 히어로는 예외
 - usp·조건 설명 섹션의 기본은 **리스트 타입(pillcard)**: 배경색 카드 + 아이콘 24 + 제목(+서브타이틀 1줄). 조건·단순 나열은 gray 일괄, 다양한 케이스 표시는 베리언츠(mint·pink·yellow·sky) — `choosePillTone`(스펙 `tone` > 제목 신호 > gray)
+- 같은 섹션 에셋의 시각 크기 통일: `toDataUri(..., {normalize:true})` 가 투명 여백 trim + 정사각 contain (SVG viewBox 재작성, 비트맵 trim/extend). 리스트 leading icon 은 흰 배경 박스 없이 24 (흰 배경 위 listcard 만 gray 박스)
 - 히어로 chevron 은 상하 바운스 어포던스(`animate-bounce`, reduced-motion 시 정지)
 - 풀배경 카드(bgfullimg)는 제외 — usp 는 leading-asset 으로 일괄 적용 (스펙에 bgfullimg 를 써도 compile 이 보정하고 리포트에 남김)
 - 표 2개: 행 텍스트가 모바일 2열 셀 폭(136px) 안에 1줄이면 모바일도 2열 나란히, 아니면 1열 스택 (`columns.mobile` 을 compile 이 결정, Card 가 그대로 따름)

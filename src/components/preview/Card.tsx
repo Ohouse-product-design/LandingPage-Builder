@@ -750,10 +750,15 @@ function CardLeadingAssetCell({
 export const LEADING_ICON_PX = 24;
 export const CARD_ASSET_PX = 40;
 
-/** 리스트 leading icon — bg 박스 + 24px 에셋. 에셋 없으면 placeholder */
-function LeadingIcon({ asset, tone = "gray", onRequestSlotEdit }: { asset: import("@/schema/doc").AssetRef | null; tone?: "gray" | "white"; onRequestSlotEdit?: () => void }) {
+/**
+ * 리스트 leading icon — 24px 에셋. 에셋 없으면 placeholder
+ *   tone "gray": 흰 배경 위(listcard) → surface.gray 박스 40
+ *   tone "none": 배경색 카드·회색 컨테이너 안(pillcard·stepcard) → 박스 없이 에셋만 (흰 배경 박스 사용 안 함, 2026-10)
+ *   compact: 래퍼를 24 로 줄여 에셋이 좌측 패딩에 붙게 (pillcard)
+ */
+function LeadingIcon({ asset, tone = "gray", compact = false, onRequestSlotEdit }: { asset: import("@/schema/doc").AssetRef | null; tone?: "gray" | "none"; compact?: boolean; onRequestSlotEdit?: () => void }) {
   return (
-    <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-ods-8", tone === "gray" ? "bg-ods-surface-gray" : "bg-white")}>
+    <div className={cn("flex shrink-0 items-center justify-center", compact ? "size-6" : "size-10 rounded-ods-8", tone === "gray" && "bg-ods-surface-gray")}>
       {asset ? (
         <OdsAssetRenderer asset={asset} size={LEADING_ICON_PX} className="size-6 object-contain" onRequestSlotEdit={onRequestSlotEdit} />
       ) : (
@@ -1018,10 +1023,10 @@ function CardPillCell({ cell, onRequestSlotEdit }: { cell: CardCell; onRequestSl
   const icon = asAsset(slot(cell, "icon"));
   const title = asText(slot(cell, "title"));
   const body = asText(slot(cell, "body"));
-  const bg = PILL_TONE_BG[cell.theme ?? "gray"] ?? PILL_TONE_BG.gray;
+  const bg = PILL_TONE_BG[cell.theme ?? "gray"] ?? PILL_TONE_BG.gray; // 흰 배경 없음 — 항상 톤 배경
   return (
-    <div className="flex w-full items-center gap-5 rounded-ods-16 px-6 py-5" style={{ background: bg }}>
-      <LeadingIcon asset={icon} tone="white" onRequestSlotEdit={onRequestSlotEdit} />
+    <div className="flex w-full items-center gap-4 rounded-ods-16 px-6 py-5" style={{ background: bg }}>
+      <LeadingIcon asset={icon} tone="none" compact onRequestSlotEdit={onRequestSlotEdit} />
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <p className="min-w-0 truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
           {title}
@@ -1095,7 +1100,7 @@ function CardStepCell({ cell, onRequestSlotEdit }: { cell: CardCell; onRequestSl
   return (
     <div className="flex w-full gap-4 py-3">
       <div className="relative z-[1] shrink-0">
-        {icon ? <LeadingIcon asset={icon} tone="white" onRequestSlotEdit={onRequestSlotEdit} /> : <LeadingNumber n={stepNumber ?? ""} />}
+        {icon ? <LeadingIcon asset={icon} tone="none" onRequestSlotEdit={onRequestSlotEdit} /> : <LeadingNumber n={stepNumber ?? ""} />}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1 pt-2">
         {title && (

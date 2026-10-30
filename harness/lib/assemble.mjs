@@ -49,19 +49,21 @@ async function embedAssets(doc) {
     assets[key] = uri;
     return key;
   };
-  const fix = async (a) => {
+  // 슬롯 에셋은 시각 크기 정규화(투명 여백 trim + 정사각 contain) — 같은 섹션 안 에셋 크기 통일 (header/footer 제외)
+  const fix = async (a, normalize = true) => {
     if (!a) return;
     let uri = null;
-    if (a.url?.startsWith("file:")) uri = await toDataUri(a.url.slice(5), { width: 960 });
-    else if (a.assetId) uri = await toDataUri(a.assetId);
+    if (a.url?.startsWith("file:")) uri = await toDataUri(a.url.slice(5), { width: 960, normalize });
+    else if (a.assetId) uri = await toDataUri(a.assetId, { normalize });
     else if (a.url?.startsWith("data:")) uri = a.url;
     if (!uri) uri = PLACEHOLDER_URI;
     a.url = `lp-asset://${put(uri)}`;
   };
   for (const s of d.sections) {
-    for (const slot of s.assets || []) await fix(slot.asset);
+    const norm = !["header", "footer", "sticky-cta"].includes(s.preset);
+    for (const slot of s.assets || []) await fix(slot.asset, norm);
     for (const inst of Object.values(s.slots || {}).flat()) {
-      for (const c of inst.props?.cells || []) for (const v of Object.values(c.slots || {})) if (v?.kind === "asset") await fix(v.asset);
+      for (const c of inst.props?.cells || []) for (const v of Object.values(c.slots || {})) if (v?.kind === "asset") await fix(v.asset, norm);
     }
   }
   return { doc: d, assets, put };

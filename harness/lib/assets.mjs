@@ -139,8 +139,61 @@ async function fetchCdnAsset(hit) {
 }
 
 /** ODS 에셋 id 또는 로컬 파일 경로 → data URI (원본 없음·CDN 실패 시 null → 호출부가 플레이스홀더) */
-export async function toDataUri(ref, { width = 480 } = {}) {
-  const key = `${ref}@${width}`;
+/**
+ * 시각 크기 정규화 (2026-10 규칙: 같은 섹션의 에셋은 시각적으로 같은 크기)
+ *  - 투명 여백을 잘라내고(trim) 정사각 박스에 contain 으로 맞춘다 → 어떤 에셋이든 긴 변이 박스를 꽉 채워 보인다
+ *  - SVG 는 렌더해서 bbox 를 재고 viewBox 만 다시 써서 벡터를 유지, 비트맵은 sharp trim → 정사각 extend
+ */
+const NORMALIZE_PAD = 0.04; // 박스 대비 여백 (양쪽 합 8%)
+async function alphaBBox(sharpInput) {
+  const img = sharpInput.ensureAlpha();
+  const { data, info } = await img.raw().toBuffer({ resolveWithObject: true });
+  const { width: W, height: H, channels: C } = info;
+  let x0 = W, y0 = H, x1 = -1, y1 = -1;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (data[(y * W + x) * C + 3] > 16) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  }
+  if (x1 < 0) return null;
+  return { x0, y0, x1: x1 + 1, y1: y1 + 1, W, H };
+}
+async function normalizeSvg(file) {
+  const sharp = (await import("sharp")).default;
+  let svg = fs.readFileSync(file, "utf8");
+  const vbm = svg.match(/viewBox="([^"]+)"/);
+  const wm = svg.match(/<svg[^>]*\swidth="([\d.]+)/), hm = svg.match(/<svg[^>]*\sheight="([\d.]+)/);
+  const vb = vbm ? vbm[1].trim().split(/[\s,]+/).map(Number) : [0, 0, Number(wm?.[1] || 0), Number(hm?.[1] || 0)];
+  if (!(vb[2] > 0 && vb[3] > 0)) return null;
+  const R = 512;
+  const bb = await alphaBBox(sharp(Buffer.from(svg)).resize({ width: R, height: R, fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }));
+  if (!bb) return null;
+  // contain 렌더 좌표 → viewBox 좌표
+  const scale = Math.max(vb[2], vb[3]) / R;
+  const offX = (R - vb[2] / scale) / 2, offY = (R - vb[3] / scale) / 2;
+  const bx0 = vb[0] + (bb.x0 - offX) * scale, by0 = vb[1] + (bb.y0 - offY) * scale;
+  const bw = (bb.x1 - bb.x0) * scale, bh = (bb.y1 - bb.y0) * scale;
+  const side = Math.max(bw, bh) * (1 + NORMALIZE_PAD * 2);
+  const nx = bx0 + bw / 2 - side / 2, ny = by0 + bh / 2 - side / 2;
+  const newVb = `${nx.toFixed(2)} ${ny.toFixed(2)} ${side.toFixed(2)} ${side.toFixed(2)}`;
+  svg = vbm ? svg.replace(vbm[0], `viewBox="${newVb}"`) : svg.replace(/<svg/, `<svg viewBox="${newVb}"`);
+  svg = svg.replace(/(<svg[^>]*?)\swidth="[^"]*"/, "$1").replace(/(<svg[^>]*?)\sheight="[^"]*"/, "$1").replace(/<svg/, `<svg width="${Math.round(side)}" height="${Math.round(side)}"`);
+  return "data:image/svg+xml;base64," + Buffer.from(svg).toString("base64");
+}
+async function normalizeBitmap(file, width) {
+  const sharp = (await import("sharp")).default;
+  const base = sharp(file).ensureAlpha();
+  const bb = await alphaBBox(base.clone());
+  if (!bb) return null;
+  const bw = bb.x1 - bb.x0, bh = bb.y1 - bb.y0;
+  const side = Math.round(Math.max(bw, bh) * (1 + NORMALIZE_PAD * 2));
+  const left = Math.round((side - bw) / 2), top = Math.round((side - bh) / 2);
+  const buf = await sharp(file).ensureAlpha().extract({ left: bb.x0, top: bb.y0, width: bw, height: bh })
+    .extend({ left, top, right: side - bw - left, bottom: side - bh - top, background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toBuffer();
+  return "data:image/webp;base64," + buf.toString("base64");
+}
+
+export async function toDataUri(ref, { width = 480, normalize = false } = {}) {
+  const key = `${ref}@${width}${normalize ? "#n" : ""}`;
   if (_cache.has(key)) return _cache.get(key);
   let file = null;
   const hit = findAsset(ref);
@@ -154,6 +207,10 @@ export async function toDataUri(ref, { width = 480 } = {}) {
   }
   if (!file || !fs.existsSync(file)) return null;
   let uri;
+  if (normalize) {
+    try { uri = file.endsWith(".svg") ? await normalizeSvg(file) : await normalizeBitmap(file, width); } catch (e) { uri = null; }
+    if (uri) { _cache.set(key, uri); return uri; }
+  }
   if (file.endsWith(".svg")) {
     uri = "data:image/svg+xml;base64," + fs.readFileSync(file).toString("base64");
   } else {

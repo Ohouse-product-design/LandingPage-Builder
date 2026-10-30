@@ -8,11 +8,14 @@
 ## 사이즈 규칙 (컴포넌트가 강제 — 스펙에서 조절 불가)
 | 자리 | 규칙 |
 |---|---|
-| 리스트 leading icon (listcard·pillcard·stepcard 좌측) | bg 박스 40×40(`surface.gray`, 배경색 카드·회색 컨테이너 안에서는 white) 안에 에셋 **최대 24×24** |
+| 리스트 leading icon (listcard·pillcard·stepcard 좌측) | 에셋 **24×24**. 흰 배경 위(listcard)만 `surface.gray` 박스 40, 배경색 카드·회색 컨테이너 안(pillcard·stepcard)은 **박스 없이** 에셋만 (흰 배경 박스 사용 안 함) |
 | 카드 안 에셋 (imgcard leading-asset) | **40×40 고정**, 카드 좌상단 |
 | 풀배경 카드 (bgfullimg) | **사용하지 않음** — usp 는 항상 leading-asset 으로 일괄 적용 |
 | 히어로 비주얼 | center 225×150 / split 360×240 |
 | 프로세스 | 에셋 없음 — **넘버링 leading**(01·02·03, primary 원형) |
+
+## 시각 크기 통일 (렌더 시 자동)
+같은 섹션의 에셋은 시각적으로 같은 크기로 보이도록 임베드 단계에서 **투명 여백을 잘라내고 정사각 박스에 contain** 으로 맞춘다 (SVG 는 viewBox 재작성으로 벡터 유지, 비트맵은 trim+extend). 원본에 여백이 많은 숏컷도 다른 에셋과 같은 크기로 보인다. header·footer 로고는 제외.
 
 ## 역할별 검색 — 슬롯 크기로 결정 (24 이하 = 아이콘, 24 초과 = 에셋)
 - **24 초과 슬롯**(히어로 225/360 · 카드 안 40) → `asset: { query }` — ODS 3D 일러스트, 제뉴인 블루 우선, 실사·평면 SVG 배제
