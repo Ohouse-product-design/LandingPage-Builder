@@ -33,22 +33,29 @@ skill = skill
   .replace(/node harness\/bin\/lp\.mjs/g, "node harness/bin/lp.mjs")
   .replace(/harness\/out\//g, "harness/out/");
 // 0단계(환경 준비)를 임베드본 기준으로 교체
-skill = skill.replace(/## 0\. 환경 준비[\s\S]*?(?=\n## 1)/, `## 0. 환경 준비 (최초 1회)
+skill = skill.replace(/## 0\. [^\n]*\n[\s\S]*?(?=\n## 1)/, `## 0. 세팅·권한 점검 (세션당 1회, 시작하자마자)
 
 하네스 런타임(컴파일러·검증·렌더러·ODS 에셋 인덱스)은 **이 스킬 폴더 안** \`harness/\` 에 임베드돼 있다. 외부 레포·노션 없이 동작한다.
 
-**준비물(한눈에):** Node 20+ · npm · Python3(+fontTools·brotli, setup.sh 가 설치) · Chromium(Playwright, 없으면 \`--no-qa\`) · \`bucketplace/design-assets\` 읽기 권한(없으면 CDN 폴백/플레이스홀더) · 목업 섹션용 Loom 플러그인(\`bucketplace-loom\`, 선택).
+**준비물(한눈에):** Node 20+ · npm · Python3(+fontTools·brotli, setup.sh 가 설치) · Chromium(Playwright, 없으면 \`--no-qa\`) · \`bucketplace/design-assets\` 읽기 권한(없으면 CDN 폴백/플레이스홀더) · 목업 섹션용 Loom 플러그인(\`bucketplace-loom\`, 선택) · 그래픽 티켓용 Slack MCP(선택).
 
 \`\`\`bash
-cd <이 스킬 폴더>/harness      # 예: ~/claude-marketplace/plugins/product-design/skills/lp-draft/harness
-bash setup.sh                 # npm 의존성 · 폰트 도구 · 렌더 QA 브라우저 · (권한 있으면) design-assets 원본 · 렌더 번들
-node bin/lp.mjs doctor        # 상태 점검
+cd <이 스킬 폴더>/harness      # 예: ~/.claude/plugins/.../product-design/skills/lp-draft/harness
+bash setup.sh                 # 최초 1회
+node bin/lp.mjs doctor        # 매 세션 — 아래 표의 상태를 한 번에
 \`\`\`
-플러그인 설치 경로를 모르면 \`~/.claude/plugins\` 아래 \`product-design/skills/lp-draft\` 를 찾는다. 이후 명령은 모두 그 \`harness/\` 에서 실행하고, 산출물은 \`harness/out/<slug>/\` 에 쌓인다(같은 slug 재빌드 시 직전 산출물은 \`prev/\` 에 한 세대 보관). 설치 경로가 읽기 전용이면 \`--out ~/lp-draft/<slug>\` 로 바꾼다(그 폴더에 기존 산출물이 있으면 \`--force\` 가 있어야 덮어쓴다).
+산출물은 \`harness/out/<slug>/\` 에 쌓인다(같은 slug 재빌드 시 직전 산출물은 \`prev/\` 에 한 세대 보관). 설치 경로가 읽기 전용이면 \`--out ~/lp-draft/<slug>\` 로 바꾼다(그 폴더에 기존 산출물이 있으면 \`--force\` 가 있어야 덮어쓴다).
 
-**design-assets 읽기 권한이 없을 때** — 빌드는 되고 에셋은 CDN 폴백(자동) → 플레이스홀더 순으로 채워진다. 리포트에 \`CDN 폴백 N개 성공/실패\` 가 뜬다.
-사용자에게 이렇게 안내한다: ① \`#ai_frontier\` 에 bucketplace/design-assets 읽기 권한 요청 ② 급하면 권한 있는 팀원의 \`node bin/lp.mjs pack-assets\` 결과를 받아 \`DESIGN_ASSETS_ROOT\` 지정 ③ 그 전까지는 플레이스홀더 시안으로 구조·카피를 먼저 리뷰. 플레이스홀더 상태의 시안을 "완성"이라고 말하지 않는다.
-입력이 **기존 페이지 URL** 이면 브라우저로 열어 본문·FAQ 펼침 텍스트·메타를 전부 추출한 뒤 시작.
+| 게이트 | 필요한 것 | 없을 때 |
+|---|---|---|
+| 렌더 | Node 20+, npm, Chromium(Playwright) | \`build --no-qa\` (렌더 QA 만 생략) |
+| ODS 에셋 | \`bucketplace/design-assets\` 읽기 권한 → \`~/design-assets\` (커버리지 ≥95%) | CDN 폴백(자동) → 플레이스홀더. \`#ai_frontier\` 에 권한 요청 또는 팀원 \`node bin/lp.mjs pack-assets\` 수령 후 \`DESIGN_ASSETS_ROOT\` 지정. 플레이스홀더 시안을 "완성"이라 말하지 않는다 |
+| 기획안 읽기 | 노션 → \`Notion\` MCP · 구글독스 → \`Google Drive\` MCP · HTML/URL → 브라우저 · 첨부 → 파일 읽기 | 커넥터가 없으면 본문 붙여넣기 요청(추측으로 채우지 않음) |
+| 목업 화면 | Loom 플러그인: \`loom\` MCP + \`~/Loom\` 캡처 | '화면 미정' placeholder + "\`/loom-setup\` 후 재빌드" 안내 |
+| 그래픽 소재 티켓 | \`Slack\` MCP(드래프트 생성) + \`#des_graphic_요청\` 채널 멤버 | 티켓 본문만 답변에 적어 주고 직접 올리도록 안내 |
+| 퍼블리시 | Artifact 도구 | \`preview.html\` 파일로 전달 |
+
+점검 결과는 답변 첫 줄에 한 줄로("세팅 OK — 에셋 원본 98%, Loom 있음, Slack 없음") 남기고, 막힌 게이트는 **그 단계에서만** 다시 언급한다.
 `);
 skill = skill.replace(/node harness\/bin\/lp\.mjs/g, "node bin/lp.mjs").replace(/harness\/out\//g, "out/").replace(/`harness\/examples\/`/g, "`examples/`");
 fs.writeFileSync(path.join(dest, "SKILL.md"), skill);

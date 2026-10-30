@@ -6,6 +6,7 @@
  *   lp assets "<키워드>" [--role icon|media] [--limit 8]   ODS 에셋 검색
  *   lp screens "<키워드>" [--limit 8]  스크린 디렉토리 화면 검색 (목업 섹션용) · lp screens sync 로 인덱스 재생성(네트워크 필요)
  *   lp validate <spec.json>            가이드 검증만 (JSON 리포트)
+ *   lp outline <spec.json>             섹션별 채택 타입 + 대안(허용 변형·필요 아이템 형태) — 사용자에게 섹션 타입 선택지를 물을 때
  *   lp build <spec.json> [--out dir] [--force]   compile → validate → render → out/<slug>/{page,preview}.html (기본 폴더는 직전 산출물을 prev/ 에 보관, --out 의 기존 산출물은 --force 로만 덮어씀)
  *   lp doctor                          환경 점검 (node·sharp·폰트 도구·playwright·design-assets·CDN 폴백)
  *   lp pack-assets [--out file.tgz]    design-assets 원본(480w·svg·adf)만 묶어 읽기 권한 없는 팀원에게 전달
@@ -26,6 +27,30 @@ const [cmd, ...rest] = process.argv.slice(2);
 const flag = (n, d) => { const i = rest.indexOf(`--${n}`); return i >= 0 ? rest[i + 1] : d; };
 const readSpec = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
 
+if (cmd === "outline") {
+  const spec = readSpec(rest[0]);
+  const { chooseCardUsage } = await import("../lib/compile.mjs");
+  const SHAPE = {
+    imgcard: "제목 + 설명(+asset) — 카드 그리드(짧은 텍스트면 밀도 그리드)",
+    pillcard: "제목 ≤14자 + icon (+서브타이틀 ≤24자) — 회색 리스트 타입",
+    stepcard: "icon + 제목 + 보조문 — 세로 단계",
+    linkcard: "items[].links[{label,url,actions}] — 링크 묶음",
+    kvcard: "단일 카드 rows '라벨: 값'(단위) — 조건 표",
+    tablecard: "카드 1–2개 rows[] — 비교/요약 표",
+    listcard: "제목 + 설명 + icon + href — 서비스 리스트",
+    reviewcard: "rating + 제목 + 본문 + author — 후기",
+    faqcard: "q + a — 아코디언",
+  };
+  const out = [];
+  (spec.sections || []).forEach((s, i) => {
+    const rule = PRESET_RULES[s.preset];
+    if (!rule) { if (["hero", "mockup", "cta-form"].includes(s.preset)) out.push({ index: i, preset: s.preset, title: s.title || "", fixed: true }); return; }
+    const pick = chooseCardUsage(s.preset, s);
+    out.push({ index: i, preset: s.preset, title: s.title || "", items: (s.items || []).length, chosen: pick.usage, reason: pick.reason, alternatives: rule.allowedUsages.filter((u) => u !== pick.usage).map((u) => ({ usage: u, needs: SHAPE[u] || "" })), presetAlternatives: s.preset === "usp" ? ["mockup(실제 화면 소개면)", "process(절차면)", "table(비교면)"] : [] });
+  });
+  console.log(JSON.stringify(out, null, 1));
+  process.exit(0);
+}
 if (cmd === "screens") {
   if (rest[0] === "sync") { const n = await syncScreens(); console.log(`screens index: ${n} screens`); process.exit(0); }
   const q = rest.filter((x) => !x.startsWith("--") && rest[rest.indexOf(x) - 1] !== "--limit").join(" ");
@@ -115,6 +140,14 @@ if (cmd === "catalog") {
   let cdn = null; try { const r = await fetch(`https://asset.ohousecdn.com/static/${probe.id}/image_480.webp`, { method: "HEAD", signal: AbortSignal.timeout(6000) }); cdn = r.ok; } catch { cdn = false; }
   lines.push(`${ok(cdn)} CDN 폴백 (asset.ohousecdn.com)${cdn ? "" : " — 접근 불가. 원본도 없으면 에셋이 플레이스홀더로 렌더"}`);
   lines.push(`${ok(fs.existsSync(path.join(here, "../.build/render.mjs")))} 렌더 번들 (없으면 첫 build 때 자동 생성)`);
+  // 목업 화면: Loom 플러그인 작업 폴더(캡처) · 스크린 인덱스
+  const { loomHome, loadScreens } = await import("../lib/screens.mjs");
+  const lh = loomHome(); const loomOk = fs.existsSync(lh);
+  let shots = 0; if (loomOk) { const walk = (d, k) => { if (k > 6) return; let es = []; try { es = fs.readdirSync(d, { withFileTypes: true }); } catch { return; } for (const e of es) { if (e.isDirectory()) { if ([".loom-engines", ".cache", "node_modules"].includes(e.name)) continue; walk(path.join(d, e.name), k + 1); } else if (/\.png$/i.test(e.name) && d.includes(`${path.sep}.loom${path.sep}shots`)) shots++; } }; walk(lh, 0); }
+  lines.push(`${ok(loomOk)} Loom 플러그인 작업 폴더 (${lh})${loomOk ? ` — 캡처 ${shots}장 (목업 섹션 화면 출처)` : " — 없음 → 목업 섹션은 '화면 미정'. bucketplace-loom 설치 후 /loom-setup"}`);
+  const sc = loadScreens(); const scPartial = (() => { try { return !!JSON.parse(fs.readFileSync(path.join(here, "../catalog/ohouse-screens-index.json"), "utf8")).partial; } catch { return true; } })();
+  lines.push(`${ok(sc.length > 50)} 스크린 인덱스 ${sc.length}개${scPartial ? " (부분본 — 네트워크 열린 곳에서 `lp screens sync`)" : ""}`);
+  lines.push(`· 기획안 읽기(Notion/Drive MCP) · 그래픽 티켓(Slack MCP) · 퍼블리시(Artifact) 는 Claude 세션 도구 — 세션에서 확인`);
   console.log(lines.join("\n"));
   if (!root && !cdn) { console.log("\n→ design-assets 읽기 권한이 없다면: ① #ai_frontier 에 bucketplace/design-assets 읽기 권한 요청 ② 권한 있는 팀원에게 `lp pack-assets` 결과(ods-assets-pack.tgz)를 받아 풀고 DESIGN_ASSETS_ROOT 로 지정"); }
 } else if (cmd === "pack-assets") {

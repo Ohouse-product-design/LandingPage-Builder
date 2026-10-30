@@ -9,83 +9,133 @@ description: 노션·문서·URL·자연어 기획안을 받아 ODS 컴포넌트
 레이아웃·스타일·에셋 일관성은 Claude 의 감각이 아니라 하네스가 결정적으로 보장한다.
 
 ```
-기획안(문서 URL / 첨부 문서 / 기존 페이지 URL / 텍스트)
-  └─(Claude) 1 brief 해석 → 2 섹션 구성 → 3 UX 라이팅 → spec.json
-        └─(lp build) compile: titleLayout 주입 · 카드 변형 자동 채택 · 프리셋 규칙 강제 · ODS 에셋 검색 · 가독성 줄바꿈
-              → validate: 글자수·필수·CTA·금기어·문체·레이아웃 택1
-              → render: 빌더와 동일한 React 컴포넌트 SSR × 375/768/1280
-              → render-QA: 실브라우저 잘림·가로스크롤·깨진 이미지
-              → page.html(단일 파일, 에셋·폰트·CSS 임베드) + preview.html(리뷰 셸)
-  └─(Claude) 4 에셋 톤 검수 → 필요 시 Figma AI 생성 → 재빌드
-  └─(Claude) 5 Artifact 퍼블리시 → 링크 전달
+기획안(HTML/URL · 노션 · 문서 · 텍스트)
+  └─ 0 세팅·권한 점검 ─ 1 입력 받기 ─ 2 옵션 3개 묻기(한 번에)
+        [1] UX 라이팅: 검토·다듬기 | 기획안 그대로
+        [2] 섹션 타입: 하네스 추천 자동 | 섹션별 순차 확인
+        [3] 히어로 소재: 카탈로그 에셋 | #des_graphic_요청 티켓 초안 | 나중에
+  └─ 3 brief → 섹션 구성(옵션 [2]) → 4 라이팅(옵션 [1]) → spec.json
+        └─(lp build) compile → validate → SSR ×3폭 → 렌더 QA → page.html + preview.html
+  └─ 5 에셋·화면 검수 → 6 Artifact 퍼블리시 → 7 히어로 소재 티켓(옵션 [3])
 ```
 
-**Claude 가 하지 않는 것:** HTML/CSS 직접 작성, 카탈로그 밖 레이아웃 발명, 카드 변형 직접 선택(형태만 맞춤), 카탈로그 밖 에셋 생성·대체, 원문에 없는 숫자 창작.
+**Claude 가 하지 않는 것:** HTML/CSS 직접 작성, 카탈로그 밖 레이아웃 발명, 카드 변형 직접 선택(형태만 맞춤), 카탈로그 밖 에셋 생성·대체, 원문에 없는 숫자 창작, 사용자 확인 없는 Slack 전송.
 
-## 0. 환경 준비 (세션당 1회)
+## 0. 세팅·권한 점검 (세션당 1회, 시작하자마자)
 
-레포 `Ohouse-product-design/LandingPage-Builder` (main 에 머지된 `harness/`). 로컬 사본: `~/Documents/Claude/Projects/LandingPage-Builder/landingpage-builder`.
+레포 `Ohouse-product-design/LandingPage-Builder` (`harness/`). 로컬 사본: `~/Documents/Claude/Projects/LandingPage-Builder/landingpage-builder`.
 
-| 환경 | 준비 |
+```
+bash harness/setup.sh          # 최초 1회: npm · Pretendard 서브셋 도구 · design-assets sparse · 에셋 인덱스 · 렌더 번들
+node harness/bin/lp.mjs doctor # 매 세션: 아래 표의 상태를 한 번에 보여 준다
+```
+
+| 게이트 | 필요한 것 | 없을 때 |
+|---|---|---|
+| 렌더 | Node 20+, npm, Chromium(Playwright) | Chromium 없으면 `build --no-qa` (렌더 QA 만 생략) |
+| ODS 에셋 | `bucketplace/design-assets` 읽기 권한 → `~/design-assets` (커버리지 ≥95%) | CDN 폴백(자동) → 플레이스홀더. `#ai_frontier` 에 권한 요청 또는 팀원 `pack-assets` 수령. 플레이스홀더 시안을 "완성"이라 말하지 않는다 |
+| 기획안 읽기 | 노션 링크 → `Notion` MCP(`notion-fetch`) · 구글독스 → `Google Drive` MCP · HTML/URL → Chrome 확장(`claude-in-chrome`) · 첨부 → 파일 읽기 | 커넥터가 없으면 사용자에게 본문 붙여넣기 요청(추측으로 채우지 않음) |
+| 목업 화면 | Loom 플러그인(`bucketplace-loom`): `loom` MCP + `~/Loom` 캡처 | '화면 미정' placeholder + "`/loom-setup` 후 재빌드" 안내 |
+| 그래픽 소재 티켓 | `Slack` MCP(드래프트 생성) + `#des_graphic_요청` 채널 멤버 | 티켓 본문만 답변에 적어 주고 직접 올리도록 안내 |
+| 퍼블리시 | Artifact 도구 | `preview.html` 파일로 전달 |
+
+점검 결과는 답변 첫 줄에 한 줄로("세팅 OK — 에셋 원본 98%, Loom 있음, Slack 없음") 남기고, 막힌 게이트는 **그 단계에서만** 다시 언급한다.
+
+## 1. 입력 받기
+
+| 입력 | 읽는 법 |
 |---|---|
-| Claude Code (Mac) | 레포 루트에서 `bash harness/setup.sh` (`~/design-assets` 있으면 그대로 사용) |
-| 클라우드 세션 | ① `add_repo` → clone ② `bucketplace/design-assets` add_repo(read) ③ `bash harness/setup.sh` |
+| 기존 페이지 URL / HTML | Chrome 으로 열어 본문·FAQ 펼침 텍스트·메타·이미지 alt 를 전부 추출(WebFetch 요약으로 대체하지 않음). HTML 파일 첨부면 파싱 |
+| 노션 링크 | `notion-fetch` 로 본문. 하위 페이지가 기획 본문이면 한 단계 더 |
+| 문서(docx·pdf·md) | 파일 읽기 스킬로 텍스트 추출 |
+| 자연어 한두 줄 | 그대로 brief 로. 목적·핵심 액션·타깃 중 둘 이상 불명이면 2단계 질문에 Q0 로 끼워 넣는다(최대 3문항 유지) |
+| lp-spec / 빌더 doc JSON | 필드 매핑만 |
 
-`setup.sh` = npm 의존성 · Pretendard 서브셋 도구 · design-assets 480w sparse checkout · 에셋 인덱스 · 렌더 번들.
-design-assets 원본이 없으면 에셋이 플레이스홀더로 렌더되므로 반드시 확인. 입력이 **기존 페이지 URL** 이면 Chrome 으로 열어 본문·FAQ 펼침 텍스트·메타를 전부 추출한 뒤 시작.
+원문에서 **섹션 명세**(소제목·블록·순서)가 보이면 그 순서를 그대로 보존하고, 각 블록에 임시 id 를 매긴다 — 2단계 [2] 에서 블록별로 묻기 위해.
 
-## 1–3. 기획 해석 → 섹션 구성 → 라이팅
+## 2. 옵션 묻기 (AskUserQuestion 1회, 3문항)
 
-`harness/prompts/` 를 순서대로 따른다.
-- `01-brief-and-compose.md` — 입력 읽기, brief, 질문 최소화(목적·액션·타깃 중 2개 이상 불명일 때만 1회), **titleLayout 택1**, 의도→프리셋, **카드 변형 자동 채택 표**(아이템 형태만 맞추면 하네스가 고름), 시나리오 스택
-- `02-ux-writing.md` — 해요체·짧은 문장, 자리별 공식·글자수(변형 4종 포함), **타이틀은 `\n` 없이** 한 줄로(줄바꿈은 하네스)
-- `spec-format.md` — lp-spec 필드·asset/icon 표기
+입력을 읽은 직후, 작업 전에 **한 번만** 묻는다. 사용자가 이미 답을 말했으면 그 문항은 뺀다.
 
-필수 규칙
-- `titleLayout: "center" | "split"` 최상위 필수, 페이지당 하나. 원문이 중앙 정렬 히어로면 center, 설명 많은 신청형이면 split.
-- 사실·숫자·조건은 원문에서만. 없으면 `assumptions` 에 기록(리뷰 셸에 노출).
-- 카드 변형: `links[]`→링크 묶음, 설명 없는 ≤14자+icon→혜택 필, 단일 카드 '라벨: 값'+단위→조건 표, ≥5단계/icon만/icon+보조문→세로 단계. 꼭 지정할 때만 `card:`.
+| # | 질문 | 선택지 | 기본값(무응답·무인 실행) |
+|---|---|---|---|
+| [1] | UX 라이팅 | **검토·다듬기** — 오늘의집 톤(해요체·짧은 문장·글자수)으로 고치고, 바뀐 문구는 리뷰 셸 `assumptions` 에 "원문 → 수정" 으로 남김 / **기획안 그대로** — 글자수·금기어만 하네스가 검사, 넘치면 최소 수정 후 표기 | 검토·다듬기 |
+| [2] | 섹션 타입 결정 | **하네스 추천 자동** — `01-brief-and-compose.md` 매핑 + `chooseCardUsage` 결과로 바로 빌드 / **섹션별 순차 확인** — 3단계에서 블록마다 타입 선택지를 묻고 진행 | 자동 |
+| [3] | 히어로 소재 | **카탈로그 에셋** — ODS 3D 에셋 검색 / **그래픽 소재 제작 요청** — 시안은 카탈로그(또는 플레이스홀더)로 먼저 만들고, 7단계에서 `#des_graphic_요청` 티켓 초안을 만든다 / **나중에** | 카탈로그 에셋 |
 
-스펙은 `harness/out/<slug>/spec.json` 에 저장:
+## 3. brief → 섹션 구성
+
+`references/01-brief-and-compose.md` 대로 brief 를 뽑고 섹션을 구성한다. 사실·숫자·조건은 원문에서만, 없으면 `assumptions`.
+`titleLayout: "center" | "split"` 은 페이지당 하나 — 원문이 중앙 정렬 히어로면 center, 설명 많은 신청형이면 split.
+
+**[2] = 섹션별 순차 확인일 때**
+1. 임시 spec.json 을 만들고 `node harness/bin/lp.mjs outline <spec>` 으로 블록별 **채택 타입·근거·대안**을 받는다.
+2. 블록마다 AskUserQuestion 1문항(최대 4블록씩 묶어 한 번에) — 질문은 "〈블록 제목〉 섹션을 어떤 타입으로?" , 선택지는 `chosen`(추천, 첫 번째) + `alternatives`(필요한 아이템 형태를 설명에) + `presetAlternatives`(목업·절차·표). 사용자가 고른 타입은 스펙에 `card:` / `preset` 으로 고정한다.
+3. 고를 수 없는 요청(영상·지도·계산기)은 가장 가까운 프리셋 + `assumptions` "카탈로그 확장 후보".
+
+**[2] = 자동일 때** 묻지 않고 추천대로 구성하되, 답변에 섹션 구성 한 줄(블록 → 타입)을 남긴다.
+
+## 4. 라이팅
+
+`references/02-ux-writing.md`. **[1] = 검토·다듬기**면 해요체·짧은 문장·자리별 글자수로 다듬고 바뀐 문구를 `assumptions` 에 기록. **[1] = 그대로**면 원문 유지, 글자수 초과·금기어만 하네스 리포트에 따라 최소 수정하고 그것도 기록. 타이틀은 `\n` 없이(줄바꿈은 하네스).
+
+스펙은 `harness/out/<slug>/spec.json` (slug 는 영문 소문자·숫자·하이픈):
 ```
 node harness/bin/lp.mjs validate harness/out/<slug>/spec.json
 ```
-`error` 0 까지 카피를 고친다. `warn` 은 수정 또는 assumptions 에 근거. `info` 의 "카드 변형 →", "가독성 줄바꿈 적용" 은 결과 확인용.
+`error` 0 까지 고친다. `warn` 은 수정 또는 assumptions 에 근거.
 
-## 4. 빌드 + 에셋 톤 검수
+## 5. 빌드 + 에셋·화면 검수
 
 ```
 node harness/bin/lp.mjs build harness/out/<slug>/spec.json --shots
 node harness/bin/lp.mjs sheet harness/out/<slug>
 ```
-- `asset-sheet.png` 로 톤(ODS 3D 제뉴인 블루 / 숏컷 Small SVG)·중복·의미 확인 → `prompts/03-assets.md`
-- **에셋은 카탈로그(Storybook 정의 ODS)에서만.** 맞는 게 없으면 플레이스홀더로 비워두고, 답변에 "에셋 미정 N곳 — 어느 슬롯·어떤 의미·후보 유무"를 피드백한다(`references/03-assets.md` 형식). 임의 생성·유사 에셋 대체 금지. 생성형은 디자이너가 승인해 `allowGeneratedAssets: true` 를 줬을 때만.
-- **목업 섹션(`mockup`) 화면은 Loom 플러그인에서 가져온다.** 기획에 "실제 화면·앱에서 이렇게" 맥락이 있으면 `mockup` 섹션을 두고, 화면은 임의 이미지가 아니라 Loom(Ohouse Design) 정본에서:
-  1. 세션에 `loom` MCP 가 있으면 `list_screens({ track })` / `get_screen(id)` 로 화면 id 를 찾는다(없으면 `node harness/bin/lp.mjs screens "키워드"` 로 로컬 인덱스 검색).
-  2. `workbench_sketch_new({ slug: "lp-<화면slug>", screen: "<id>" })` → `workbench_compile_check({ project: "sketches/lp-<화면slug>", screenKey: "<id>", shot: true, query: { env: "ios27-iphone-17" } })` 로 PNG 를 찍는다(`~/Loom/.../.loom/shots/`).
-  3. 스펙에 `"screen": { "id": "<id>", "file": "<PNG 경로>" }` — file 을 생략해도 하네스가 `~/Loom` 의 shots 를 화면 slug 로 자동 탐색한다(`LOOM_HOME` 존중).
-  4. Loom 플러그인이 없고 네트워크도 막혀 이미지를 못 받으면 '화면 미정' placeholder 로 두고 답변에 "화면 미정 — `/loom-setup` 후 재빌드" 로 피드백한다. 다른 화면·스크린샷으로 대체하지 않는다.
-- `shot-mobile.png`·`shot-desktop.png` 를 한 번만 보고 명백한 깨짐만 확인.
-- 컴포넌트 자체 문제(패딩·폭·정렬)는 `src/components/preview/*` 에서 고치고 README "빌더 소스 변경" 에 기록. 하네스 CSS 덧칠 금지.
+- `asset-sheet.png` 로 톤·중복·의미 확인 → `references/03-assets.md`. **에셋은 카탈로그(Storybook 정의 ODS)에서만**, 같은 섹션은 한 스타일(flat/3d/photo)·한 팔레트(하네스 자동). 맞는 게 없으면 플레이스홀더로 두고 답변에 "에셋 미정 N곳 — 슬롯·의미·후보" 피드백. 생성형은 `allowGeneratedAssets: true` 일 때만.
+- **히어로 소재가 [3] = 제작 요청**이면 히어로는 카탈로그 최선 후보(또는 플레이스홀더)로 두고 `assumptions` 에 "히어로 소재 제작 요청 예정" 표기.
+- **목업 섹션(`mockup`)** 화면은 Loom 플러그인에서: `loom` MCP `list_screens({track})`/`get_screen(id)` 로 id → `workbench_sketch_new({slug:"lp-<화면slug>", screen:id})` → `workbench_compile_check({project:"sketches/lp-<화면slug>", screenKey:id, shot:true, query:{env:"ios27-iphone-17"}})` → 스펙 `screen: {id, file}`(file 생략 시 `~/Loom` 캡처 자동 탐색). 없으면 '화면 미정' + "`/loom-setup` 후 재빌드". 다른 화면으로 대체하지 않는다.
+- `shot-mobile.png`·`shot-desktop.png` 는 한 번만 보고 명백한 깨짐만 확인. 컴포넌트 문제는 `src/components/preview/*` 에서 고치고 README 에 기록(하네스 CSS 덧칠 금지).
 
-## 5. 퍼블리시 + 전달
+## 6. 퍼블리시 + 전달
 
-- `harness/out/<slug>/preview.html` 을 Artifact 로 퍼블리시(첫 publish `icon: layout`, description 한 문장). 같은 LP 수정은 같은 file_path 재퍼블리시로 링크 유지. "다시 제작"은 `<slug>-v2` 로 새 링크(비교용).
-- 답변: 프리뷰 링크 + 섹션 구성 한 줄 + `가정한 내용`/`확인 필요` 핵심 1–3개 + **에셋 미정 목록**(있으면). 단계 나열 금지.
-- `page.html` 은 개발 핸드오프용 단일 파일(요청 시 전달). 예제로 남길 스펙은 `harness/examples/` 에 복사.
-- 레포 반영 요청 시: 브랜치 커밋 → push → PR (GraphQL 불가 → `gh api repos/.../pulls`).
+- `harness/out/<slug>/preview.html` 을 Artifact 로 퍼블리시(첫 publish `icon: layout`). 수정은 같은 file_path 재퍼블리시, "다시 제작"은 `<slug>-v2`.
+- 답변: 세팅 한 줄 + 프리뷰 링크 + 섹션 구성 한 줄(블록 → 타입) + 선택한 옵션 요약 + `가정한 내용`/`확인 필요` 1–3개 + **에셋 미정·화면 미정 목록**. 단계 나열 금지.
+- `page.html` 은 핸드오프용(요청 시). 예제로 남길 스펙은 `harness/examples/`.
+
+## 7. 히어로 소재 제작 요청 티켓 ([3] = 제작 요청일 때)
+
+`#des_graphic_요청`(C08D7GRCJVB) 은 워크플로우 폼으로 접수되는 채널이다(제목 / 요청팀 / 우선순위 / 이슈(내용) / 관련문서 링크 / 완료 희망일). 채널 토픽대로 **요청 전에 노션 가이드 확인**을 안내한다.
+
+1. 아래 형식으로 티켓 본문을 작성한다. 내용은 시안에서 뽑는다 — 히어로 카피(원문), 타깃·톤, 쓰일 자리(히어로 center 225×150 / split 360×240, ODS 3D 톤·제뉴인 블루), 참고로 쓴 카탈로그 후보 id, 프리뷰 링크.
+   ```
+   제목: [LP] <페이지명> 히어로 그래픽 제작 요청
+   요청팀: <팀>
+   우선순위: 중간 (런칭일 D-7 이내면 높음)
+   이슈(내용):
+   ① 배경 — <LP 목적 한 줄>, 프리뷰: <Artifact 링크>
+   ② 요청 — 히어로 영역 3D 그래픽 1종 (<center 225×150 | split 360×240>, 투명 배경, ODS 3D 제뉴인 블루 톤)
+   ③ 메시지 — "<히어로 타이틀>" / 서브 "<서브타이틀>"
+   ④ 참고 — 카탈로그 후보 <AssetId…>(톤 참고), 시안에는 임시 에셋/플레이스홀더 적용
+   관련문서 링크: <프리뷰 링크> · <기획안 링크>
+   완료 희망일: <사용자 입력, 없으면 "조율 가능">
+   ```
+2. **반드시 사용자에게 본문을 보여 주고 확인을 받은 뒤**, `Slack` MCP `slack_send_message_draft(channel_id: "C08D7GRCJVB", message)` 로 **드래프트만** 만든다(전송·워크플로우 제출은 사용자가 Slack 에서). 완료 희망일이 없으면 이때 함께 묻는다.
+3. Slack MCP 가 없거나 채널 멤버가 아니면(`not_in_channel`) 본문을 답변에 그대로 적고 채널 링크를 준다.
+4. 답변에 "그래픽 티켓 초안 생성됨(드래프트) — Slack 에서 확인 후 워크플로우로 제출" 한 줄.
 
 ## 수정 요청 루프
 
-문구·섹션·에셋 수정 → spec.json 만 고치고 build → 같은 file_path 재퍼블리시.
-카탈로그 밖 요청(전·후 비교, 영상 등) → 가장 가까운 프리셋 + assumptions "카탈로그 확장 후보".
+문구·섹션·에셋 수정 → spec.json 만 고치고 build → 같은 file_path 재퍼블리시(직전 산출물은 `out/<slug>/prev/`). 옵션을 다시 묻지 않는다 — 사용자가 "타입 바꿔줘"라고 하면 그 섹션만 `lp outline` 선택지로 묻는다.
 
 ## 실패 시
 
 | 증상 | 조치 |
 |---|---|
 | `titleLayout` error | 스펙 최상위에 center/split 추가 (섹션별 지정 제거) |
+| `meta.slug` 거부 | 영문 소문자·숫자·하이픈으로 |
 | `design-assets 원본 없음` → CDN 폴백 실패 | `lp doctor` → 권한 요청 / 팀원 `pack-assets` 수령 / 플레이스홀더로 먼저 리뷰 |
-| Figma image.url 403 | 허용 목록 밖 → 미리보기(256px) 자동 사용. 원본 필요 시 claude.ai Capabilities 에 figma.com 허용 요청 |
-| render-QA 브라우저 실행 불가 | 시스템 playwright 확인, `--no-qa` 로 빌드는 가능 |
-| 카드 변형이 기대와 다름 | 아이템 형태(링크/설명 유무/단위/단계 수)를 표에 맞추거나 `card:` 로 명시 |
+| 노션·드라이브 커넥터 없음 | 본문 붙여넣기 요청 |
+| 화면 미정 (목업) | Loom 플러그인 `/loom-setup` → `compile_check shot` → 재빌드 |
+| Slack `not_in_channel` / MCP 없음 | 티켓 본문을 답변에 적고 채널 링크 안내 |
+| render-QA 브라우저 실행 불가 | `--no-qa` 로 빌드 |
+| 카드 변형이 기대와 다름 | 아이템 형태를 표에 맞추거나 `card:` 로 명시 (`lp outline` 으로 대안 확인) |
