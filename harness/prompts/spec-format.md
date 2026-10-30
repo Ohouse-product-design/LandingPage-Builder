@@ -31,7 +31,7 @@ Claude 가 기획서를 해석해 작성하는 **유일한 산출물**. HTML·CS
 | `cross-sell` | `subtitle` `title` | `title≤20/1줄` `body≤40` `asset` `href` `ctaLabel` | 2–4 (3) |
 | `faq` | `subtitle` `title` | `q≤80` `a≤400` | 4–10 (4) |
 | `usp`→`linkcard` | `card:"linkcard"` 또는 자동 | `title≤10` `moreHref` `moreLabel≤8` `links[2–5]{label≤24,url,actions[]}` | 2–4 |
-| `usp`→`pillcard` | 자동(설명 없는 ≤14자 + icon) | `title≤14/1줄` `icon` | 2–5 |
+| `usp`→`pillcard` (리스트 타입, **usp·조건 설명의 기본**) | 자동(≤14자 제목 + icon, 서브타이틀 ≤24자 선택) · 섹션 `tone: gray\|cases` | `title≤14/1줄` `body≤24/1줄`(선택) `icon`(24) | 2–5 |
 | `table`→`kvcard` | 자동(단일 카드 + 단위 값) | `title≤24` `rows[3–8]` "라벨: 값" 또는 `{label≤12,value≤10,highlight}` `rail` | 1 |
 | `process`/`usp`→`stepcard` | 자동(≥5단계·icon만·layout:list / icon+body) | `title≤20/2줄` `body≤24/1줄` `icon` `step` | 2–5 |
 | `cta-form` | `title` `subtitle≤24` `submit≤12` `fields[{label,placeholder,type}]` | – | 0–1 |
@@ -50,4 +50,5 @@ Claude 가 기획서를 해석해 작성하는 **유일한 산출물**. HTML·CS
 "asset": { "file": "...png", "prompt": "…", "alt": "…" }        // 생성형 — allowGeneratedAssets:true 일 때만, 기본 플레이스홀더
 "asset": "이사 트럭"                                          // query 축약형
 "icon":  { "query": "자물쇠 보안" }                            // pillcard·stepcard 아이콘 → ODS 숏컷(Small SVG) 우선 검색
+"tone":  "gray" | "cases"                                    // usp 섹션(리스트 타입) 배경: gray 일괄(조건·단순 나열, 기본) / cases(다양한 케이스 → mint·pink·yellow·sky 베리언츠). 생략 시 제목 신호로 자동
 ```

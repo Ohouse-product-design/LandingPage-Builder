@@ -8,7 +8,7 @@
 ## 사이즈 규칙 (컴포넌트가 강제 — 스펙에서 조절 불가)
 | 자리 | 규칙 |
 |---|---|
-| 리스트 leading icon (listcard·pillcard·stepcard 좌측) | bg 박스 40×40(`surface.gray`, 회색 컨테이너 안에서는 white) 안에 에셋 **최대 24×24** |
+| 리스트 leading icon (listcard·pillcard·stepcard 좌측) | bg 박스 40×40(`surface.gray`, 배경색 카드·회색 컨테이너 안에서는 white) 안에 에셋 **최대 24×24** |
 | 카드 안 에셋 (imgcard leading-asset) | **40×40 고정**, 카드 좌상단 |
 | 풀배경 카드 (bgfullimg) | **사용하지 않음** — usp 는 항상 leading-asset 으로 일괄 적용 |
 | 히어로 비주얼 | center 225×150 / split 360×240 |

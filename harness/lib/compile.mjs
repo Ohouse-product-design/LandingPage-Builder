@@ -63,9 +63,12 @@ export function chooseCardUsage(preset, s) {
       return { usage: "kvcard", reason: `단일 카드 + '라벨: 값' ${rows.length}행, 값에 단위(%·원·개월…) → 조건 표` };
   }
   if (preset === "usp" && n >= 2 && rule.allowedUsages.includes("pillcard")) {
-    const short = items.every((it) => it.title && [...String(it.title)].length <= 14 && !it.body && !it.tag);
+    // 2026-10: usp·조건 설명 섹션의 기본은 리스트 타입 카드 — 제목 ≤14자(+ 서브타이틀 ≤24자) + 아이콘이면 채택
+    const fits = items.every((it) => it.title && [...String(it.title)].length <= 14 && (!it.body || [...String(it.body)].length <= 24));
     const iconed = items.every((it) => it.asset || it.icon);
-    if (short && iconed) return { usage: "pillcard", reason: `모든 아이템이 설명 없이 ≤14자 제목 + 아이콘 → 혜택 필` };
+    const withSub = items.filter((it) => it.body).length;
+    const tagged = items.some((it) => it.tag);
+    if (fits && iconed) return { usage: "pillcard", reason: (withSub ? `≤14자 제목 + 서브타이틀 ≤24자 + 아이콘 ${n}개 → 리스트 타입(서브타이틀)` : `≤14자 제목 + 아이콘 ${n}개 → 리스트 타입(타이틀만)`) + (tagged ? " · tag 는 리스트 타입에 없어 무시" : "") };
   }
   if (rule.allowedUsages.includes("stepcard")) {
     const subtexts = items.filter((it) => it.body).length;
@@ -75,6 +78,18 @@ export function chooseCardUsage(preset, s) {
     if (preset === "usp" && iconOnly && subtexts >= 1 && n <= 5 && !bigMedia) return { usage: "stepcard", reason: `아이콘 + 보조 문장 있는 안내 ${n}개 → 세로 단계` };
   }
   return { usage: rule.usage, reason: `기본 ${rule.usage}` };
+}
+/** pillcard 배경 톤 — 케이스 나열이면 베리언츠 순환, 그 외 gray */
+const PILL_VARIANTS = ["mint", "pink", "yellow", "sky", "gray"];
+const CASES_RE = /케이스|경우|언제|상황|유형|타입|때\b|이런 분|누가/;
+const COND_RE = /조건|혜택|기준|포함|항목|보장|제공/;
+export function choosePillTone(s) {
+  if (s.tone === "cases") return { cases: true, reason: "스펙 tone: cases" };
+  if (s.tone === "gray") return { cases: false, reason: "스펙 tone: gray" };
+  const head = `${s.subtitle || ""} ${s.title || ""}`;
+  if (COND_RE.test(head)) return { cases: false, reason: `제목에 조건·나열 신호(${head.match(COND_RE)[0]})` };
+  if (CASES_RE.test(head)) return { cases: true, reason: `제목에 케이스 신호(${head.match(CASES_RE)[0]})` };
+  return { cases: false, reason: "기본(조건·단순 나열)" };
 }
 export const CONTENT_PRESETS = Object.keys(PRESET_RULES);
 export const ALL_PRESETS = ["header", "hero", ...CONTENT_PRESETS, "cta-form", "sticky-cta", "footer"];
@@ -198,6 +213,9 @@ export function compileSpec(spec) {
     if (s.cardType && rule.cardTypes && !rule.cardTypes.includes(s.cardType)) notes.push(s.cardType === "bgfullimg" ? `${id}: 풀배경 카드(bgfullimg)는 사용하지 않음 (2026-10) → ${cardType} 으로 일괄 적용` : `${id}: cardType '${s.cardType}' 보정 → ${cardType}`);
 
     const secWhere = where[id];
+    // 리스트 타입 카드 배경: 조건·단순 나열 = gray 일괄 / 다양한 케이스 표시 = 베리언츠 (spec tone 우선, 없으면 제목·서브타이틀 신호)
+    const pillTone = rule.usage === "pillcard" ? choosePillTone(s) : null;
+    if (pillTone) notes.push(`${secWhere}: 리스트 타입 배경 ${pillTone.cases ? "베리언츠(mint·pink·yellow·sky)" : "gray 일괄"} — ${pillTone.reason}`);
     const cells = items.map((it, i) => {
       const where = `${id}.items[${i}]`;
       const c = { id: `${id}-c${i + 1}`, slots: {} };
@@ -227,7 +245,8 @@ export function compileSpec(spec) {
         Object.assign(c.slots, { title: text(it.title), links: { kind: "links", items: (it.links || []).map((l) => (typeof l === "string" ? { label: l } : { label: l.label, url: l.url, actions: l.actions })) } });
         if (it.href || it.moreHref) c.slots.cta = { kind: "cta", label: it.moreLabel || "더보기", url: it.moreHref || it.href };
       } else if (rule.usage === "pillcard") {
-        Object.assign(c.slots, { title: text(it.title) });
+        Object.assign(c.slots, { title: text(it.title), body: text(it.body) });
+        c.theme = pillTone.cases ? PILL_VARIANTS[i % PILL_VARIANTS.length] : "gray";
         const ic = resolveAsset(it.asset || it.icon, { role: "icon-small", alt: it.title, used, log: assetLog, where });
         if (ic) c.slots.icon = { kind: "asset", asset: ic };
       } else if (rule.usage === "kvcard") {
@@ -258,6 +277,8 @@ export function compileSpec(spec) {
     // 카드 타이틀은 1줄(ellipsis) 또는 2줄 제한 — 폭을 넘으면 리포트에 올려 카피를 줄이게 한다
     const cardMetric = rule.usage === "imgcard" ? (cardType === "leading-asset" ? SLOT_METRICS.leadingTitle : SLOT_METRICS.imgcardTitle) : rule.usage === "reviewcard" ? SLOT_METRICS.reviewTitle : rule.usage === "listcard" ? SLOT_METRICS.listcardTitle : rule.usage === "pillcard" ? SLOT_METRICS.pillTitle : rule.usage === "stepcard" ? SLOT_METRICS.stepTitle : rule.usage === "linkcard" ? SLOT_METRICS.linkGroupTitle : null;
     if (cardMetric) items.forEach((it, i) => { const t = it.title; if (!t) return; const r = breakLines(t, { maxWidthPx: cardMetric.mobile.w, fontPx: cardMetric.mobile.f, maxLines: cardMetric.maxLines }); if (r.overflow) breaks.push({ where: `${where[id]}.items[${i}].title`, from: t, overflow: true, maxLinePx: Math.round(r.maxLinePx), limitPx: cardMetric.mobile.w, maxLines: cardMetric.maxLines }); });
+    // 리스트 타입 서브타이틀(1줄 ellipsis)도 모바일 폭 검사
+    if (rule.usage === "pillcard") items.forEach((it, i) => { const t = it.body; if (!t) return; const m = SLOT_METRICS.pillBody; const r = breakLines(t, { maxWidthPx: m.mobile.w, fontPx: m.mobile.f, maxLines: 1 }); if (r.overflow) breaks.push({ where: `${where[id]}.items[${i}].body`, from: t, overflow: true, maxLinePx: Math.round(r.maxLinePx), limitPx: m.mobile.w, maxLines: 1 }); });
     out.push({ ...base, props: { ...TL, sectionTitle: autoBreak(`${where[id]}.title`, s.title || "", SLOT_METRICS.sectionTitle, { preferTwoLinesFrom: 12 }), sectionSubtitle: s.subtitle || "" }, slots: { content: [card] } });
   }
 

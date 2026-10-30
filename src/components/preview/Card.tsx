@@ -882,7 +882,7 @@ const TABLE_THEMES: Record<CardCellTheme, {
 };
 
 function CardTableCell({ cell }: { cell: CardCell }) {
-  const theme = TABLE_THEMES[cell.theme ?? "grey"];
+  const theme = TABLE_THEMES[(cell.theme as keyof typeof TABLE_THEMES) ?? "grey"] ?? TABLE_THEMES.grey;
   const title = asText(slot(cell, "title")) ?? "";
   const meta = asMeta(slot(cell, "meta")) ?? [];
 
@@ -999,15 +999,39 @@ function CardLinkGroupCell({ cell }: { cell: CardCell }) {
 //   테두리 1px border-default, radius-16, 좌 아이콘 48px + 한 줄 굵은 제목(title-md)
 // ---------------------------------------------------------------------------
 
+// 리스트 타입 카드 배경 톤 (2026-10): 조건·단순 나열 = gray 일괄, 다양한 케이스 = 베리언츠
+const PILL_TONE_BG: Record<string, string> = {
+  gray: "#F7F9FA",
+  mint: "#EAF7F0",
+  pink: "#FDEDED",
+  yellow: "#FFF7E0",
+  sky: "#EAF1FB",
+};
+
+/**
+ * 리스트 타입 카드 (pillcard) — usp·조건 설명 섹션의 기본 컴포넌트
+ *   - 배경색 카드(보더 없음) + 좌측 아이콘 24(흰 bg 박스 40) + 제목 18 semibold
+ *   - 서브타이틀(body) 있으면 제목 아래 15px tertiary 1줄 (타이틀만 / 서브타이틀 2가지 변형)
+ *   - theme: gray(기본) | mint | pink | yellow | sky
+ */
 function CardPillCell({ cell, onRequestSlotEdit }: { cell: CardCell; onRequestSlotEdit?: () => void }) {
   const icon = asAsset(slot(cell, "icon"));
   const title = asText(slot(cell, "title"));
+  const body = asText(slot(cell, "body"));
+  const bg = PILL_TONE_BG[cell.theme ?? "gray"] ?? PILL_TONE_BG.gray;
   return (
-    <div className="flex w-full items-center gap-5 rounded-ods-16 border border-ods-border bg-white px-6 py-5">
-      <LeadingIcon asset={icon} onRequestSlotEdit={onRequestSlotEdit} />
-      <p className="min-w-0 flex-1 truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
-        {title}
-      </p>
+    <div className="flex w-full items-center gap-5 rounded-ods-16 px-6 py-5" style={{ background: bg }}>
+      <LeadingIcon asset={icon} tone="white" onRequestSlotEdit={onRequestSlotEdit} />
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <p className="min-w-0 truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
+          {title}
+        </p>
+        {body && (
+          <p className="min-w-0 truncate font-pretendard text-[15px] font-normal leading-5 tracking-[-0.3px] text-ods-text-tertiary">
+            {body}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

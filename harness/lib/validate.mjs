@@ -16,7 +16,7 @@ export const LIMITS = {
   tablecard: { title: [24, 1, true], row: [32, 2] },
   faqcard: { q: [80, 2, true], a: [400, 10, true] },
   linkcard: { title: [10, 1, true], link: [24, 1], more: [8, 1] },
-  pillcard: { title: [14, 1, true] },
+  pillcard: { title: [14, 1, true], body: [24, 1] },
   kvcard: { title: [24, 1], label: [12, 1, true], value: [10, 1, true] },
   stepcard: { title: [20, 2, true], body: [24, 1] },
 };
@@ -105,7 +105,7 @@ export function validateSpec(spec, { assetLog = [], notes = [], breaks = [], car
         if (links.length < lmn || links.length > lmx) push("warn", `${w}.links`, `링크 ${links.length}개 — ${lmn}~${lmx}개 권장`);
         links.forEach((l, li) => { const lab = typeof l === "string" ? l : l.label; check(`${w}.links[${li}]`, lab, L.link); const acts = (typeof l === "object" && l.actions) || []; for (const a of acts) if (!["download", "audio", "link", "arrow"].includes(a)) push("error", `${w}.links[${li}].actions`, `알 수 없는 액션 '${a}' — download | audio | link | arrow`); });
       }
-      if (rule.usage === "pillcard") { check(`${w}.title`, it.title, L.title); if (!(it.asset || it.icon)) push("warn", `${w}.icon`, "혜택 필은 아이콘이 있어야 함"); }
+      if (rule.usage === "pillcard") { check(`${w}.title`, it.title, L.title); check(`${w}.body`, it.body, L.body); if (!(it.asset || it.icon)) push("warn", `${w}.icon`, "리스트 타입 카드는 좌측 아이콘(24)이 있어야 함"); if (s.tone && !["gray", "cases"].includes(s.tone)) push("error", `${at}.tone`, `tone '${s.tone}' — gray | cases`); }
       if (rule.usage === "kvcard") {
         check(`${w}.title`, it.title, L.title);
         const rows = it.rows || []; const [rmn, rmx] = USAGE_RULES.kvcard.rows;

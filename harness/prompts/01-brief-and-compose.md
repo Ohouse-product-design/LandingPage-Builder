@@ -49,7 +49,7 @@ gaps           : 원문에 없는 것 → assumptions 로 기록
 | 기획 의도 신호 | preset | 비고 |
 |---|---|---|
 | 첫 화면 메시지, 서비스 한 줄 정의 | `hero` | 항상 1개, 맨 위 |
-| 고객 문제 → 해결, 핵심 가치·혜택 3–4개 | `usp` (leading-asset) | 풀배경 카드는 쓰지 않음 — 항상 에셋 40 + 텍스트 카드 |
+| 고객 문제 → 해결, 핵심 가치·혜택 3–4개, 조건 설명 | `usp` → **리스트 타입(pillcard)** | 제목 ≤14자 + 아이콘 24 (+ 서브타이틀 ≤24자). 타이틀만 / 서브타이틀 2가지. 제목이 길거나 본문이 길면 leading-asset 카드(에셋 40) |
 | 타사/기존 방식 비교, 요금제·보장 범위 | `table` | 비교 2열 / 단일 요약 1열. 행 텍스트를 짧게(≈8자) 쓰면 모바일도 2열로 나란히 붙는다 |
 | 후기, 사례, 평점 | `review` | 원문에 없으면 예시 + assumptions |
 | 이용 방법, 단계, "어떻게" | `process` | 3–5단계. **넘버링 leading 으로만** 구성(에셋 없음). 4단계 이하·짧은 설명 → 카드형, 5단계↑·긴 설명·`layout: list` → 세로 단계 |
@@ -64,7 +64,7 @@ gaps           : 원문에 없는 것 → assumptions 로 기록
 | 기획 맥락 | 아이템 형태 | 채택 | 레퍼런스 |
 |---|---|---|---|
 | 자료실·IR·고객센터 메뉴처럼 **카테고리별 링크 묶음** 2–4개 | `usp`/`cross-sell` · `items[].links[{label, url, actions}]` (actions: download·audio·link·arrow) + `moreHref` | `linkcard` | 주요 투자정보 |
-| 혜택·보장 **한 줄 요약** 3–5개 | `usp` · `title ≤14자` + `icon` 만 (body·tag 없음) | `pillcard` | 적금 혜택 필 |
+| usp·혜택·조건 설명 2–5개 (**기본**) | `usp` · `title ≤14자` + `icon` (+ `body ≤24자` 서브타이틀) | `pillcard` 리스트 타입 — 배경: 조건·단순 나열 = **gray 일괄**, 다양한 케이스(언제·경우·상황·유형) = **베리언츠**(mint·pink·yellow·sky). `tone: gray\|cases` 로 고정 가능 | 적금 혜택 필 / 목표별 통장 |
 | 금리·요금·수수료·기간별 **조건 표** (비교 아님) | `table` · 카드 1개 · `rows: ["1~3개월: 연 1.8%", …]` 값에 단위 · `rail:false` 로 레일 끔 · `{label,value,highlight}` 로 대표 행 강조 | `kvcard` | 기간별 금리 |
 | 절차·안내 **세로 단계** — `process` 는 넘버링, `usp` 안내형은 아이콘(24) + 보조 문장 | `process` 5단계↑ / `layout: "list"` / 긴 보조문 · 또는 `usp` 에 `icon` + `body` | `stepcard` | K-패스 안내 |
 | 그 외 | 기존 규칙 | `imgcard · tablecard · listcard …` | |

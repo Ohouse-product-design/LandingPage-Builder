@@ -108,6 +108,9 @@ export type CardSlotContent =
 export type LinkAction = "download" | "audio" | "link" | "arrow";
 
 export type CardCellTheme = "grey" | "blue" | "green";
+/** pillcard 배경 톤 — gray(조건·단순 나열 기본) / mint·pink·yellow·sky(다양한 케이스 표시용 베리언츠) */
+export type PillTone = "gray" | "mint" | "pink" | "yellow" | "sky";
+export const PILL_TONES: PillTone[] = ["mint", "pink", "yellow", "sky", "gray"];
 
 export interface CardCell {
   id: string;
@@ -121,7 +124,7 @@ export interface CardCell {
    *   blue  : 강조 카드 (1px 블루 보더, 흰 타이틀)
    *   green : 최강조 카드 (2px 그린 보더 + 그린 글로우 섀도우)
    */
-  theme?: CardCellTheme;
+  theme?: CardCellTheme | PillTone;
 }
 
 // ---------------------------------------------------------------------------
@@ -326,10 +329,11 @@ export const CARD_USAGE_PRESETS: Record<CardUsagePresetId, CardUsagePreset> = {
   pillcard: {
     id: "pillcard",
     label: "Benefit Pill",
-    description: "테두리 있는 가로 카드. 좌 아이콘 48px + 한 줄 굵은 제목 (설명 없음). 혜택·보장 요약 3~5개",
+    description: "배경색 가로 리스트 카드. 좌 아이콘 24 + 굵은 제목 (+ 선택 서브타이틀 1줄). 조건·단순 나열은 gray 일괄, 다양한 케이스는 theme 베리언츠(mint·pink·yellow·sky)",
     slotSpec: {
-      icon: { required: true, allowedKinds: ["asset"], label: "아이콘 (ODS Small)" },
-      title: { maxChar: 14, maxLine: 1, required: true, allowedKinds: ["text"], label: "혜택 한 줄" },
+      icon: { required: true, allowedKinds: ["asset"], label: "아이콘 (ODS Small, 24)" },
+      title: { maxChar: 14, maxLine: 1, required: true, allowedKinds: ["text"], label: "제목 한 줄" },
+      body: { maxChar: 24, maxLine: 1, allowedKinds: ["text"], label: "서브타이틀 (선택)" },
     },
     defaultCell: () => ({ title: { kind: "text", text: "" } }),
     allowedLayouts: ["list", "grid"],

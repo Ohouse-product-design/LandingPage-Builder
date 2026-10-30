@@ -150,7 +150,7 @@ export default function HeroTemplate({
           </div>
           <div className={cn("flex shrink-0", isMobile ? "w-full justify-center" : "justify-end")}>{visual}</div>
         </div>
-        <div className="flex size-6 shrink-0 items-center justify-center text-ods-text-primary" aria-hidden>
+        <div className="flex size-6 shrink-0 animate-bounce items-center justify-center text-ods-text-primary motion-reduce:animate-none" aria-hidden>
           <IconChevronDown size={20} />
         </div>
       </div>
@@ -175,7 +175,7 @@ export default function HeroTemplate({
         </div>
 
         <div
-          className="flex size-6 shrink-0 items-center justify-center text-ods-text-primary"
+          className="flex size-6 shrink-0 animate-bounce items-center justify-center text-ods-text-primary motion-reduce:animate-none"
           aria-hidden
         >
           <IconChevronDown size={20} />
