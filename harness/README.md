@@ -53,7 +53,8 @@ harness/
 | 순위 | 방법 | 결과 |
 |---|---|---|
 | 1 | 원본 (`~/design-assets`, `~/.lp-draft/design-assets`, `DESIGN_ASSETS_ROOT`) | 480w 원본 임베드 (정상) |
-| 2 | **CDN 폴백** `asset.ohousecdn.com/static/<Asset>/image_480.webp` — 자동, `~/.lp-draft/cdn-cache` 에 캐시 | 대부분 정상 (일부 미배포 에셋은 실패) |
+| 1.5 | **패키지 동봉 SVG** `catalog/svg/` (숏컷 아이콘 475개, pack-plugin 이 동봉) | 평면 아이콘은 원본 없이도 정상 |
+| 2 | **CDN 폴백** `asset.ohousecdn.com/static/<Asset>/image_480.png` — `@bucketplace/assets` 패키지(Storybook)가 쓰는 것과 같은 경로, 자동, `~/.lp-draft/cdn-cache` 에 캐시 | 3D 이미지 대부분 정상 (사내 프록시 샌드박스에선 차단) |
 | 3 | 플레이스홀더 | 회색 이미지 박스 + 리포트 `warn` |
 
 권한이 없을 때 할 일:

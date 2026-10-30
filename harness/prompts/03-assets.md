@@ -33,6 +33,7 @@
 - 스펙에 `asset` 을 써도 슬롯이 24 이하면 compile 이 아이콘 역할로 검색한다
 - 미리 보려면 `node bin/lp.mjs assets "키워드" [--role icon-small]`
 - 점수 3 미만이면 채택하지 않고 플레이스홀더
+- 이미지 출처: design-assets 원본 → (SVG) 패키지 동봉 `catalog/svg/` → (3D) CDN `asset.ohousecdn.com/static/<Asset>/image_480.png`(Storybook `@bucketplace/assets` 와 같은 경로) → 플레이스홀더. 즉 원본 권한이 없어도 CDN 이 열린 환경이면 전부 채워진다
 
 ## 톤 검수 (빌드 후 1회)
 `node bin/lp.mjs sheet out/<slug>` → `asset-sheet.png`: 한 페이지 = 한 일러스트 언어, 같은 오브젝트 중복 없음, 의미 일치. 어긋나면 query 를 바꾸거나 `id` 로 지정. 그래도 없으면 비워두고 피드백.

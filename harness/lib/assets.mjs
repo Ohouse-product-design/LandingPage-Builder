@@ -134,7 +134,7 @@ export const cdnState = { tried: 0, ok: 0, fail: 0 };
 async function fetchCdnAsset(hit) {
   const cands = hit.kind === "svg"
     ? [`${CDN}/${hit.id}/${hit.slug}.svg`]
-    : [`${CDN}/${hit.id}/image_480.webp`, `${CDN}/${hit.id}/image_480.png`];
+    : [`${CDN}/${hit.id}/image_480.png`, `${CDN}/${hit.id}/image_480.webp`]; // 프로덕션(@bucketplace/assets)과 같은 png 경로 우선
   fs.mkdirSync(CACHE_DIR, { recursive: true });
   for (const url of cands) {
     const local = path.join(CACHE_DIR, `${hit.id}${path.extname(url)}`);
@@ -272,7 +272,9 @@ export async function toDataUri(ref, { width = 480, normalize = false, tint = nu
   const hit = findAsset(ref);
   if (hit) {
     const root = designAssetsRoot();
+    const bundled = path.join(here, "..", "catalog", "svg", path.basename(hit.file)); // 패키지 동봉 SVG(숏컷 아이콘) — CDN 에는 없음
     if (root && fs.existsSync(path.join(root, "assets", hit.file))) file = path.join(root, "assets", hit.file);
+    else if (hit.kind === "svg" && fs.existsSync(bundled)) file = bundled;
     else file = await fetchCdnAsset(hit);
   } else {
     // 생성형 에셋: 절대경로 · cwd 기준 · harness 기준 순으로 탐색

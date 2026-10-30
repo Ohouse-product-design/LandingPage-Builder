@@ -134,10 +134,12 @@ if (cmd === "catalog") {
     const have = idx.filter((a) => fs.existsSync(path.join(root, "assets", a.file))).length;
     const pct = Math.round((have / idx.length) * 100);
     lines.push(`${ok(pct >= 95)} design-assets 원본 (${root}) — 카탈로그 커버리지 ${have}/${idx.length} (${pct}%)${pct < 95 ? ` → 오래된 사본. git -C "${root}" pull 또는 팀원의 pack-assets 로 갱신` : ""}`);
-  } else lines.push(`${ok(false)} design-assets 원본 — 없음 → CDN 폴백 사용`);
+  } else lines.push(`${ok(false)} design-assets 원본 — 없음 → 3D 이미지는 CDN 폴백, 숏컷 SVG 는 패키지 동봉본`);
+  const bundledSvg = fs.existsSync(path.join(here, "../catalog/svg")) ? fs.readdirSync(path.join(here, "../catalog/svg")).length : 0;
+  lines.push(`${ok(bundledSvg > 0)} 패키지 동봉 SVG ${bundledSvg}개 (숏컷 아이콘 — 원본 없을 때 사용)`);
   const { findAsset } = await import("../lib/assets.mjs");
   const probe = findAsset("AssetBellLargeGenuineBlueView2");
-  let cdn = null; try { const r = await fetch(`https://asset.ohousecdn.com/static/${probe.id}/image_480.webp`, { method: "HEAD", signal: AbortSignal.timeout(6000) }); cdn = r.ok; } catch { cdn = false; }
+  let cdn = null; try { const r = await fetch(`https://asset.ohousecdn.com/static/${probe.id}/image_480.png`, { method: "HEAD", signal: AbortSignal.timeout(6000) }); cdn = r.ok; } catch { cdn = false; }
   lines.push(`${ok(cdn)} CDN 폴백 (asset.ohousecdn.com)${cdn ? "" : " — 접근 불가. 원본도 없으면 에셋이 플레이스홀더로 렌더"}`);
   lines.push(`${ok(fs.existsSync(path.join(here, "../.build/render.mjs")))} 렌더 번들 (없으면 첫 build 때 자동 생성)`);
   // 목업 화면: Loom 플러그인 작업 폴더(캡처) · 스크린 인덱스

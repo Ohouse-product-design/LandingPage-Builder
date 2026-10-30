@@ -12,6 +12,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -61,6 +62,16 @@ skill = skill.replace(/node harness\/bin\/lp\.mjs/g, "node bin/lp.mjs").replace(
 fs.writeFileSync(path.join(dest, "SKILL.md"), skill);
 fs.writeFileSync(path.join(dest, ".gitignore"), "harness/node_modules/\nharness/.build/\nharness/out/\nharness/package-lock.json\n");
 cp(path.join(ROOT, "harness/prompts"), path.join(dest, "references"));
+// 숏컷 SVG(평면 아이콘)는 CDN 에 없으므로 패키지에 동봉 (약 1.4MB). 3D 이미지는 CDN(asset.ohousecdn.com) 폴백으로 받는다
+{
+  const idx = JSON.parse(fs.readFileSync(path.join(ROOT, "harness/catalog/ods-asset-index.json"), "utf8"));
+  const roots = [process.env.DESIGN_ASSETS_ROOT, path.join(os.homedir(), "design-assets")].filter(Boolean);
+  const root = roots.find((r) => fs.existsSync(path.join(r, "assets")));
+  const svgDir = path.join(dest, "harness/catalog/svg"); fs.mkdirSync(svgDir, { recursive: true });
+  let n = 0;
+  if (root) for (const a of idx) if (a.kind === "svg") { const f = path.join(root, "assets", a.file); if (fs.existsSync(f)) { fs.copyFileSync(f, path.join(svgDir, path.basename(a.file))); n++; } }
+  console.error(`bundled svg: ${n}`);
+}
 
 // 2) 렌더에 필요한 src 서브셋 (esbuild metafile 기준)
 const SRC = [
