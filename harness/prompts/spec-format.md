@@ -34,7 +34,7 @@ Claude 가 기획서를 해석해 작성하는 **유일한 산출물**. HTML·CS
 | `usp`→`pillcard` (리스트 타입, **usp·조건 설명의 기본**) | 자동(≤14자 제목 + icon, 서브타이틀 ≤24자 선택) · 섹션 `tone: gray\|cases` | `title≤14/1줄` `body≤24/1줄`(선택) `icon`(24) | 2–5 |
 | `table`→`kvcard` | 자동(단일 카드 + 단위 값) | `title≤24` `rows[3–8]` "라벨: 값" 또는 `{label≤12,value≤10,highlight}` `rail` | 1 |
 | `process`/`usp`→`stepcard` | 자동(≥5단계·icon만·layout:list / icon+body) | `title≤20/2줄` `body≤24/1줄` `icon` `step` | 2–5 |
-| `mockup` | `tag≤10` `title≤30/2줄` `body≤60/2줄` `screen: {query\|id}` — **스크린 디렉토리 화면만**(없으면 '화면 미정'+warn) | – | 0–4 |
+| `mockup` | `title≤30/2줄` `body≤60/2줄` `screen: {query\|id}` — **스크린 디렉토리 화면만**(없으면 '화면 미정'+warn) | – | 0–4 |
 | `cta-form` | `title` `subtitle≤24` `submit≤12` `fields[{label,placeholder,type}]` | – | 0–1 |
 | `sticky-cta` | `label≤16` (생략 시 cta.label) | – | 자동 |
 

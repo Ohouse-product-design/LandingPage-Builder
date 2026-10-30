@@ -251,7 +251,6 @@ export const SECTION_PRESETS: Record<SectionPresetId, SectionPreset> = {
     defaultLocked: false,
     icon: "Smartphone",
     uiSpec: {
-      tag: { maxChar: 10, maxLine: 1 },
       sectionTitle: { maxChar: 30, maxLine: 2, required: true },
       sectionSubtitle: { maxChar: 60, maxLine: 2 },
     },

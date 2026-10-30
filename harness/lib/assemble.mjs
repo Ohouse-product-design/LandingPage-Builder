@@ -160,9 +160,9 @@ html,body{margin:0;background:#fff;color:#141414;word-break:keep-all;overflow-wr
 /* 섹션 스크롤 리빌(기본): 뷰포트에 들어오면 아래→위로 올라오며 나타남. JS 가 html.lp-reveal 을 붙였을 때만 숨김 → JS 없음·리듀스드 모션·QA 캡처는 그대로 보임 */
 html.lp-reveal [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.22,.61,.36,1),transform .6s cubic-bezier(.22,.61,.36,1);will-change:opacity,transform}
 html.lp-reveal [data-reveal].is-in{opacity:1;transform:none}
-/* 목업 폰: 섹션 리빌과 함께 scale .95 → 1 */
-html.lp-reveal [data-reveal] [data-mockup-phone]{transform:translateX(-50%) scale(.95);transition:transform .9s cubic-bezier(.22,.61,.36,1) .1s}
-html.lp-reveal [data-reveal].is-in [data-mockup-phone]{transform:translateX(-50%) scale(1)}
+/* 목업 폰: 섹션 리빌과 함께 scale .8 → 1, y +20 → 0 */
+html.lp-reveal [data-reveal] [data-mockup-phone]{transform:translate(-50%,20px) scale(.8);transition:transform .9s cubic-bezier(.22,.61,.36,1) .1s}
+html.lp-reveal [data-reveal].is-in [data-mockup-phone]{transform:translate(-50%,0) scale(1)}
 @media (prefers-reduced-motion:reduce){html.lp-reveal [data-reveal] [data-mockup-phone]{transform:translateX(-50%);transition:none}}
 @media (prefers-reduced-motion:reduce){html.lp-reveal [data-reveal]{opacity:1;transform:none;transition:none}}
 html.lp-outline section{outline:1px dashed rgba(0,161,255,.55);outline-offset:-1px;position:relative}

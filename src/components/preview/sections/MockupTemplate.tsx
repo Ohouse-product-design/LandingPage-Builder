@@ -10,9 +10,10 @@ import { containerPad, contentWidth, titleLayoutOf } from "./SectionTitleBlock";
 /**
  * 목업 섹션 — 실제 서비스 화면 소개 (2026-10 추가)
  *
- * 레퍼런스: [태그 필] → 타이틀(2줄) → 설명(2줄) → 하늘색 라운드 컨테이너 안에 폰 목업(상단 정렬, 하단은 컨테이너에 잘림)
+ * 레퍼런스: 타이틀(2줄) → 설명(2줄) → 하늘색 라운드 컨테이너 안에 폰 목업(상단 정렬, 하단은 컨테이너에 잘림)
  *   - 섹션 배경: surface.gray(full width) / 목업 컨테이너: 흰색 rounded-24, 폰 상단 패딩 32
- *   - 정적 export 에서 섹션 리빌 시 폰이 scale .95 → 1 로 커지는 애니메이션(PAGE_CSS, data-mockup-phone)
+ *   - 정적 export 에서 섹션 리빌 시 폰이 scale .8 → 1, y +20 → 0 으로 올라오는 애니메이션(PAGE_CSS, data-mockup-phone)
+ *   - 태그 뱃지는 쓰지 않는다 (2026-10 결정) — 스펙 tag 는 무시
  *   - 폰 프레임: CSS 베젤(다크, rounded-44) + 스크린샷(스크린 디렉토리 썸네일 804×1748 = iPhone 2x). 화면 비율 402:874
  *   - 타이틀 레이아웃: center → 텍스트 중앙, split → 좌측 (페이지 공통 규칙)
  *   - 텍스트 블록과 목업은 모든 뷰포트에서 세로 스택 (콘텐츠 컨테이너 720 안)
@@ -30,7 +31,6 @@ export default function MockupTemplate({
   viewport: Viewport;
   onRequestAssetSlot?: (ctx: AssetSlotModalOpenContext) => void;
 }) {
-  const tag = section.props["tag"] as string | undefined;
   const title = section.props["sectionTitle"] as string | undefined;
   const body = section.props["sectionSubtitle"] as string | undefined;
   const screen = section.assets.find((a) => a.slotName === "screen")?.asset ?? null;
@@ -44,11 +44,6 @@ export default function MockupTemplate({
     <div className={cn(containerPad, "bg-ods-surface-gray")}>
       <div className={contentWidth("content")}>
       <div className={cn("mb-6 flex flex-col gap-3 md:mb-8", centered ? "items-center text-center" : "items-start text-left")}>
-        {tag && (
-          <span className="inline-flex h-8 items-center rounded-ods-8 px-3 font-pretendard text-[14px] font-semibold leading-none tracking-[-0.3px] text-ods-primary" style={{ background: "#E5F3FF" }}>
-            {tag}
-          </span>
-        )}
         {title && (
           <h2
             className="whitespace-pre-line font-pretendard text-[24px] font-bold leading-[34px] tracking-[-0.3px] text-ods-text-primary md:text-[30px] md:leading-[42px]"

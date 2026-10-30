@@ -226,7 +226,7 @@ export function compileSpec(spec) {
         ? { alt: sc.alt || hit.title, type: "image", url: `screen:${hit.id}/${hit.hash}/${screenImageEnv(hit)}`, screenId: hit.id, screenUrl: screenImageUrl(hit), ...(sc.file ? { screenFile: sc.file } : {}) }
         : sc.file ? { alt: sc.alt || sc.id || "서비스 화면", type: "image", url: `screen:file`, screenFile: sc.file, screenId: sc.id, ...(sc.fromLoom ? { screenSource: "loom" } : {}) } : null;
       if (!hit && sc.file) { assetLog.pop(); assetLog.push({ where: `${id}.screen`, source: "screen-file", file: sc.file }); }
-      out.push({ ...base, props: { ...TL, tag: s.tag || "", sectionTitle: autoBreak(`${where[id]}.title`, s.title || "", { mobile: { w: 375 - 32, f: 24 }, desktop: { w: 720 - 32, f: 30 }, maxLines: 2 }, { preferTwoLinesFrom: 12 }), sectionSubtitle: s.body || s.subtitle || "" }, assets: screenAsset ? [{ slotName: "screen", asset: screenAsset }] : [] });
+      out.push({ ...base, props: { ...TL, sectionTitle: autoBreak(`${where[id]}.title`, s.title || "", { mobile: { w: 375 - 32, f: 24 }, desktop: { w: 720 - 32, f: 30 }, maxLines: 2 }, { preferTwoLinesFrom: 12 }), sectionSubtitle: s.body || s.subtitle || "" }, assets: screenAsset ? [{ slotName: "screen", asset: screenAsset }] : [] });
       continue;
     }
     if (p === "cta-form") {
