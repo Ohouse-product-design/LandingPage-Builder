@@ -6,7 +6,7 @@
  *   lp assets "<키워드>" [--role icon|media] [--limit 8]   ODS 에셋 검색
  *   lp screens "<키워드>" [--limit 8]  스크린 디렉토리 화면 검색 (목업 섹션용) · lp screens sync 로 인덱스 재생성(네트워크 필요)
  *   lp validate <spec.json>            가이드 검증만 (JSON 리포트)
- *   lp build <spec.json> [--out dir]   compile → validate → render → out/<slug>/{page,preview}.html
+ *   lp build <spec.json> [--out dir] [--force]   compile → validate → render → out/<slug>/{page,preview}.html (--out 의 기존 산출물은 --force 로만 덮어씀)
  *   lp doctor                          환경 점검 (node·sharp·폰트 도구·playwright·design-assets·CDN 폴백)
  *   lp pack-assets [--out file.tgz]    design-assets 원본(480w·svg·adf)만 묶어 읽기 권한 없는 팀원에게 전달
  *   lp sheet <out/slug>                 선택된 에셋 컨택트시트(PNG) — 톤 일관성 육안 검수용
@@ -58,6 +58,10 @@ if (cmd === "catalog") {
   for (const s of screenSources) report.issues.push({ level: "info", where: `screen ${s.where}`, msg: `화면 이미지 출처: ${s.source === "loom" ? "Loom 플러그인 캡처" : s.source === "file" ? "지정 파일" : s.source === "cache" ? "로컬 캐시" : "스크린 디렉토리 다운로드"} — ${s.file}` });
   for (const m of screenMisses) report.issues.push({ level: "warn", where: `screen ${m.where}`, msg: `스크린 디렉토리 화면 이미지를 받지 못해 '화면 미정' placeholder — Loom 플러그인이 있으면 workbench_compile_check(shot:true) 로 찍은 PNG 를 screen.file 로 지정(~/Loom 의 .loom/shots 는 자동 탐색), 없으면 네트워크가 열린 곳에서 \`lp screens sync\` 후 재빌드하거나 ${m.url} 을 ~/.lp-draft/screens/ 에 저장` });
   const outDir = flag("out", path.join(here, "../out", doc.meta.slug));
+  // --out 으로 지정한 임의 폴더의 기존 산출물은 --force 없이는 덮어쓰지 않는다 (기본 out/<slug>/ 는 하네스 전용 폴더라 예외)
+  const isDefaultOut = path.resolve(outDir).startsWith(path.resolve(here, "../out") + path.sep);
+  const existing = ["doc.json", "page.html", "preview.html", "report.json"].filter((f) => fs.existsSync(path.join(outDir, f)));
+  if (!isDefaultOut && existing.length && !rest.includes("--force")) { console.error(`${outDir} 에 기존 산출물(${existing.join(", ")})이 있습니다 — 덮어쓰려면 --force`); process.exit(2); }
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, "doc.json"), JSON.stringify(doc, null, 1));
   fs.writeFileSync(path.join(outDir, "page.html"), page);
@@ -110,9 +114,11 @@ if (cmd === "catalog") {
 } else if (cmd === "pack-assets") {
   const root = designAssetsRoot();
   if (!root) { console.error("design-assets 원본이 없어 묶을 수 없습니다"); process.exit(1); }
-  const { execSync } = await import("node:child_process");
+  const { spawnSync } = await import("node:child_process");
   const out = flag("out", path.resolve("ods-assets-pack.tgz"));
-  execSync(`tar -czf "${out}" -C "${root}" --exclude='*_120w*' --exclude='*_240w*' --exclude='*_960w*' --exclude='*_1440w*' --exclude='*_1920w*' --exclude='*.avif' assets`, { stdio: "inherit" });
+  // 셸을 거치지 않고 인자 배열로 실행 (경로에 셸 구문이 섞여도 명령으로 해석되지 않음)
+  const r = spawnSync("tar", ["-czf", out, "-C", root, "--exclude=*_120w*", "--exclude=*_240w*", "--exclude=*_960w*", "--exclude=*_1440w*", "--exclude=*_1920w*", "--exclude=*.avif", "assets"], { stdio: "inherit" });
+  if (r.status !== 0) { console.error("tar 실패"); process.exit(r.status ?? 1); }
   console.log(`${out} (${Math.round(fs.statSync(out).size / 1048576)} MB) — 받는 쪽: tar -xzf 후 DESIGN_ASSETS_ROOT=<풀린 폴더> 또는 ~/design-assets 에 배치`);
 } else if (cmd === "sheet") {
   const dir = rest[0];

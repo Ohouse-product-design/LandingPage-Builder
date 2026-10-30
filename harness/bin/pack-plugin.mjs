@@ -37,12 +37,14 @@ skill = skill.replace(/## 0\. 환경 준비[\s\S]*?(?=\n## 1)/, `## 0. 환경 �
 
 하네스 런타임(컴파일러·검증·렌더러·ODS 에셋 인덱스)은 **이 스킬 폴더 안** \`harness/\` 에 임베드돼 있다. 외부 레포·노션 없이 동작한다.
 
+**준비물(한눈에):** Node 20+ · npm · Python3(+fontTools·brotli, setup.sh 가 설치) · Chromium(Playwright, 없으면 \`--no-qa\`) · \`bucketplace/design-assets\` 읽기 권한(없으면 CDN 폴백/플레이스홀더) · 목업 섹션용 Loom 플러그인(\`bucketplace-loom\`, 선택).
+
 \`\`\`bash
 cd <이 스킬 폴더>/harness      # 예: ~/claude-marketplace/plugins/product-design/skills/lp-draft/harness
 bash setup.sh                 # npm 의존성 · 폰트 도구 · 렌더 QA 브라우저 · (권한 있으면) design-assets 원본 · 렌더 번들
 node bin/lp.mjs doctor        # 상태 점검
 \`\`\`
-플러그인 설치 경로를 모르면 \`~/.claude/plugins\` 아래 \`product-design/skills/lp-draft\` 를 찾는다. 이후 명령은 모두 그 \`harness/\` 에서 실행하고, 산출물은 \`harness/out/<slug>/\` 에 쌓인다.
+플러그인 설치 경로를 모르면 \`~/.claude/plugins\` 아래 \`product-design/skills/lp-draft\` 를 찾는다. 이후 명령은 모두 그 \`harness/\` 에서 실행하고, 산출물은 \`harness/out/<slug>/\` 에 쌓인다. 설치 경로가 읽기 전용이면 \`--out ~/lp-draft/<slug>\` 로 바꾼다(그 폴더에 기존 산출물이 있으면 \`--force\` 가 있어야 덮어쓴다).
 
 **design-assets 읽기 권한이 없을 때** — 빌드는 되고 에셋은 CDN 폴백(자동) → 플레이스홀더 순으로 채워진다. 리포트에 \`CDN 폴백 N개 성공/실패\` 가 뜬다.
 사용자에게 이렇게 안내한다: ① \`#ai_frontier\` 에 bucketplace/design-assets 읽기 권한 요청 ② 급하면 권한 있는 팀원의 \`node bin/lp.mjs pack-assets\` 결과를 받아 \`DESIGN_ASSETS_ROOT\` 지정 ③ 그 전까지는 플레이스홀더 시안으로 구조·카피를 먼저 리뷰. 플레이스홀더 상태의 시안을 "완성"이라고 말하지 않는다.

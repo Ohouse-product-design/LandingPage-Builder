@@ -1,5 +1,7 @@
 # LP 시안 하네스
 
+> 원본은 `Ohouse-product-design/LandingPage-Builder` 레포의 `harness/`. 마켓플레이스 `plugins/product-design/skills/lp-draft/harness/` 는 `bin/pack-plugin.mjs` 산출물(사본) — 사본을 직접 고치지 말고 원본을 고친 뒤 다시 pack 해서 PR.
+
 기획안(노션 · 문서 · 자연어) → **ODS 컴포넌트·에셋 가이드라인을 지킨 랜딩페이지 HTML 시안 + 프리뷰 링크**.
 비디자이너·비기획자가 Claude 에게 기획안을 던지면, Claude 는 `skill/SKILL.md` 절차대로 **콘텐츠만** 만들고
 레이아웃·스타일·에셋 일관성은 아래 결정적(deterministic) 파이프라인이 책임진다.
