@@ -63,8 +63,8 @@
      "title": "시공 직후인지 먼저 여쭤요",
      "body": "분진 상태를 업체에 그대로 전달해요",
      "asset": {
-      "id": "AssetHandDrillLargeGenuineBlueView1",
-      "alt": "전동 드릴"
+      "id": "AssetWrenchHouseSmallGenuineBlue",
+      "alt": "종합시공"
      }
     },
     {
@@ -107,8 +107,8 @@
      "title": "인테리어 공사 직후",
      "body": "시공 분진이 많아요, 미리 알려주세요",
      "asset": {
-      "id": "AssetHouseWithDrillO2OLargeGenuineBlueView3",
-      "alt": "시공 중인 집"
+      "id": "AssetSparklesHouseSmallDarkBlue",
+      "alt": "인테리어 공사"
      }
     }
    ]

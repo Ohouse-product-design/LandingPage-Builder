@@ -128,6 +128,8 @@ html,body{margin:0;background:#fff;color:#141414;word-break:keep-all;overflow-wr
 @media (min-width:1024px){.lp-vp-desktop{display:block}}
 .lp-vp-desktop>section>*{margin-inline:auto}
 .lp-vp-desktop>section:not([data-preset="hero"]):not([data-preset="footer"]):not([data-preset="header"])>div{max-width:1256px;box-sizing:border-box}
+.lp-vp-desktop>section[data-layout="content"]:not([data-preset="hero"]):not([data-preset="footer"]):not([data-preset="header"]):not([data-preset="sticky-cta"])>div{max-width:720px}
+.lp-vp-tablet>section[data-layout="content"]:not([data-preset="hero"]):not([data-preset="footer"]):not([data-preset="header"]):not([data-preset="sticky-cta"])>div{max-width:720px;margin-inline:auto}
 [data-lottie-placeholder]{background:#F7F9FA;border-radius:12px}
 html.lp-outline section{outline:1px dashed rgba(0,161,255,.55);outline-offset:-1px;position:relative}
 html.lp-outline section::before{content:attr(data-preset);position:absolute;z-index:30;top:4px;left:4px;font:600 10px/1 system-ui;background:#00A1FF;color:#fff;padding:3px 5px;border-radius:3px}

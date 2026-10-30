@@ -346,7 +346,7 @@ function ListLayout({
 }) {
   if (usage === "stepcard") {
     return (
-      <div className={cn("flex w-full flex-col rounded-ods-16 bg-ods-surface-gray px-5 py-6", viewport !== "mobile" && "max-w-[640px]", centered && "mx-auto")}>
+      <div className={cn("flex w-full flex-col rounded-ods-16 bg-ods-surface-gray px-5 py-6", viewport !== "mobile" && "max-w-[720px]", centered && "mx-auto")}>
         {cells.map((cell, i) => (
           <div key={cell.id} className="relative flex w-full gap-4">
             {i < cells.length - 1 && (
@@ -360,9 +360,9 @@ function ListLayout({
   }
 
   if (usage === "pillcard" || usage === "kvcard") {
-    // 세로형 읽기 컴포넌트: 데스크톱에서도 1열, 읽기 폭 640 제한
+    // 세로형 읽기 컴포넌트: 데스크톱에서도 1열, 콘텐츠 컨테이너 720 (캐로셀 외 공통)
     return (
-      <div className={cn("flex w-full flex-col", viewport !== "mobile" && "max-w-[640px]", centered && "mx-auto")} style={{ gap: `${ROW_FIXED_GAP_PX}px` }}>
+      <div className={cn("flex w-full flex-col", viewport !== "mobile" && "max-w-[720px]", centered && "mx-auto")} style={{ gap: `${ROW_FIXED_GAP_PX}px` }}>
         {cells.map((cell) => (
           <div key={cell.id} className="min-w-0 w-full">
             <CellRenderer cell={cell} usage={usage} viewport={viewport} cardType={cardType} previewAsset={previewAsset} />

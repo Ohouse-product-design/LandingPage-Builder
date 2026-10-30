@@ -3,6 +3,7 @@
  * level: error(반드시 수정) | warn(검수 시 확인) | info
  * 글자수는 빌더 validate.ts 와 동일하게 String.length(줄바꿈 포함) 기준.
  */
+import { findAsset, assetStyle as assetStyleOf } from "./assets.mjs";
 import { PRESET_RULES, TITLE_LAYOUTS, chooseCardUsage, USAGE_RULES } from "./compile.mjs";
 
 export const LIMITS = {
@@ -130,6 +131,10 @@ export function validateSpec(spec, { assetLog = [], notes = [], breaks = [], car
     if (b.overflow) push("warn", b.where, `실측 글자폭 기준 ${b.maxLinePx}px > ${b.limitPx}px (${b.maxLines ?? ""}줄 제한) — 모바일에서 잘림`, "핵심어를 앞으로 당기고 짧게");
     else push("info", b.where, `가독성 줄바꿈 적용: ${JSON.stringify(b.to)}`);
   }
+  // 같은 섹션 안 에셋 스타일(flat | 3d | photo) 혼용 검사
+  const bySec = {};
+  for (const a of assetLog) if (a.id && a.source !== "placeholder") { const sec = String(a.where).replace(/\.(items\[\d+\]|background).*$/, ""); const st = a.style || (findAsset(a.id) ? assetStyleOf(findAsset(a.id)) : null); if (st) (bySec[sec] ||= new Set()).add(st); }
+  for (const [sec, set] of Object.entries(bySec)) if (set.size > 1) push("error", sec, `섹션 안 에셋 스타일 혼용(${[...set].join("+")}) — 같은 섹션은 한 스타일만 (flat 숏컷 / 3D / 실사)`);
   const ph = assetLog.filter((a) => a.source === "placeholder");
   if (ph.length) push("warn", "assets", `플레이스홀더 ${ph.length}곳 — 카탈로그에 맞는 에셋이 없어 비워둠. 디자이너에게 요청: ${ph.map((a) => `${a.where}${a.query ? `("${a.query}")` : ""}`).join(", ")}`);
   for (const a of assetLog) if (a.level) push(a.level, a.where, `${a.note}${a.query ? ` · query="${a.query}"` : ""}${a.candidates?.length ? ` · 후보: ${a.candidates.join(", ")}` : ""}`);

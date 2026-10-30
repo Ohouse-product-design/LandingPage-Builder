@@ -64,7 +64,7 @@ gaps           : 원문에 없는 것 → assumptions 로 기록
 | 기획 맥락 | 아이템 형태 | 채택 | 레퍼런스 |
 |---|---|---|---|
 | 자료실·IR·고객센터 메뉴처럼 **카테고리별 링크 묶음** 2–4개 | `usp`/`cross-sell` · `items[].links[{label, url, actions}]` (actions: download·audio·link·arrow) + `moreHref` | `linkcard` | 주요 투자정보 |
-| usp·혜택·조건 설명 2–5개 (**기본**) | `usp` · `title ≤14자` + `icon` (+ `body ≤24자` 서브타이틀) | `pillcard` 리스트 타입 — 배경: 조건·단순 나열 = **gray 일괄**, 다양한 케이스(언제·경우·상황·유형) = **베리언츠**(mint·pink·yellow·sky). `tone: gray\|cases` 로 고정 가능 | 적금 혜택 필 / 목표별 통장 |
+| usp·혜택·조건 설명 2–5개 (**기본**) | `usp` · `title ≤14자` + `icon` (+ `body ≤24자` 서브타이틀) | `pillcard` 리스트 타입 — 배경 **회색 일괄**. 베리언츠(mint·pink·yellow·sky)는 `tone: "cases"` 를 명시했을 때만 | 적금 혜택 필 |
 | 금리·요금·수수료·기간별 **조건 표** (비교 아님) | `table` · 카드 1개 · `rows: ["1~3개월: 연 1.8%", …]` 값에 단위 · `rail:false` 로 레일 끔 · `{label,value,highlight}` 로 대표 행 강조 | `kvcard` | 기간별 금리 |
 | 절차·안내 **세로 단계** — `process` 는 넘버링, `usp` 안내형은 아이콘(24) + 보조 문장 | `process` 5단계↑ / `layout: "list"` / 긴 보조문 · 또는 `usp` 에 `icon` + `body` | `stepcard` | K-패스 안내 |
 | 그 외 | 기존 규칙 | `imgcard · tablecard · listcard …` | |

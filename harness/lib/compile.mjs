@@ -7,7 +7,7 @@
  *  - 에셋은 ODS 카탈로그 id 로만 해석 (query → 검색, 실패 시 생성형 슬롯으로 표시)
  */
 import path from "node:path";
-import { findAsset, searchAssets, objectKey } from "./assets.mjs";
+import { findAsset, searchAssets, objectKey, assetStyle, styleForRole } from "./assets.mjs";
 import { breakLines, textWidthPx, SLOT_METRICS } from "./linebreak.mjs";
 
 export const TITLE_LAYOUTS = ["center", "split"];
@@ -81,15 +81,10 @@ export function chooseCardUsage(preset, s) {
 }
 /** pillcard 배경 톤 — 케이스 나열이면 베리언츠 순환, 그 외 gray */
 const PILL_VARIANTS = ["mint", "pink", "yellow", "sky", "gray"];
-const CASES_RE = /케이스|경우|언제|상황|유형|타입|때\b|이런 분|누가/;
-const COND_RE = /조건|혜택|기준|포함|항목|보장|제공/;
 export function choosePillTone(s) {
-  if (s.tone === "cases") return { cases: true, reason: "스펙 tone: cases" };
-  if (s.tone === "gray") return { cases: false, reason: "스펙 tone: gray" };
-  const head = `${s.subtitle || ""} ${s.title || ""}`;
-  if (COND_RE.test(head)) return { cases: false, reason: `제목에 조건·나열 신호(${head.match(COND_RE)[0]})` };
-  if (CASES_RE.test(head)) return { cases: true, reason: `제목에 케이스 신호(${head.match(CASES_RE)[0]})` };
-  return { cases: false, reason: "기본(조건·단순 나열)" };
+  // 2026-10: 리스트 타입 배경은 회색 일괄. 베리언츠는 스펙에서 명시적으로 tone:"cases" 를 줄 때만
+  if (s.tone === "cases") return { cases: true, reason: "스펙 tone: cases (명시 지정)" };
+  return { cases: false, reason: "회색 일괄(기본)" };
 }
 export const CONTENT_PRESETS = Object.keys(PRESET_RULES);
 export const ALL_PRESETS = ["header", "hero", ...CONTENT_PRESETS, "cta-form", "sticky-cta", "footer"];
@@ -114,6 +109,12 @@ function resolveAsset(spec, { role, alt, used, log, where }) {
   }
   if (s.id) {
     const hit = findAsset(s.id);
+    const want = styleForRole(role, { photoAsked: /사진|실사|photo/i.test(`${s.query || ""} ${s.alt || ""}`) });
+    if (hit && assetStyle(hit) !== want) {
+      // 같은 섹션(=같은 역할) 안에서는 한 스타일만 — 지정 id 가 역할 스타일과 다르면 비우고 피드백
+      log.push({ where, source: "placeholder", level: "warn", id: hit.id, note: `지정 에셋 스타일(${assetStyle(hit)})이 이 슬롯 스타일(${want})과 달라 비움 — 같은 섹션은 ${want} 만 사용. ${want === "flat" ? "숏컷(Small SVG)" : want === "3d" ? "3D 일러스트" : "실사"} 에셋으로 교체` });
+      return null;
+    }
     if (hit) {
       used.add(hit.id);
       log.push({ where, source: "ods", id: hit.id });
@@ -215,7 +216,7 @@ export function compileSpec(spec) {
     const secWhere = where[id];
     // 리스트 타입 카드 배경: 조건·단순 나열 = gray 일괄 / 다양한 케이스 표시 = 베리언츠 (spec tone 우선, 없으면 제목·서브타이틀 신호)
     const pillTone = rule.usage === "pillcard" ? choosePillTone(s) : null;
-    if (pillTone) notes.push(`${secWhere}: 리스트 타입 배경 ${pillTone.cases ? "베리언츠(mint·pink·yellow·sky)" : "gray 일괄"} — ${pillTone.reason}`);
+    if (pillTone?.cases) notes.push(`${secWhere}: 리스트 타입 배경 베리언츠(mint·pink·yellow·sky) — ${pillTone.reason}`);
     const cells = items.map((it, i) => {
       const where = `${id}.items[${i}]`;
       const c = { id: `${id}-c${i + 1}`, slots: {} };

@@ -56,12 +56,26 @@ const tokenize = (q) =>
  * 자연어 키워드 → 에셋 후보.
  * role: "media"(큰 3D 일러스트·히어로·카드 이미지) | "icon"(작은 아이콘·리스트카드) | "any"
  */
-export function searchAssets(query, { role = "media", limit = 5, exclude = [], palette = "GenuineBlue" } = {}) {
+/** 에셋 스타일 분류 — 같은 섹션 안에서는 한 스타일만 (2026-10 규칙): flat(숏컷 SVG) | 3d(ODS 3D 일러스트) | photo(실사) */
+export function assetStyle(a) {
+  if (!a) return null;
+  if (/^AssetPhoto/.test(a.id)) return "photo";
+  return a.kind === "svg" ? "flat" : "3d";
+}
+/** 역할 → 허용 스타일. 24 이하 슬롯은 flat, 그 이상은 3d(또는 '사진·실사' 요청 시 photo) */
+export function styleForRole(role, { photoAsked = false } = {}) {
+  if (role === "icon" || role === "icon-small") return "flat";
+  return photoAsked ? "photo" : "3d";
+}
+
+export function searchAssets(query, { role = "media", limit = 5, exclude = [], palette = "GenuineBlue", style } = {}) {
   const tokens = tokenize(query);
+  const wantStyle = style || styleForRole(role, { photoAsked: tokens.some((t) => /사진|실사|photo/.test(t)) });
   const brandAsked = tokens.some((t) => /로고|logo|symbol|브랜드|kakao|카카오|naver|네이버/.test(t));
   const scored = [];
   for (const a of loadIndex()) {
     if (exclude.includes(a.id) || exclude.includes(objectKey(a.id))) continue;
+    if (assetStyle(a) !== wantStyle) continue; // 섹션 스타일 통일: 역할이 요구하는 스타일만 후보
     const kws = a.keywords.map((k) => String(k).toLowerCase());
     const name = (a.id + " " + a.slug).toLowerCase();
     let s = 0;
