@@ -31,6 +31,7 @@ const CTA_OK = /(하기|받기|보기|시작|신청|확인|예약|문의|상담|
 const len = (s) => (s ? String(s).length : 0);
 const lines = (s) => (s ? String(s).split(/\r?\n/).length : 0);
 
+export const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
 export function validateSpec(spec, { assetLog = [], notes = [], breaks = [], cardChoices = [] } = {}) {
   const issues = [];
   const push = (level, where, msg, fix) => issues.push({ level, where, msg, ...(fix ? { fix } : {}) });
@@ -48,6 +49,7 @@ export function validateSpec(spec, { assetLog = [], notes = [], breaks = [], car
   if (!TITLE_LAYOUTS.includes(spec.titleLayout)) push("error", "titleLayout", `페이지 타이틀 레이아웃을 반드시 택1: ${TITLE_LAYOUTS.map((t) => `'${t}'`).join(" | ")} (center=[타이틀][에셋] 중앙 정렬 · split=[타이틀][에셋] 일렬 정렬)`);
   for (const [i, s] of (spec.sections || []).entries()) if (s.titleLayout && s.titleLayout !== spec.titleLayout) push("error", `sections[${i}].titleLayout`, `섹션별 레이아웃 지정 금지 — 한 페이지는 하나의 titleLayout('${spec.titleLayout}')`);
   if (!spec.meta?.slug) push("error", "meta.slug", "slug 필요");
+  else if (!SLUG_RE.test(spec.meta.slug)) push("error", "meta.slug", `slug 는 영문 소문자·숫자·하이픈만 (${spec.meta.slug}) — 출력 폴더 이름으로 쓰여 경로 문자를 허용하지 않음`);
   if (!spec.meta?.title) push("error", "meta.title", "SEO title 필요");
   else if (len(spec.meta.title) > 60) push("warn", "meta.title", `SEO title 60자 초과 (${len(spec.meta.title)}자)`);
   if (spec.meta?.description && len(spec.meta.description) > 120) push("warn", "meta.description", "120자 초과");

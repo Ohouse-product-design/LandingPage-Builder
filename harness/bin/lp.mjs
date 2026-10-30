@@ -17,7 +17,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { compileSpec, PRESET_RULES, USAGE_RULES } from "../lib/compile.mjs";
-import { validateSpec, LIMITS, BANNED } from "../lib/validate.mjs";
+import { validateSpec, LIMITS, BANNED, SLUG_RE } from "../lib/validate.mjs";
 import { searchAssets, designAssetsRoot } from "../lib/assets.mjs";
 import { searchScreens, syncScreens, loadScreens, screenCacheFile, screenImageUrl } from "../lib/screens.mjs";
 
@@ -57,6 +57,7 @@ if (cmd === "catalog") {
   const { page, makePreview, stats, screenMisses = [], screenSources = [] } = await assemble(doc, { report, spec, assetLog });
   for (const s of screenSources) report.issues.push({ level: "info", where: `screen ${s.where}`, msg: `화면 이미지 출처: ${s.source === "loom" ? "Loom 플러그인 캡처" : s.source === "file" ? "지정 파일" : s.source === "cache" ? "로컬 캐시" : "스크린 디렉토리 다운로드"} — ${s.file}` });
   for (const m of screenMisses) report.issues.push({ level: "warn", where: `screen ${m.where}`, msg: `스크린 디렉토리 화면 이미지를 받지 못해 '화면 미정' placeholder — Loom 플러그인이 있으면 workbench_compile_check(shot:true) 로 찍은 PNG 를 screen.file 로 지정(~/Loom 의 .loom/shots 는 자동 탐색), 없으면 네트워크가 열린 곳에서 \`lp screens sync\` 후 재빌드하거나 ${m.url} 을 ~/.lp-draft/screens/ 에 저장` });
+  if (!SLUG_RE.test(doc.meta.slug)) { console.error(`meta.slug '${doc.meta.slug}' 는 출력 폴더 이름으로 쓸 수 없습니다 (영문 소문자·숫자·하이픈)`); process.exit(2); }
   const outDir = flag("out", path.join(here, "../out", doc.meta.slug));
   // --out 으로 지정한 임의 폴더의 기존 산출물은 --force 없이는 덮어쓰지 않는다 (기본 out/<slug>/ 는 하네스 전용 폴더라 예외)
   const isDefaultOut = path.resolve(outDir).startsWith(path.resolve(here, "../out") + path.sep);
