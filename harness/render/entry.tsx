@@ -16,7 +16,7 @@ export function renderSections(doc: LandingPageDoc, viewport: Viewport): string 
     .filter((s) => s.visibility?.[viewport] !== false)
     .map(
       (s) =>
-        `<section data-section-id="${s.id}" data-preset="${s.preset}" data-layout="${sectionLayout(s)}" aria-label="${(s.name || s.preset).replace(/"/g, "&quot;")}">` +
+        `<section data-section-id="${s.id}" data-preset="${s.preset}" data-layout="${sectionLayout(s)}"${["header", "sticky-cta", "footer"].includes(s.preset) ? "" : ' data-reveal'} aria-label="${(s.name || s.preset).replace(/"/g, "&quot;")}">` +
         renderToStaticMarkup(<Section section={s} viewport={viewport} />) +
         `</section>`
     )

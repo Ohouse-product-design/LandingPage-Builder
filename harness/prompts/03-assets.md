@@ -8,7 +8,7 @@
 ## 사이즈 규칙 (컴포넌트가 강제 — 스펙에서 조절 불가)
 | 자리 | 규칙 |
 |---|---|
-| 리스트 타입 카드(pillcard) 좌측 | 에셋 **28×28** + 좌우 패딩 4, 박스 없음 |
+| 리스트 타입 카드(pillcard) 좌측 | 에셋 **28×28** + 좌우 패딩 4, 박스 없음. 카드 안쪽 패딩 25 |
 | 리스트 leading icon (listcard·stepcard 좌측) | 에셋 **24×24**. 흰 배경 위(listcard)만 `surface.gray` 박스 40, 회색 컨테이너 안(stepcard)은 박스 없이 |
 | 카드 안 에셋 (imgcard leading-asset) | **40×40 고정**, 카드 좌상단 |
 | 풀배경 카드 (bgfullimg) | **사용하지 않음** — usp 는 항상 leading-asset 으로 일괄 적용 |

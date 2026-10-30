@@ -19,6 +19,7 @@ export async function renderQa(pageFile, { where = {}, screenshots = null } = {}
   try { browser = await chromium(); } catch (e) { return { issues: [{ level: "info", where: "render-qa", msg: `브라우저 실행 불가 — 렌더 QA 생략 (${e.message.split("\n")[0]})` }] }; }
   for (const [vp, w] of [["mobile", 375], ["tablet", 768], ["desktop", 1280]]) {
     const p = await browser.newPage({ viewport: { width: w, height: 900 } });
+    await p.addInitScript(() => { window.__LP_NO_REVEAL = true; }); // 리빌 애니메이션 끄고 전체 캡처
     await p.goto("file://" + path.resolve(pageFile));
     await p.waitForTimeout(250);
     const r = await p.evaluate((vp) => {

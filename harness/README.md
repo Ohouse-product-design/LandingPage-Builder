@@ -82,6 +82,8 @@ open harness/out/moving-1person/preview.html
 - 같은 섹션은 한 에셋 스타일만(flat 숏컷 / 3d / photo): 슬롯 역할이 스타일을 정하고(≤24 flat, >24 3d, '실사' 요청 시 photo) 검색은 그 스타일만 후보, 다른 스타일 id 지정은 비움+warn, 혼용은 validate error
 - 캐로셀이 아닌 콘텐츠 컨테이너는 데스크톱·태블릿 max-width 720 (`data-layout="content"`; 캐로셀 섹션은 1256 유지)
 - 같은 섹션 에셋의 시각 크기 통일: `toDataUri(..., {normalize:true})` 가 투명 여백 trim + 정사각 contain (SVG viewBox 재작성, 비트맵 trim/extend). 리스트 leading icon 은 흰 배경 박스 없이 24 (흰 배경 위 listcard 만 gray 박스)
+- 섹션 스크롤 리빌(기본): 콘텐츠 섹션(`data-reveal`, header·sticky·footer 제외)이 뷰포트에 들어오면 28px 아래에서 올라오며 나타남(0.6s). IntersectionObserver 가 `html.lp-reveal` 을 붙였을 때만 숨기므로 JS 없음·reduced-motion·QA 캡처(`__LP_NO_REVEAL`)는 그대로 보임
+- 리스트 타입 카드 안쪽 패딩 25 (기존 20 의 125%)
 - 히어로 chevron 은 상하 바운스 어포던스(`animate-bounce`, reduced-motion 시 정지)
 - 풀배경 카드(bgfullimg)는 제외 — usp 는 leading-asset 으로 일괄 적용 (스펙에 bgfullimg 를 써도 compile 이 보정하고 리포트에 남김)
 - 표 2개: 행 텍스트가 모바일 2열 셀 폭(136px) 안에 1줄이면 모바일도 2열 나란히, 아니면 1열 스택 (`columns.mobile` 을 compile 이 결정, Card 가 그대로 따름)

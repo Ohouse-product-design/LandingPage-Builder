@@ -11,6 +11,7 @@ const [file, prefix] = process.argv.slice(2);
 const b = await chromium.launch();
 for (const [vp, w] of [["mobile", 375], ["tablet", 768], ["desktop", 1280]]) {
   const p = await b.newPage({ viewport: { width: w, height: 900 } });
+  await p.addInitScript(() => { window.__LP_NO_REVEAL = true; });
   await p.goto("file://" + path.resolve(file));
   await p.waitForTimeout(300);
   const overflow = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth);

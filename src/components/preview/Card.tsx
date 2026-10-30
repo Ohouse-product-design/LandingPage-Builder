@@ -1049,7 +1049,7 @@ function CardPillCell({ cell, onRequestSlotEdit }: { cell: CardCell; onRequestSl
   const body = asText(slot(cell, "body"));
   const bg = PILL_TONE_BG[cell.theme ?? "gray"] ?? PILL_TONE_BG.gray; // 흰 배경 없음 — 항상 톤 배경
   return (
-    <div className="flex w-full items-center gap-3 rounded-ods-16 px-5 py-5" style={{ background: bg }}>
+    <div className="flex w-full items-center gap-3 rounded-ods-16 px-[25px] py-[25px]" style={{ background: bg }}>
       <LeadingIcon asset={icon} tone="none" compact size={PILL_ICON_PX} onRequestSlotEdit={onRequestSlotEdit} />
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <p className="min-w-0 truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
