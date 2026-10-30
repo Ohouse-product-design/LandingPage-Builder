@@ -81,6 +81,9 @@ function resolveLayoutWithFallback(
 ): CardLayoutSettings {
   if (layout.type !== "grid") return layout;
 
+  // tablecard: 컴파일러가 행 텍스트 폭을 재서 모바일 2열(columns.mobile=2)을 지정하면 그대로 유지 (좁은 표 2열 배치)
+  if (usage === "tablecard" && viewport === "mobile" && layout.settings.columns?.mobile === 2) return layout;
+
   const preset = CARD_USAGE_PRESETS[usage];
   const cols = usage === "listcard" ? (viewport === "mobile" ? 1 : 2) : 2;
   const usable = APPROX_USABLE_WIDTH_PX[viewport];
@@ -914,10 +917,10 @@ function CardTableCell({ cell }: { cell: CardCell }) {
       >
         {meta.map((rowText, i) => (
           <div key={i}>
-            <div className="flex h-16 w-full flex-col items-center justify-center">
+            <div className="flex min-h-16 w-full flex-col items-center justify-center py-3">
               <p
                 className={cn(
-                  "w-full whitespace-pre-line text-center font-pretendard text-[16px] leading-5 tracking-[-0.3px]",
+                  "w-full whitespace-pre-line break-keep text-center font-pretendard text-[16px] leading-5 tracking-[-0.3px]",
                   theme.rowFont === "semibold" ? "font-semibold" : "font-medium"
                 )}
                 style={{ color: theme.rowColor }}

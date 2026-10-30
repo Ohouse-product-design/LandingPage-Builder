@@ -68,12 +68,14 @@ open harness/out/moving-1person/preview.html
 ```
 
 ## 카드 변형 9종과 자동 채택
-`imgcard(bgfullimg|leading-asset) · reviewcard · listcard · tablecard · faqcard` + **`linkcard · pillcard · kvcard · stepcard`** (2026-10 추가, `src/schema/card.ts` 단일 Card usage).
+`imgcard(leading-asset) · reviewcard · listcard · tablecard · faqcard` + **`linkcard · pillcard · kvcard · stepcard`** (2026-10 추가, `src/schema/card.ts` 단일 Card usage).
 `lib/compile.mjs chooseCardUsage` 가 아이템 형태 신호로 결정적으로 고르고(`links[]` → linkcard, 설명 없는 ≤14자+아이콘 → pillcard, 단일 카드 '라벨: 값'+단위 → kvcard, ≥5단계/아이콘만/보조문 안내 → stepcard), 스펙 `card:` 로 허용 목록 안에서 override. 근거는 리포트 `info`. 필·단계 아이콘은 `icon-small` 역할로 ODS 숏컷(Small SVG) 우선.
 
 ## 에셋 규칙 (2026-10)
 - Storybook/ODS 카탈로그에 정의된 에셋만. 없으면 플레이스홀더 + 리포트 `warn`(어느 슬롯이 비었는지) — 임의 생성·유사 대체 금지. 생성형은 `allowGeneratedAssets: true` 일 때만
-- 리스트 leading icon: bg 박스 40 안에 에셋 ≤24 · 카드 안 에셋: 40 고정 · 프로세스: 넘버링 leading(에셋 없음) · bgfullimg·히어로는 예외
+- 슬롯 크기로 역할 결정: **24 이하 → 아이콘(숏컷 SVG)**, 24 초과 → 3D 에셋. 리스트 leading icon: bg 박스 40 안에 ≤24 · 카드 안 에셋: 40 고정 · 프로세스: 넘버링 leading(에셋 없음) · 히어로는 예외
+- 풀배경 카드(bgfullimg)는 제외 — usp 는 leading-asset 으로 일괄 적용 (스펙에 bgfullimg 를 써도 compile 이 보정하고 리포트에 남김)
+- 표 2개: 행 텍스트가 모바일 2열 셀 폭(136px) 안에 1줄이면 모바일도 2열 나란히, 아니면 1열 스택 (`columns.mobile` 을 compile 이 결정, Card 가 그대로 따름)
 
 ## 레이아웃·줄바꿈 규칙
 - `titleLayout` 은 페이지당 하나(`center` | `split`). compile 이 모든 섹션 props 에 같은 값을 주입하고, 섹션별 지정은 validate 에서 error.

@@ -76,17 +76,14 @@ export function searchAssets(query, { role = "media", limit = 5, exclude = [], p
       if (/Large|Isometric|View\d/.test(a.id)) s += 0.6;
       if (/Small|Shortcut/i.test(a.id) || kws.includes("숏컷")) s -= 1.5;
       if (a.kind === "svg") s -= 3; // 평면 SVG 는 3D 일러스트 슬롯에 섞지 않음
-    } else if (role === "icon-small") {
+    } else if (role === "icon-small" || role === "icon") {
+      // 24 이하 슬롯(리스트 leading icon)은 아이콘(숏컷 SVG) 언어, 24 초과 슬롯만 3D 에셋 (2026-10 규칙)
       // pillcard·stepcard 아이콘: ODS 숏컷(Small SVG) 언어를 우선, 3D 일러스트는 차선
       if (a.kind === "svg") s += 2.5;
       if (/Small/.test(a.id) || kws.includes("숏컷")) s += 1.5;
       if (a.kind === "image") s -= 2;
       // 숏컷 아이콘 색: 한 리스트 안에서 블루·그레이 계열로 모이게 (웜 컬러는 차선)
       if (/GenuineBlue/.test(a.id)) s += 1; else if (/DarkBlue|DavyGray/.test(a.id)) s += 0.5; else if (/MangoOrange|CoralRed|CandyPink|Violet|TanYellow|JadeGreen/.test(a.id)) s -= 1;
-    } else if (role === "icon") {
-      // 리스트 카드 아이콘도 페이지 일러스트 언어(3D)에 맞춘다 — 평면 SVG 는 차선
-      if (a.kind === "image") s += 1;
-      if (a.kind === "svg") s -= 3;
     }
     if (/OnSquircle/.test(a.id)) s -= 1.5;
     if (/^Asset(Banner|OpenGraph)/.test(a.id)) s -= 4; // 배너·OG 합성 이미지는 슬롯 에셋으로 쓰지 않음 // 배경 도형이 붙은 변형은 카드 안에서 이중 배경이 됨

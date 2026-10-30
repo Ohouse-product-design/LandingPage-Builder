@@ -10,13 +10,14 @@
 |---|---|
 | 리스트 leading icon (listcard·pillcard·stepcard 좌측) | bg 박스 40×40(`surface.gray`, 회색 컨테이너 안에서는 white) 안에 에셋 **최대 24×24** |
 | 카드 안 에셋 (imgcard leading-asset) | **40×40 고정**, 카드 좌상단 |
-| 풀배경 카드 (imgcard bgfullimg) | 배경 전체 (사진·3D 일러스트), 예외 |
+| 풀배경 카드 (bgfullimg) | **사용하지 않음** — usp 는 항상 leading-asset 으로 일괄 적용 |
 | 히어로 비주얼 | center 225×150 / split 360×240 |
 | 프로세스 | 에셋 없음 — **넘버링 leading**(01·02·03, primary 원형) |
 
-## 역할별 검색
-- `asset: { query }` — 큰 일러스트(히어로·bgfullimg·leading-asset). ODS 3D, 제뉴인 블루 우선, 실사·평면 SVG 배제
-- `icon: { query }` — 리스트 leading (pillcard·stepcard·listcard). ODS 숏컷(Small SVG) 우선, 블루·그레이 계열 우선
+## 역할별 검색 — 슬롯 크기로 결정 (24 이하 = 아이콘, 24 초과 = 에셋)
+- **24 초과 슬롯**(히어로 225/360 · 카드 안 40) → `asset: { query }` — ODS 3D 일러스트, 제뉴인 블루 우선, 실사·평면 SVG 배제
+- **24 이하 슬롯**(리스트 leading: pillcard·stepcard·listcard·cross-sell) → `icon: { query }` — ODS 숏컷 아이콘(Small SVG) 우선, 블루·그레이 계열. 3D 에셋은 차선
+- 스펙에 `asset` 을 써도 슬롯이 24 이하면 compile 이 아이콘 역할로 검색한다
 - 미리 보려면 `node bin/lp.mjs assets "키워드" [--role icon-small]`
 - 점수 3 미만이면 채택하지 않고 플레이스홀더
 

@@ -24,8 +24,8 @@ Claude 가 기획서를 해석해 작성하는 **유일한 산출물**. HTML·CS
 | preset | 필드 | items 필드 | 개수 |
 |---|---|---|---|
 | `hero` | `eyebrow≤20` `title≤48/3줄` `subtitle≤48/2줄` `cta≤20` `asset` | – | 1 (필수) |
-| `usp` | `subtitle≤18` `title≤22/2줄` `cardType: bgfullimg\|leading-asset` `layout: grid\|carousel` | `tag≤12` `title≤20` `body≤40` `asset` | 2–6 (4) |
-| `table` | `subtitle` `title` | `title≤24` `rows[4–6]≤32` `theme: grey\|blue\|green` | 1–2 (2) |
+| `usp` | `subtitle≤18` `title≤22/2줄` `layout: grid\|carousel` — 카드는 항상 `leading-asset`(에셋 40, 풀배경 카드 없음) | `tag≤12` `title≤20` `body≤40` `asset` | 2–6 (4) |
+| `table` | `subtitle` `title` | `title≤24` `rows[4–6]≤32` `theme: grey\|blue\|green` — 행 텍스트가 좁으면(≈8자 이하) 모바일도 2열 나란히, 넓으면 1열 스택 (compile 자동) | 1–2 (2) |
 | `review` | `subtitle` `title` `layout: carousel\|grid` | `rating 1–5` `title≤40/2줄` `body≤180` `meta[]` `author` | 3–8 (4) |
 | `process` | `subtitle` `title` `layout: grid\|list` | `step≤4`(생략 시 01,02…) `title≤20` `body≤40` — **asset 없음(넘버링)** | 3–5 (4) |
 | `cross-sell` | `subtitle` `title` | `title≤20/1줄` `body≤40` `asset` `href` `ctaLabel` | 2–4 (3) |

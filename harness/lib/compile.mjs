@@ -8,7 +8,7 @@
  */
 import path from "node:path";
 import { findAsset, searchAssets, objectKey } from "./assets.mjs";
-import { breakLines, SLOT_METRICS } from "./linebreak.mjs";
+import { breakLines, textWidthPx, SLOT_METRICS } from "./linebreak.mjs";
 
 export const TITLE_LAYOUTS = ["center", "split"];
 
@@ -18,7 +18,8 @@ const LIST = { type: "list", settings: { gap: 16, align: "start" } };
 
 /** 섹션 프리셋 → 허용 패턴. 기본값은 seed.ts(디자이너 승인 캐노니컬)와 동일 */
 export const PRESET_RULES = {
-  usp: { usage: "imgcard", allowedUsages: ["imgcard", "pillcard", "stepcard", "linkcard"], cardTypes: ["bgfullimg", "leading-asset"], defaultCardType: "bgfullimg", layouts: { grid: (n) => GRID(1, 2, n >= 4 ? 4 : n), carousel: () => CAROUSEL }, defaultLayout: "grid", count: [2, 6], recommended: 4 },
+  // 풀배경(bgfullimg) 카드는 2026-10 규칙으로 제외 — 에셋 사용 타입(leading-asset, 에셋 40 고정)으로 일괄 적용
+  usp: { usage: "imgcard", allowedUsages: ["imgcard", "pillcard", "stepcard", "linkcard"], cardTypes: ["leading-asset"], defaultCardType: "leading-asset", layouts: { grid: (n) => GRID(1, 2, n >= 4 ? 4 : n), carousel: () => CAROUSEL }, defaultLayout: "grid", count: [2, 6], recommended: 4 },
   // 프로세스는 넘버링 leading 컴포넌트로만 구성 (에셋 없음, 2026-10 규칙). grid=카드형(leading-asset+번호) / list=세로 단계(stepcard+번호)
   process: { usage: "imgcard", allowedUsages: ["imgcard", "stepcard"], cardTypes: ["leading-asset"], defaultCardType: "leading-asset", numbered: true, layouts: { grid: (n) => GRID(1, 2, n >= 4 ? 4 : n), carousel: () => CAROUSEL }, defaultLayout: "grid", count: [3, 5], recommended: 4 },
   review: { usage: "reviewcard", allowedUsages: ["reviewcard"], layouts: { carousel: () => CAROUSEL, grid: () => GRID(1, 2, 4) }, defaultLayout: "carousel", count: [3, 8], recommended: 4 },
@@ -118,6 +119,8 @@ function resolveAsset(spec, { role, alt, used, log, where }) {
 }
 
 const PALETTE = { value: "GenuineBlue" };
+/** 표 2열 판정 — 모바일(360 사용폭) 2열 셀 폭 176 − 행 패딩 40 = 136px 안에 행 텍스트 1줄, 타이틀 바 17px */
+const TABLE_COMPACT = { rowFontPx: 16, rowMaxPx: 136, titleFontPx: 17, titleMaxPx: 150 };
 const ALLOW_GENERATED = { value: false };
 export function compileSpec(spec) {
   PALETTE.value = spec.assetPalette ?? "GenuineBlue";
@@ -192,7 +195,7 @@ export function compileSpec(spec) {
     const layoutKey = rule.layouts[s.layout] ? s.layout : rule.defaultLayout;
     if (s.layout && !rule.layouts[s.layout]) notes.push(`${id}: layout '${s.layout}' 는 ${rule.usage} 에서 허용되지 않아 '${rule.defaultLayout}' 로 보정`);
     let cardType = rule.cardTypes ? (rule.cardTypes.includes(s.cardType) ? s.cardType : rule.defaultCardType) : undefined;
-    if (s.cardType && rule.cardTypes && !rule.cardTypes.includes(s.cardType)) notes.push(`${id}: cardType '${s.cardType}' 보정 → ${cardType}`);
+    if (s.cardType && rule.cardTypes && !rule.cardTypes.includes(s.cardType)) notes.push(s.cardType === "bgfullimg" ? `${id}: 풀배경 카드(bgfullimg)는 사용하지 않음 (2026-10) → ${cardType} 으로 일괄 적용` : `${id}: cardType '${s.cardType}' 보정 → ${cardType}`);
 
     const secWhere = where[id];
     const cells = items.map((it, i) => {
@@ -211,7 +214,8 @@ export function compileSpec(spec) {
         Object.assign(c.slots, { rating: { kind: "rating", value: Math.max(1, Math.min(5, Number(it.rating ?? 5))), max: 5 }, title: text(it.title), body: text(it.body), meta: metaItems.length ? { kind: "meta", items: metaItems } : undefined });
       } else if (rule.usage === "listcard") {
         Object.assign(c.slots, { title: text(it.title), body: text(it.body) });
-        const ic = resolveAsset(it.asset || it.icon, { role: "icon", alt: it.title, used, log: assetLog, where });
+        // 리스트 leading icon 은 24 이하 → 아이콘(숏컷 SVG) 역할로 검색 (24 초과 슬롯만 3D 에셋)
+        const ic = resolveAsset(it.asset || it.icon, { role: "icon-small", alt: it.title, used, log: assetLog, where });
         if (ic) c.slots.icon = { kind: "asset", asset: ic };
         if (it.href || it.ctaLabel) c.slots.cta = { kind: "cta", label: it.ctaLabel || "보러가기", url: it.href || "#" };
       } else if (rule.usage === "tablecard") {
@@ -243,6 +247,14 @@ export function compileSpec(spec) {
     });
 
     const card = { id: `${id}-card`, preset: "card", props: { usage: rule.usage, layout: rule.layouts[layoutKey](cells.length), cells, cardType }, assets: [] };
+    // 테이블 2개의 행 텍스트가 좁으면(모바일 2열 셀 폭 안에 1줄) 모바일에서도 2열로 나란히 배치
+    if (rule.usage === "tablecard" && cells.length >= 2 && card.props.layout.type === "grid") {
+      const widest = Math.max(...cells.flatMap((c) => (c.slots.meta?.items || []).map((r) => textWidthPx(String(r), TABLE_COMPACT.rowFontPx))));
+      const widestTitle = Math.max(...cells.map((c) => textWidthPx(c.slots.title?.text || "", TABLE_COMPACT.titleFontPx)));
+      const compact = widest <= TABLE_COMPACT.rowMaxPx && widestTitle <= TABLE_COMPACT.titleMaxPx;
+      card.props.layout.settings.columns.mobile = compact ? 2 : 1;
+      notes.push(compact ? `${secWhere}: 표 행 텍스트가 좁아(최대 ${Math.round(widest)}px ≤ ${TABLE_COMPACT.rowMaxPx}px) 모바일도 2열 배치` : `${secWhere}: 표 행 텍스트가 넓어(최대 ${Math.round(widest)}px) 모바일 1열 스택`);
+    }
     // 카드 타이틀은 1줄(ellipsis) 또는 2줄 제한 — 폭을 넘으면 리포트에 올려 카피를 줄이게 한다
     const cardMetric = rule.usage === "imgcard" ? (cardType === "leading-asset" ? SLOT_METRICS.leadingTitle : SLOT_METRICS.imgcardTitle) : rule.usage === "reviewcard" ? SLOT_METRICS.reviewTitle : rule.usage === "listcard" ? SLOT_METRICS.listcardTitle : rule.usage === "pillcard" ? SLOT_METRICS.pillTitle : rule.usage === "stepcard" ? SLOT_METRICS.stepTitle : rule.usage === "linkcard" ? SLOT_METRICS.linkGroupTitle : null;
     if (cardMetric) items.forEach((it, i) => { const t = it.title; if (!t) return; const r = breakLines(t, { maxWidthPx: cardMetric.mobile.w, fontPx: cardMetric.mobile.f, maxLines: cardMetric.maxLines }); if (r.overflow) breaks.push({ where: `${where[id]}.items[${i}].title`, from: t, overflow: true, maxLinePx: Math.round(r.maxLinePx), limitPx: cardMetric.mobile.w, maxLines: cardMetric.maxLines }); });
