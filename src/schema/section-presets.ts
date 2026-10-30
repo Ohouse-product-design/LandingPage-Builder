@@ -22,6 +22,7 @@ export type SectionPresetId =
   | "process"
   | "cross-sell"
   | "faq"
+  | "mockup"
   | "cta-form";
 
 export interface SectionSlotSpec {
@@ -240,6 +241,23 @@ export const SECTION_PRESETS: Record<SectionPresetId, SectionPreset> = {
     ],
     assets: [],
     maxPerPage: 1,
+  },
+
+  mockup: {
+    id: "mockup",
+    label: "목업",
+    description: "실제 서비스 화면 소개 — 태그 + 타이틀 + 설명 + 폰 목업(스크린 디렉토리 화면). 회색 배경, 하늘색 목업 컨테이너",
+    category: "content",
+    defaultLocked: false,
+    icon: "Smartphone",
+    uiSpec: {
+      tag: { maxChar: 10, maxLine: 1 },
+      sectionTitle: { maxChar: 30, maxLine: 2, required: true },
+      sectionSubtitle: { maxChar: 60, maxLine: 2 },
+    },
+    slots: [],
+    assets: [{ slotName: "screen", label: "서비스 화면 (스크린 디렉토리 썸네일 2x)", recommended: { width: 804, height: 1748 }, required: true }],
+    maxPerPage: 4,
   },
 
   "cta-form": {

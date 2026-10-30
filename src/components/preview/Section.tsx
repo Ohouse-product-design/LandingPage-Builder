@@ -18,6 +18,7 @@ import type { Section as SectionData, Viewport } from "@/schema/doc";
 import type { SectionPresetId } from "@/schema/section-presets";
 import CardSectionTemplate from "./sections/CardSectionTemplate";
 import CtaFormTemplate from "./sections/CtaFormTemplate";
+import MockupTemplate from "./sections/MockupTemplate";
 import FooterTemplate from "./sections/FooterTemplate";
 import HeaderTemplate from "./sections/HeaderTemplate";
 import HeroTemplate from "./sections/HeroTemplate";
@@ -125,6 +126,7 @@ export default function Section({ section, viewport, onRequestAssetSlot }: Props
         onRequestAssetSlot={onRequestAssetSlot}
       />
     ),
+    mockup: () => <MockupTemplate section={section} viewport={viewport} onRequestAssetSlot={onRequestAssetSlot} />,
     "cta-form": () => <CtaFormTemplate section={section} />,
     "sticky-cta": () => <StickyCtaTemplate section={section} />,
     footer: () => <FooterTemplate section={section} />,

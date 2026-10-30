@@ -18,6 +18,7 @@ export const LIMITS = {
   faqcard: { q: [80, 2, true], a: [400, 10, true] },
   linkcard: { title: [10, 1, true], link: [24, 1], more: [8, 1] },
   pillcard: { title: [14, 1, true], body: [24, 1] },
+  mockup: { tag: [10, 1], title: [30, 2, true], body: [60, 2] },
   kvcard: { title: [24, 1], label: [12, 1, true], value: [10, 1, true] },
   stepcard: { title: [20, 2, true], body: [24, 1] },
 };
@@ -67,6 +68,12 @@ export function validateSpec(spec, { assetLog = [], notes = [], breaks = [], car
       return;
     }
     if (s.preset === "sticky-cta") { check(`${at}.label`, s.label, [16, 1]); checkCta(`${at}.label`, s.label); return; }
+    if (s.preset === "mockup") {
+      const L = LIMITS.mockup;
+      check(`${at}.tag`, s.tag, L.tag); check(`${at}.title`, s.title, L.title); check(`${at}.body`, s.body || s.subtitle, L.body);
+      if (!s.screen) push("warn", `${at}.screen`, "목업 섹션은 screen(query|id) 이 있어야 함 — 스크린 디렉토리 화면");
+      return;
+    }
     if (s.preset === "cta-form") {
       const L = LIMITS["cta-form"];
       check(`${at}.title`, s.title, L.title); check(`${at}.subtitle`, s.subtitle, L.subtitle); check(`${at}.submit`, s.submit || spec.cta?.label, L.submit);

@@ -18,6 +18,9 @@
 ## 스타일 통일 — 같은 섹션은 한 스타일만 (compile 강제)
 에셋 스타일은 `flat`(숏컷 SVG) · `3d`(ODS 3D 일러스트) · `photo`(실사 `AssetPhoto*`) 세 가지. 슬롯 역할이 스타일을 정한다 — 24 이하(리스트 leading)는 **flat만**, 24 초과(카드 안 40·히어로)는 **3d만**(query 에 '사진·실사' 가 있으면 photo만). 검색은 해당 스타일만 후보로 보고, `id` 로 다른 스타일을 지정하면 비우고 warn. 한 섹션에 두 스타일이 섞이면 validate error.
 
+## 목업 섹션 화면 — 스크린 디렉토리에서만
+`mockup` 섹션의 폰 화면은 오늘의집 디자인 Screens 디렉토리(`catalog/ohouse-screens-index.json`, `lp screens "키워드"`)에서 고른다. 썸네일(iPhone 17 2x, 804×1748)을 그대로 임베드. 사내 프록시 등으로 이미지를 못 받으면 '화면 미정' placeholder + warn — 다른 화면·임의 이미지로 대체하지 않는다. 네트워크가 열린 곳에서 `lp screens sync`(인덱스) 후 재빌드하면 자동 다운로드(`~/.lp-draft/screens/`).
+
 ## 팔레트 틴트 — 같은 섹션은 한 색 계열 (렌더 시 자동)
 섹션 `palette: blue | red | orange | green | mono` (생략 시 페이지 `assetPalette` 계열, 기본 blue). 임베드 단계에서 섹션 안 모든 아이콘·에셋의 채도 있는 색 hue 를 팔레트 hue 로 바꾸고 명도·채도는 유지(음영 보존), mono 는 채도 0. 평면 아이콘의 중간 톤 회색도 팔레트 색으로 입히고, 흰·검(하이라이트·외곽)은 그대로. 검색도 같은 계열 ODS 컬러(GenuineBlue·CoralRed·MangoOrange·JadeGreen·DavyGray)를 우선.
 

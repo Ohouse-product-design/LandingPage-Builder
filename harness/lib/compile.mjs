@@ -9,6 +9,7 @@
 import path from "node:path";
 import { findAsset, searchAssets, objectKey, assetStyle, styleForRole, TINT_NAMES, TINT_PALETTES } from "./assets.mjs";
 import { breakLines, textWidthPx, SLOT_METRICS } from "./linebreak.mjs";
+import { searchScreens, findScreen, screenImageEnv, screenImageUrl } from "./screens.mjs";
 
 export const TITLE_LAYOUTS = ["center", "split"];
 
@@ -93,7 +94,7 @@ export function choosePillTone(s) {
   return { cases: false, reason: "회색 일괄(기본)" };
 }
 export const CONTENT_PRESETS = Object.keys(PRESET_RULES);
-export const ALL_PRESETS = ["header", "hero", ...CONTENT_PRESETS, "cta-form", "sticky-cta", "footer"];
+export const ALL_PRESETS = ["header", "hero", ...CONTENT_PRESETS, "mockup", "cta-form", "sticky-cta", "footer"];
 
 const ALL = { mobile: true, tablet: true, desktop: true };
 const text = (t) => (t === undefined || t === null || t === "" ? undefined : { kind: "text", text: String(t) });
@@ -202,6 +203,21 @@ export function compileSpec(spec) {
       const asset = resolveAsset(s.asset, { role: "media", alt: s.title, used, log: assetLog, where: `${id}.background`, tint: TINT_NAMES.includes(s.palette) ? s.palette : pageTint });
       const heroTitle = autoBreak(`${where[id]}.title`, s.title || "", { ...SLOT_METRICS.heroTitle[titleLayout], maxLines: SLOT_METRICS.heroTitle.maxLines }, { preferTwoLinesFrom: 12 });
       out.push({ ...base, props: { ...TL, eyebrow: s.eyebrow || "", title: heroTitle, subtitle: s.subtitle || "", primaryCtaLabel: s.cta || ctaLabel, secondaryCtaLabel: s.secondaryCta || "" }, assets: asset ? [{ slotName: "background", asset }] : [] });
+      continue;
+    }
+    if (p === "mockup") {
+      // 목업 섹션: 실제 서비스 화면 소개. screen 은 스크린 디렉토리에서만 (query 검색 | id 지정) — 없으면 placeholder + warn
+      const sc = typeof s.screen === "string" ? { query: s.screen } : (s.screen || {});
+      let hit = null;
+      if (sc.id) { hit = findScreen(sc.id); if (!hit) assetLog.push({ where: `${id}.screen`, source: "placeholder", level: "warn", note: `스크린 디렉토리에 없는 id '${sc.id}' → 화면 미정` }); }
+      else if (sc.query) {
+        const [best, ...rest] = searchScreens(sc.query, { limit: 4 });
+        if (best && best.score >= 4) { hit = best; assetLog.push({ where: `${id}.screen`, source: "screen-search", query: sc.query, id: best.id, score: best.score, alternatives: rest.map((r) => r.id) }); }
+        else assetLog.push({ where: `${id}.screen`, source: "placeholder", level: "warn", query: sc.query, note: "스크린 디렉토리에 맥락에 맞는 화면 없음 → 화면 미정. `lp screens \"키워드\"` 로 찾아 id 지정", candidates: [best, ...rest].filter(Boolean).map((r) => `${r.id}(${r.score})`) });
+      } else assetLog.push({ where: `${id}.screen`, source: "placeholder", level: "warn", note: "목업 섹션에 screen(query|id) 없음 → 화면 미정" });
+      if (hit) assetLog.push({ where: `${id}.screen`, source: "screen", id: hit.id, title: hit.title });
+      const screenAsset = hit ? { alt: sc.alt || hit.title, type: "image", url: `screen:${hit.id}/${hit.hash}/${screenImageEnv(hit)}`, screenId: hit.id, screenUrl: screenImageUrl(hit) } : null;
+      out.push({ ...base, props: { ...TL, tag: s.tag || "", sectionTitle: autoBreak(`${where[id]}.title`, s.title || "", { mobile: { w: 375 - 32, f: 24 }, desktop: { w: 720 - 32, f: 30 }, maxLines: 2 }, { preferTwoLinesFrom: 12 }), sectionSubtitle: s.body || s.subtitle || "" }, assets: screenAsset ? [{ slotName: "screen", asset: screenAsset }] : [] });
       continue;
     }
     if (p === "cta-form") {

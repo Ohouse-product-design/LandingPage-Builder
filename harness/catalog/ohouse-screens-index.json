@@ -1,0 +1,64 @@
+{
+ "syncedAt": "2026-10-30T02:40:00Z",
+ "partial": true,
+ "source": "https://static-contents.datapl.datahou.se/v2/common/ohouse-design/categories/",
+ "screens": [
+  {
+   "id": "life-service/moving/moving-home",
+   "hash": "0bc81956a9a8",
+   "title": "이사 메인",
+   "cat": "moving",
+   "summary": "이사 서비스 메인 화면",
+   "aliases": [],
+   "envs": [
+    "web-1366"
+   ],
+   "thumbEnv": "web-1366"
+  },
+  {
+   "id": "life-service/moving/matching-partner-list",
+   "hash": "aa1f2f466423",
+   "title": "매칭 업체 목록",
+   "cat": "moving",
+   "summary": "이사청소 상담 건의 업체 매칭 중 상태 상세 화면",
+   "aliases": [
+    "[sm] OrderList_Matching",
+    "이사·청소 상담내역 상세 · 매칭 중"
+   ],
+   "envs": [
+    "android-pixel-9",
+    "ios27-iphone-17",
+    "ios27-iphone-13-mini"
+   ],
+   "thumbEnv": "ios27-iphone-17"
+  },
+  {
+   "id": "o2o/interior/apartment-case-map",
+   "hash": "e11f38a050a3",
+   "title": "아파트 시공사례 지도",
+   "cat": "interior",
+   "summary": "아파트 시공사례를 지도로 탐색",
+   "aliases": [
+    "TWN_MAP"
+   ],
+   "envs": [
+    "web-1366"
+   ],
+   "thumbEnv": "web-1366"
+  },
+  {
+   "id": "o2o/interior/vendor-map",
+   "hash": "aa6db20a17c7",
+   "title": "우리동네 업체 지도",
+   "cat": "interior",
+   "summary": "주변 인테리어 업체를 지도로 찾기",
+   "aliases": [
+    "O2O_MAP"
+   ],
+   "envs": [
+    "web-1366"
+   ],
+   "thumbEnv": "web-1366"
+  }
+ ]
+}

@@ -304,6 +304,7 @@ export const SECTION_THUMBNAILS: Record<SectionPresetId, (p: ThumbProps) => JSX.
   "cross-sell": ThumbListCards,
   table: ThumbTable,
   faq: ThumbFaq,
+  mockup: ThumbHero,
   "cta-form": ThumbForm,
   "sticky-cta": ThumbStickyCta,
   footer: ThumbBar,

@@ -88,6 +88,9 @@ open harness/out/moving-1person/preview.html
 - 풀배경 카드(bgfullimg)는 제외 — usp 는 leading-asset 으로 일괄 적용 (스펙에 bgfullimg 를 써도 compile 이 보정하고 리포트에 남김)
 - 표 2개: 행 텍스트가 모바일 2열 셀 폭(136px) 안에 1줄이면 모바일도 2열 나란히, 아니면 1열 스택 (`columns.mobile` 을 compile 이 결정, Card 가 그대로 따름)
 
+## 목업 섹션 (2026-10)
+`mockup` 프리셋: [태그 필] → 타이틀 → 설명 → 하늘색(#C9E4FF) 라운드 컨테이너 안 폰 목업(CSS 베젤 + 스크린 디렉토리 썸네일, 하단 잘림). 섹션 배경 회색. `lib/screens.mjs` 가 `catalog/ohouse-screens-index.json`(331개, `lp screens sync` 로 재생성)에서 한국어 검색 → `~/.lp-draft/screens/` 캐시 → 다운로드 → 실패 시 '화면 미정' placeholder + warn. 빌더 쪽: `section-presets.ts` mockup, `MockupTemplate.tsx`, 추가 메뉴·썸네일 등록.
+
 ## 레이아웃·줄바꿈 규칙
 - `titleLayout` 은 페이지당 하나(`center` | `split`). compile 이 모든 섹션 props 에 같은 값을 주입하고, 섹션별 지정은 validate 에서 error.
   - center: 히어로 세로 스택 중앙, 섹션 타이틀 중앙, imgcard 그리드 중앙 정렬

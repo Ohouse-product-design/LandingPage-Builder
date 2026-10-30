@@ -4,6 +4,7 @@
  *
  *   lp catalog                         섹션 프리셋·슬롯·글자수 규칙 요약 (Claude 가 스펙 작성 전 참조)
  *   lp assets "<키워드>" [--role icon|media] [--limit 8]   ODS 에셋 검색
+ *   lp screens "<키워드>" [--limit 8]  스크린 디렉토리 화면 검색 (목업 섹션용) · lp screens sync 로 인덱스 재생성(네트워크 필요)
  *   lp validate <spec.json>            가이드 검증만 (JSON 리포트)
  *   lp build <spec.json> [--out dir]   compile → validate → render → out/<slug>/{page,preview}.html
  *   lp doctor                          환경 점검 (node·sharp·폰트 도구·playwright·design-assets·CDN 폴백)
@@ -18,12 +19,20 @@ import { fileURLToPath } from "node:url";
 import { compileSpec, PRESET_RULES, USAGE_RULES } from "../lib/compile.mjs";
 import { validateSpec, LIMITS, BANNED } from "../lib/validate.mjs";
 import { searchAssets, designAssetsRoot } from "../lib/assets.mjs";
+import { searchScreens, syncScreens, loadScreens, screenCacheFile, screenImageUrl } from "../lib/screens.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const [cmd, ...rest] = process.argv.slice(2);
 const flag = (n, d) => { const i = rest.indexOf(`--${n}`); return i >= 0 ? rest[i + 1] : d; };
 const readSpec = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
 
+if (cmd === "screens") {
+  if (rest[0] === "sync") { const n = await syncScreens(); console.log(`screens index: ${n} screens`); process.exit(0); }
+  const q = rest.filter((x) => !x.startsWith("--") && rest[rest.indexOf(x) - 1] !== "--limit").join(" ");
+  if (!q) { console.log(`index: ${loadScreens().length} screens`); process.exit(0); }
+  for (const s of searchScreens(q, { limit: Number(flag("limit", 8)) })) console.log(`${String(s.score).padStart(5)}  ${s.id.padEnd(52)} ${s.title}  [${s.cat}]  ${screenCacheFile(s) ? "cached" : "not-cached"}  ${s.summary.slice(0, 50)}`);
+  process.exit(0);
+}
 if (cmd === "catalog") {
   const out = { titleLayout: { required: true, options: { center: "[타이틀] [에셋] 중앙 정렬 (히어로 세로 스택, 섹션 타이틀·카드 중앙)", split: "[타이틀] [에셋] 일렬 정렬 (히어로 좌 텍스트/우 에셋, 섹션 타이틀 좌측)" }, rule: "페이지당 하나, 섹션별 변경 불가" }, presets: {}, limits: LIMITS, banned: BANNED };
   for (const [k, r] of Object.entries(PRESET_RULES)) out.presets[k] = { card: r.usage, allowedCards: r.allowedUsages, cardTypes: r.cardTypes, layouts: Object.keys(r.layouts), defaultLayout: r.defaultLayout, items: r.count, recommended: r.recommended };
@@ -45,7 +54,8 @@ if (cmd === "catalog") {
   const { doc, assetLog, notes, where, breaks, cardChoices } = compileSpec(spec);
   const report = validateSpec(spec, { assetLog, notes, breaks, cardChoices });
   const { assemble } = await import("../lib/assemble.mjs");
-  const { page, makePreview, stats } = await assemble(doc, { report, spec, assetLog });
+  const { page, makePreview, stats, screenMisses = [] } = await assemble(doc, { report, spec, assetLog });
+  for (const m of screenMisses) report.issues.push({ level: "warn", where: `screen ${m.where}`, msg: `스크린 디렉토리 화면 이미지를 받지 못해 '화면 미정' placeholder — 네트워크가 열린 곳에서 \`lp screens sync\` 후 재빌드하거나 ${m.url} 을 ~/.lp-draft/screens/ 에 저장` });
   const outDir = flag("out", path.join(here, "../out", doc.meta.slug));
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, "doc.json"), JSON.stringify(doc, null, 1));

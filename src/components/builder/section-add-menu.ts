@@ -87,6 +87,11 @@ export const SECTION_ADD_GROUPS: SectionAddGroup[] = [
         label: "FAQ",
         description: "자주 묻는 질문을 펼침·접힘 카드로 정리합니다.",
       },
+      {
+        preset: "mockup",
+        label: "서비스 화면 목업",
+        description: "실제 서비스 화면을 폰 목업으로 소개합니다 (스크린 디렉토리 화면).",
+      },
     ],
   },
 ];
