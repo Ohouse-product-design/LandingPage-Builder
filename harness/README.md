@@ -75,6 +75,10 @@ open harness/out/moving-1person/preview.html
 - Storybook/ODS 카탈로그에 정의된 에셋만. 없으면 플레이스홀더 + 리포트 `warn`(어느 슬롯이 비었는지) — 임의 생성·유사 대체 금지. 생성형은 `allowGeneratedAssets: true` 일 때만
 - 슬롯 크기로 역할 결정: **24 이하 → 아이콘(숏컷 SVG)**, 24 초과 → 3D 에셋. 리스트 leading icon: bg 박스 40 안에 ≤24 · 카드 안 에셋: 40 고정 · 프로세스: 넘버링 leading(에셋 없음) · 히어로는 예외
 - usp·조건 설명 섹션의 기본은 **리스트 타입(pillcard)**: 배경색 카드 + 아이콘 24 + 제목(+서브타이틀 1줄). 배경은 회색 일괄(베리언츠는 스펙 `tone:"cases"` 명시 시에만)
+- 같은 섹션 아이콘 팔레트 틴트(blue/red/orange/green/mono): 임베드 시 hue 치환(명도·채도 보존), 평면 아이콘 중간 회색도 착색. 섹션 `palette` > 페이지 `assetPalette` > blue
+- 리스트 타입 아이콘 28 + 좌우 패딩 4 (박스 없음)
+- 짧은 텍스트 usp(제목 ≤127px@20px, 설명 ≤2줄) 3개↑ → 밀도 카드 그리드(모바일 2열, 데스크톱 160 고정 4열, 카드 높이 132)
+- 2×n 그리드 홀수 개 → 가로 한 줄(`ROW`, carousel autoScroll:false): 들어가면 그대로(`safe center`), 넘치면 가로 스크롤 스냅. CarouselLayout 수동 모드 스크롤 버그(outer overflow-hidden) 수정
 - 같은 섹션은 한 에셋 스타일만(flat 숏컷 / 3d / photo): 슬롯 역할이 스타일을 정하고(≤24 flat, >24 3d, '실사' 요청 시 photo) 검색은 그 스타일만 후보, 다른 스타일 id 지정은 비움+warn, 혼용은 validate error
 - 캐로셀이 아닌 콘텐츠 컨테이너는 데스크톱·태블릿 max-width 720 (`data-layout="content"`; 캐로셀 섹션은 1256 유지)
 - 같은 섹션 에셋의 시각 크기 통일: `toDataUri(..., {normalize:true})` 가 투명 여백 trim + 정사각 contain (SVG viewBox 재작성, 비트맵 trim/extend). 리스트 leading icon 은 흰 배경 박스 없이 24 (흰 배경 위 listcard 만 gray 박스)

@@ -83,6 +83,8 @@ function resolveLayoutWithFallback(
 
   // tablecard: 컴파일러가 행 텍스트 폭을 재서 모바일 2열(columns.mobile=2)을 지정하면 그대로 유지 (좁은 표 2열 배치)
   if (usage === "tablecard" && viewport === "mobile" && layout.settings.columns?.mobile === 2) return layout;
+  // 밀도 그리드(짧은 텍스트 카드, compile dense): minWidth 폴백 없이 모바일 2열 유지
+  if (usage === "imgcard" && (layout.settings as { dense?: boolean }).dense) return layout;
 
   const preset = CARD_USAGE_PRESETS[usage];
   const cols = usage === "listcard" ? (viewport === "mobile" ? 1 : 2) : 2;
@@ -137,6 +139,7 @@ export default function Card({ usage, layout, cells, viewport, cardType, preview
           settings={effective.settings}
           cardType={cardType}
           previewAsset={previewAsset}
+          centered={titleLayout === "center"}
         />
       );
     case "list":
@@ -197,13 +200,23 @@ function GridLayout({
   // imgcard: 카드 최대 폭 300px (데스크톱 2열 시 카드가 ~600px 로 과대해지는 문제) —
   // 들어가는 만큼 열을 채우고(1280 → 4열, 768 → 2열) 남는 폭은 좌측 정렬로 비운다.
   const isImgcard = usage === "imgcard";
+  // 밀도 그리드(짧은 텍스트 카드, compile dense): 모바일도 2열로 채운다
+  const isDense = isImgcard && (_settings as { dense?: boolean }).dense === true;
+  const dense = isDense && viewport === "mobile";
   return (
     <div
-      className={cn("grid w-full", !isImgcard && gridCols)}
+      className={cn("grid w-full", !isImgcard && gridCols, dense && "grid-cols-2")}
+      data-dense={isDense ? "true" : undefined}
       style={{
         gap: `${GRID_FIXED_GAP_PX}px`,
-        ...(isImgcard
-          ? { gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${IMGCARD_MIN_PX}px), ${IMGCARD_MAX_PX}px))`, justifyContent: centered ? "center" : "start" }
+        ...(isImgcard && !dense
+          ? {
+              // 밀도 그리드는 태블릿·데스크톱에서 160 고정 카드로 촘촘히(720 컨테이너 → 4열). auto-fill 은 max 트랙으로 개수를 세므로 고정폭 사용
+              gridTemplateColumns: isDense
+                ? `repeat(auto-fill, 160px)`
+                : `repeat(auto-fill, minmax(min(100%, ${IMGCARD_MIN_PX}px), ${IMGCARD_MAX_PX}px))`,
+              justifyContent: centered ? "center" : "start",
+            }
           : null),
       }}
     >
@@ -215,6 +228,7 @@ function GridLayout({
             viewport={viewport}
             cardType={cardType}
             previewAsset={previewAsset}
+            dense={(_settings as { dense?: boolean }).dense === true}
           />
         </div>
       ))}
@@ -241,6 +255,7 @@ function CarouselLayout({
   settings,
   cardType,
   previewAsset,
+  centered,
 }: {
   usage: CardUsagePresetId;
   cells: CardCell[];
@@ -248,6 +263,7 @@ function CarouselLayout({
   settings: Extract<CardLayoutSettings, { type: "carousel" }>["settings"];
   cardType?: ImgcardType;
   previewAsset?: CardPreviewAssetBinding;
+  centered?: boolean;
 }) {
   const rawWidth = settings.cardWidth[viewport] ?? 320;
   const cardWidth = usage === "imgcard" ? Math.min(rawWidth, IMGCARD_MAX_PX) : rawWidth;
@@ -260,25 +276,25 @@ function CarouselLayout({
     [cells.length, durationSec]
   );
 
+  // 수동(가로 배치) 모드: 한 줄로 두고 컨테이너를 넘치면 가로 스크롤 + 스냅. 들어가면 스크롤 없이 그대로(centered 면 가운데)
+  const manual = !settings.autoScroll;
   return (
-    <div className="relative overflow-hidden px-0">
+    <div className={cn("relative px-0", manual ? "lp-row overflow-x-auto" : "overflow-hidden")} style={manual ? { scrollSnapType: "x proximity", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } : undefined}>
       <div
-        className={cn(
-          "flex w-max px-0",
-          settings.autoScroll ? "" : "overflow-x-auto"
-        )}
+        className={cn("flex px-0", manual ? "w-max min-w-full" : "w-max")}
         style={{
           gap: `${CAROUSEL_FIXED_GAP_PX}px`,
           animation: settings.autoScroll
             ? `${animKey} ${durationSec}s linear infinite`
             : undefined,
+          ...(manual ? { justifyContent: centered ? "safe center" : "flex-start" } : null),
         }}
       >
         {renderedCells.map((cell, i) => (
           <div
             key={`${cell.id}-${i}`}
             className="p-0"
-            style={{ width: `${cardWidth}px`, flexShrink: 0 }}
+            style={{ width: `${cardWidth}px`, flexShrink: 0, ...(manual ? { scrollSnapAlign: "start" } : null) }}
           >
             <CellRenderer
               cell={cell}
@@ -286,6 +302,7 @@ function CarouselLayout({
               viewport={viewport}
               cardType={cardType}
               previewAsset={previewAsset}
+              dense={(settings as { dense?: boolean }).dense === true}
             />
           </div>
         ))}
@@ -427,12 +444,15 @@ function CellRenderer({
   viewport: _viewport,
   cardType,
   previewAsset,
+  dense,
 }: {
   cell: CardCell;
   usage: CardUsagePresetId;
   viewport: Viewport;
   cardType?: ImgcardType;
   previewAsset?: CardPreviewAssetBinding;
+  /** 짧은 텍스트 밀도 그리드 — 카드 높이를 낮춤 */
+  dense?: boolean;
 }) {
   const openSlot = (slot: CardSlotName) => {
     if (!previewAsset) return;
@@ -451,7 +471,7 @@ function CellRenderer({
     case "imgcard":
       // cardType 으로 분기: bgfullimg(디폴트, 풀배경) / leading-asset(상단 에셋)
       return cardType === "leading-asset"
-        ? <CardLeadingAssetCell cell={cell} onRequestSlotEdit={slotEdit("media")} />
+        ? <CardLeadingAssetCell cell={cell} dense={dense} onRequestSlotEdit={slotEdit("media")} />
         : <CardBgFullImgCell cell={cell} onRequestSlotEdit={slotEdit("media")} />;
     case "reviewcard":
       return <CardReviewCell cell={cell} onRequestSlotEdit={slotEdit("media")} />;
@@ -696,9 +716,11 @@ function CardReviewCell({ cell }: { cell: CardCell; onRequestSlotEdit?: () => vo
  */
 function CardLeadingAssetCell({
   cell,
+  dense = false,
   onRequestSlotEdit,
 }: {
   cell: CardCell;
+  dense?: boolean;
   onRequestSlotEdit?: () => void;
 }) {
   const stepNumber = asText(slot(cell, "stepNumber"));
@@ -709,7 +731,7 @@ function CardLeadingAssetCell({
   return (
     <div
       // 디자인 시안: 좌측 정렬(items-start), 하단 패딩 20px(pb-5). 카드 안 에셋은 40×40 고정 (2026-10 규칙)
-      className="flex h-full min-h-[180px] w-full flex-col items-start justify-between gap-6 rounded-ods-12 px-5 pb-5 pt-5"
+      className={cn("flex h-full w-full flex-col items-start justify-between rounded-ods-12 pb-5 pt-5", dense ? "min-h-[132px] gap-4 px-4" : "min-h-[180px] gap-6 px-5")}
       style={{
         backgroundImage:
           "linear-gradient(173.759deg, rgba(239,239,239,0.2) 1.5877%, rgba(139,195,235,0.2) 92.346%), linear-gradient(90deg, rgb(245,245,245) 0%, rgb(245,245,245) 100%)",
@@ -748,6 +770,8 @@ function CardLeadingAssetCell({
 //   - 에셋은 Storybook/ODS 카탈로그에 정의된 것만. 없으면 placeholder(IconPhoto)로 비운다
 // ---------------------------------------------------------------------------
 export const LEADING_ICON_PX = 24;
+/** 리스트 타입(pillcard) 아이콘 — 28, 좌우 패딩 4 (2026-10) */
+export const PILL_ICON_PX = 28;
 export const CARD_ASSET_PX = 40;
 
 /**
@@ -756,11 +780,11 @@ export const CARD_ASSET_PX = 40;
  *   tone "none": 배경색 카드·회색 컨테이너 안(pillcard·stepcard) → 박스 없이 에셋만 (흰 배경 박스 사용 안 함, 2026-10)
  *   compact: 래퍼를 24 로 줄여 에셋이 좌측 패딩에 붙게 (pillcard)
  */
-function LeadingIcon({ asset, tone = "gray", compact = false, onRequestSlotEdit }: { asset: import("@/schema/doc").AssetRef | null; tone?: "gray" | "none"; compact?: boolean; onRequestSlotEdit?: () => void }) {
+function LeadingIcon({ asset, tone = "gray", compact = false, size = LEADING_ICON_PX, onRequestSlotEdit }: { asset: import("@/schema/doc").AssetRef | null; tone?: "gray" | "none"; compact?: boolean; size?: number; onRequestSlotEdit?: () => void }) {
   return (
-    <div className={cn("flex shrink-0 items-center justify-center", compact ? "size-6" : "size-10 rounded-ods-8", tone === "gray" && "bg-ods-surface-gray")}>
+    <div className={cn("flex shrink-0 items-center justify-center", compact ? "px-1" : "size-10 rounded-ods-8", tone === "gray" && "bg-ods-surface-gray")} style={compact ? { width: size + 8, height: size } : undefined}>
       {asset ? (
-        <OdsAssetRenderer asset={asset} size={LEADING_ICON_PX} className="size-6 object-contain" onRequestSlotEdit={onRequestSlotEdit} />
+        <OdsAssetRenderer asset={asset} size={size} className={cn("object-contain", size === 28 ? "size-7" : "size-6")} onRequestSlotEdit={onRequestSlotEdit} />
       ) : (
         <IconPhoto size={18} className="text-ods-text-tertiary" aria-label="에셋 미정" />
       )}
@@ -1025,8 +1049,8 @@ function CardPillCell({ cell, onRequestSlotEdit }: { cell: CardCell; onRequestSl
   const body = asText(slot(cell, "body"));
   const bg = PILL_TONE_BG[cell.theme ?? "gray"] ?? PILL_TONE_BG.gray; // 흰 배경 없음 — 항상 톤 배경
   return (
-    <div className="flex w-full items-center gap-4 rounded-ods-16 px-6 py-5" style={{ background: bg }}>
-      <LeadingIcon asset={icon} tone="none" compact onRequestSlotEdit={onRequestSlotEdit} />
+    <div className="flex w-full items-center gap-3 rounded-ods-16 px-5 py-5" style={{ background: bg }}>
+      <LeadingIcon asset={icon} tone="none" compact size={PILL_ICON_PX} onRequestSlotEdit={onRequestSlotEdit} />
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <p className="min-w-0 truncate font-pretendard text-[18px] font-semibold leading-6 tracking-[-0.3px] text-ods-text-primary">
           {title}

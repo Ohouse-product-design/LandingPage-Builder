@@ -53,8 +53,9 @@ async function embedAssets(doc) {
   const fix = async (a, normalize = true) => {
     if (!a) return;
     let uri = null;
-    if (a.url?.startsWith("file:")) uri = await toDataUri(a.url.slice(5), { width: 960, normalize });
-    else if (a.assetId) uri = await toDataUri(a.assetId, { normalize });
+    const tint = normalize ? a.tint || null : null;
+    if (a.url?.startsWith("file:")) uri = await toDataUri(a.url.slice(5), { width: 960, normalize, tint });
+    else if (a.assetId) uri = await toDataUri(a.assetId, { normalize, tint });
     else if (a.url?.startsWith("data:")) uri = a.url;
     if (!uri) uri = PLACEHOLDER_URI;
     a.url = `lp-asset://${put(uri)}`;
@@ -131,6 +132,7 @@ html,body{margin:0;background:#fff;color:#141414;word-break:keep-all;overflow-wr
 .lp-vp-desktop>section[data-layout="content"]:not([data-preset="hero"]):not([data-preset="footer"]):not([data-preset="header"]):not([data-preset="sticky-cta"])>div{max-width:720px}
 .lp-vp-tablet>section[data-layout="content"]:not([data-preset="hero"]):not([data-preset="footer"]):not([data-preset="header"]):not([data-preset="sticky-cta"])>div{max-width:720px;margin-inline:auto}
 [data-lottie-placeholder]{background:#F7F9FA;border-radius:12px}
+.lp-row::-webkit-scrollbar{display:none}
 html.lp-outline section{outline:1px dashed rgba(0,161,255,.55);outline-offset:-1px;position:relative}
 html.lp-outline section::before{content:attr(data-preset);position:absolute;z-index:30;top:4px;left:4px;font:600 10px/1 system-ui;background:#00A1FF;color:#fff;padding:3px 5px;border-radius:3px}
 html.lp-focus section.lp-hit{outline:2px solid #00A1FF;outline-offset:-2px}

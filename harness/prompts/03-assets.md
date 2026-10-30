@@ -8,7 +8,8 @@
 ## 사이즈 규칙 (컴포넌트가 강제 — 스펙에서 조절 불가)
 | 자리 | 규칙 |
 |---|---|
-| 리스트 leading icon (listcard·pillcard·stepcard 좌측) | 에셋 **24×24**. 흰 배경 위(listcard)만 `surface.gray` 박스 40, 배경색 카드·회색 컨테이너 안(pillcard·stepcard)은 **박스 없이** 에셋만 (흰 배경 박스 사용 안 함) |
+| 리스트 타입 카드(pillcard) 좌측 | 에셋 **28×28** + 좌우 패딩 4, 박스 없음 |
+| 리스트 leading icon (listcard·stepcard 좌측) | 에셋 **24×24**. 흰 배경 위(listcard)만 `surface.gray` 박스 40, 회색 컨테이너 안(stepcard)은 박스 없이 |
 | 카드 안 에셋 (imgcard leading-asset) | **40×40 고정**, 카드 좌상단 |
 | 풀배경 카드 (bgfullimg) | **사용하지 않음** — usp 는 항상 leading-asset 으로 일괄 적용 |
 | 히어로 비주얼 | center 225×150 / split 360×240 |
@@ -16,6 +17,9 @@
 
 ## 스타일 통일 — 같은 섹션은 한 스타일만 (compile 강제)
 에셋 스타일은 `flat`(숏컷 SVG) · `3d`(ODS 3D 일러스트) · `photo`(실사 `AssetPhoto*`) 세 가지. 슬롯 역할이 스타일을 정한다 — 24 이하(리스트 leading)는 **flat만**, 24 초과(카드 안 40·히어로)는 **3d만**(query 에 '사진·실사' 가 있으면 photo만). 검색은 해당 스타일만 후보로 보고, `id` 로 다른 스타일을 지정하면 비우고 warn. 한 섹션에 두 스타일이 섞이면 validate error.
+
+## 팔레트 틴트 — 같은 섹션은 한 색 계열 (렌더 시 자동)
+섹션 `palette: blue | red | orange | green | mono` (생략 시 페이지 `assetPalette` 계열, 기본 blue). 임베드 단계에서 섹션 안 모든 아이콘·에셋의 채도 있는 색 hue 를 팔레트 hue 로 바꾸고 명도·채도는 유지(음영 보존), mono 는 채도 0. 평면 아이콘의 중간 톤 회색도 팔레트 색으로 입히고, 흰·검(하이라이트·외곽)은 그대로. 검색도 같은 계열 ODS 컬러(GenuineBlue·CoralRed·MangoOrange·JadeGreen·DavyGray)를 우선.
 
 ## 시각 크기 통일 (렌더 시 자동)
 같은 섹션의 에셋은 시각적으로 같은 크기로 보이도록 임베드 단계에서 **투명 여백을 잘라내고 정사각 박스에 contain** 으로 맞춘다 (SVG 는 viewBox 재작성으로 벡터 유지, 비트맵은 trim+extend). 원본에 여백이 많은 숏컷도 다른 에셋과 같은 크기로 보인다. header·footer 로고는 제외.

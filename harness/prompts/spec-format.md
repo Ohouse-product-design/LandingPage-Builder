@@ -50,5 +50,6 @@ Claude 가 기획서를 해석해 작성하는 **유일한 산출물**. HTML·CS
 "asset": { "file": "...png", "prompt": "…", "alt": "…" }        // 생성형 — allowGeneratedAssets:true 일 때만, 기본 플레이스홀더
 "asset": "이사 트럭"                                          // query 축약형
 "icon":  { "query": "자물쇠 보안" }                            // pillcard·stepcard 아이콘 → ODS 숏컷(Small SVG) 우선 검색
+"palette": "blue" | "red" | "orange" | "green" | "mono"   // 섹션 아이콘 팔레트 틴트 (생략 시 페이지 assetPalette 계열 → 기본 blue)
 "tone":  "cases"                                             // usp 섹션(리스트 타입) 배경 베리언츠(mint·pink·yellow·sky) — 명시했을 때만. 기본은 회색 일괄
 ```

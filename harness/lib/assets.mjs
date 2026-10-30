@@ -158,6 +158,62 @@ async function fetchCdnAsset(hit) {
  *  - 투명 여백을 잘라내고(trim) 정사각 박스에 contain 으로 맞춘다 → 어떤 에셋이든 긴 변이 박스를 꽉 채워 보인다
  *  - SVG 는 렌더해서 bbox 를 재고 viewBox 만 다시 써서 벡터를 유지, 비트맵은 sharp trim → 정사각 extend
  */
+/**
+ * 팔레트 틴트 (2026-10 규칙: 같은 섹션 아이콘은 유사 색상 팔레트로 통일)
+ *  blue / red / orange / green: 채도 있는 픽셀·색상의 hue 를 팔레트 hue 로 바꾸고 명도·채도는 유지(음영 보존)
+ *  mono: 채도 0 (회색 톤). 무채색(흰·검·회색)은 그대로
+ */
+export const TINT_PALETTES = {
+  blue:   { hue: 204, sat: 1.0,  ods: "GenuineBlue" },   // ODS GenuineBlue #0AA5FF
+  red:    { hue: 0,   sat: 0.95, ods: "CoralRed" },
+  orange: { hue: 30,  sat: 1.0,  ods: "MangoOrange" },
+  green:  { hue: 158, sat: 0.9,  ods: "JadeGreen" },
+  mono:   { hue: 0,   sat: 0,    ods: "DavyGray" },
+};
+export const TINT_NAMES = Object.keys(TINT_PALETTES);
+const GRAY_SAT = 0.12; // 이 채도 미만은 무채색으로 보고 건드리지 않음
+function rgb2hsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+  if (mx === mn) return [0, 0, l];
+  const d = mx - mn, s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+  let h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [h * 60, s, l];
+}
+function hsl2rgb(h, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2;
+  const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+  return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+}
+function tintRgb(r, g, b, pal) {
+  const [, s, l] = rgb2hsl(r, g, b);
+  if (s < GRAY_SAT) return [r, g, b];
+  if (pal.sat === 0) return hsl2rgb(0, 0, l);
+  return hsl2rgb(pal.hue, Math.min(1, s * pal.sat), l);
+}
+const hex2 = (n) => n.toString(16).padStart(2, "0");
+function tintSvgText(svg, pal) {
+  return svg.replace(/#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g, (m, h) => {
+    const full = h.length === 3 ? [...h].map((c) => c + c).join("") : h;
+    const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
+    // 평면 아이콘의 중간 톤 회색(DavyGray·Disabled 계열)은 팔레트 색으로 입힌다 — 흰·검(하이라이트·외곽선)은 유지
+    const [, sv, lv] = rgb2hsl(r, g, b);
+    const [R, G, B] = sv < GRAY_SAT && lv > 0.18 && lv < 0.82 && pal.sat > 0 ? hsl2rgb(pal.hue, 0.85 * pal.sat, lv) : tintRgb(r, g, b, pal);
+    return "#" + hex2(R) + hex2(G) + hex2(B);
+  });
+}
+async function tintPipeline(sharpInput, pal) {
+  const { data, info } = await sharpInput.ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const C = info.channels;
+  for (let i = 0; i < data.length; i += C) {
+    if (data[i + 3] === 0) continue;
+    const [R, G, B] = tintRgb(data[i], data[i + 1], data[i + 2], pal);
+    data[i] = R; data[i + 1] = G; data[i + 2] = B;
+  }
+  const sharp = (await import("sharp")).default;
+  return sharp(data, { raw: { width: info.width, height: info.height, channels: C } });
+}
+
 const NORMALIZE_PAD = 0.04; // 박스 대비 여백 (양쪽 합 8%)
 async function alphaBBox(sharpInput) {
   const img = sharpInput.ensureAlpha();
@@ -170,9 +226,10 @@ async function alphaBBox(sharpInput) {
   if (x1 < 0) return null;
   return { x0, y0, x1: x1 + 1, y1: y1 + 1, W, H };
 }
-async function normalizeSvg(file) {
+async function normalizeSvg(file, pal) {
   const sharp = (await import("sharp")).default;
   let svg = fs.readFileSync(file, "utf8");
+  if (pal) svg = tintSvgText(svg, pal);
   const vbm = svg.match(/viewBox="([^"]+)"/);
   const wm = svg.match(/<svg[^>]*\swidth="([\d.]+)/), hm = svg.match(/<svg[^>]*\sheight="([\d.]+)/);
   const vb = vbm ? vbm[1].trim().split(/[\s,]+/).map(Number) : [0, 0, Number(wm?.[1] || 0), Number(hm?.[1] || 0)];
@@ -192,22 +249,24 @@ async function normalizeSvg(file) {
   svg = svg.replace(/(<svg[^>]*?)\swidth="[^"]*"/, "$1").replace(/(<svg[^>]*?)\sheight="[^"]*"/, "$1").replace(/<svg/, `<svg width="${Math.round(side)}" height="${Math.round(side)}"`);
   return "data:image/svg+xml;base64," + Buffer.from(svg).toString("base64");
 }
-async function normalizeBitmap(file, width) {
+async function normalizeBitmap(file, width, pal) {
   const sharp = (await import("sharp")).default;
-  const base = sharp(file).ensureAlpha();
-  const bb = await alphaBBox(base.clone());
+  const src = pal ? await tintPipeline(sharp(file), pal) : sharp(file);
+  const png = await src.png().toBuffer(); // 틴트 결과를 고정 (sharp 파이프라인 재사용 방지)
+  const bb = await alphaBBox(sharp(png));
   if (!bb) return null;
   const bw = bb.x1 - bb.x0, bh = bb.y1 - bb.y0;
   const side = Math.round(Math.max(bw, bh) * (1 + NORMALIZE_PAD * 2));
   const left = Math.round((side - bw) / 2), top = Math.round((side - bh) / 2);
-  const buf = await sharp(file).ensureAlpha().extract({ left: bb.x0, top: bb.y0, width: bw, height: bh })
+  const buf = await sharp(png).ensureAlpha().extract({ left: bb.x0, top: bb.y0, width: bw, height: bh })
     .extend({ left, top, right: side - bw - left, bottom: side - bh - top, background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toBuffer();
   return "data:image/webp;base64," + buf.toString("base64");
 }
 
-export async function toDataUri(ref, { width = 480, normalize = false } = {}) {
-  const key = `${ref}@${width}${normalize ? "#n" : ""}`;
+export async function toDataUri(ref, { width = 480, normalize = false, tint = null } = {}) {
+  const pal = tint && TINT_PALETTES[tint] ? TINT_PALETTES[tint] : null;
+  const key = `${ref}@${width}${normalize ? "#n" : ""}${pal ? "#" + tint : ""}`;
   if (_cache.has(key)) return _cache.get(key);
   let file = null;
   const hit = findAsset(ref);
@@ -222,7 +281,7 @@ export async function toDataUri(ref, { width = 480, normalize = false } = {}) {
   if (!file || !fs.existsSync(file)) return null;
   let uri;
   if (normalize) {
-    try { uri = file.endsWith(".svg") ? await normalizeSvg(file) : await normalizeBitmap(file, width); } catch (e) { uri = null; }
+    try { uri = file.endsWith(".svg") ? await normalizeSvg(file, pal) : await normalizeBitmap(file, width, pal); } catch (e) { uri = null; }
     if (uri) { _cache.set(key, uri); return uri; }
   }
   if (file.endsWith(".svg")) {

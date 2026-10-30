@@ -7,12 +7,14 @@
  *  - 에셋은 ODS 카탈로그 id 로만 해석 (query → 검색, 실패 시 생성형 슬롯으로 표시)
  */
 import path from "node:path";
-import { findAsset, searchAssets, objectKey, assetStyle, styleForRole } from "./assets.mjs";
+import { findAsset, searchAssets, objectKey, assetStyle, styleForRole, TINT_NAMES, TINT_PALETTES } from "./assets.mjs";
 import { breakLines, textWidthPx, SLOT_METRICS } from "./linebreak.mjs";
 
 export const TITLE_LAYOUTS = ["center", "split"];
 
 const GRID = (m, t, d, gap = 16) => ({ type: "grid", settings: { columns: { mobile: m, tablet: t, desktop: d }, gap } });
+/** 홀수 개 카드 가로 배치 — 한 줄로 두고 컨테이너를 넘치면 가로 스크롤(캐로셀 인터랙션). 자동 스크롤 없음 */
+const ROW = (usage, dense = false) => ({ type: "carousel", settings: { cardWidth: usage === "listcard" ? { mobile: 300, tablet: 320, desktop: 360 } : dense ? { mobile: 168, tablet: 200, desktop: 220 } : { mobile: 280, tablet: 300, desktop: 300 }, gap: 8, autoScroll: false, loop: false, showArrows: false, showDots: false, row: true, ...(dense ? { dense: true } : {}) } });
 const CAROUSEL = { type: "carousel", settings: { cardWidth: { mobile: 280, tablet: 320, desktop: 360 }, gap: 16, autoScroll: true, autoScrollDurationMs: 30000, loop: true, showArrows: false, showDots: false } };
 const LIST = { type: "list", settings: { gap: 16, align: "start" } };
 
@@ -62,6 +64,10 @@ export function chooseCardUsage(preset, s) {
     if (rows.length && rows.every(Boolean) && rows.filter((r) => UNIT_RE.test(r.value)).length >= Math.ceil(rows.length / 2))
       return { usage: "kvcard", reason: `단일 카드 + '라벨: 값' ${rows.length}행, 값에 단위(%·원·개월…) → 조건 표` };
   }
+  // 텍스트가 짧으면 리스트보다 카드 그리드(모바일 2열)로 시각 밀도 확보 — 모바일 2열 카드 안폭(127px)에 제목 1줄·설명 2줄이 들어갈 때
+  if (preset === "usp" && n >= 3 && items.every((it) => it.title && !it.tag && !it.links && textWidthPx(String(it.title), 20) <= DENSE.titleMaxPx && (!it.body || textWidthPx(String(it.body), 15) <= DENSE.bodyMaxPx))) {
+    return { usage: "imgcard", reason: `텍스트가 짧아(제목 ≤${DENSE.titleMaxPx}px·설명 ≤2줄) 카드 그리드로 밀도 확보`, dense: true };
+  }
   if (preset === "usp" && n >= 2 && rule.allowedUsages.includes("pillcard")) {
     // 2026-10: usp·조건 설명 섹션의 기본은 리스트 타입 카드 — 제목 ≤14자(+ 서브타이틀 ≤24자) + 아이콘이면 채택
     const fits = items.every((it) => it.title && [...String(it.title)].length <= 14 && (!it.body || [...String(it.body)].length <= 24));
@@ -93,10 +99,10 @@ const ALL = { mobile: true, tablet: true, desktop: true };
 const text = (t) => (t === undefined || t === null || t === "" ? undefined : { kind: "text", text: String(t) });
 
 /** 스펙의 asset 표기 → AssetRef + 해석 기록 */
-function resolveAsset(spec, { role, alt, used, log, where }) {
+function resolveAsset(spec, { role, alt, used, log, where, tint }) {
   if (!spec) return undefined;
   const s = typeof spec === "string" ? (spec.startsWith("Asset") ? { id: spec } : { query: spec }) : spec;
-  const a = { alt: s.alt || alt || "", type: "image" };
+  const a = { alt: s.alt || alt || "", type: "image", ...(tint ? { tint } : {}) };
   if (s.file) {
     // 생성형(임의) 에셋은 기본 차단 — Storybook/ODS 카탈로그에 정의된 에셋만 사용 (2026-10 규칙).
     // 예외: spec.allowGeneratedAssets === true 일 때만 허용 (디자이너 승인 하에)
@@ -123,7 +129,7 @@ function resolveAsset(spec, { role, alt, used, log, where }) {
     log.push({ where, source: "missing", id: s.id, level: "warn", note: "카탈로그에 없는 assetId" });
   }
   if (s.query) {
-    const [best, ...rest] = searchAssets(s.query, { role, exclude: [...used].map(objectKey), palette: PALETTE.value });
+    const [best, ...rest] = searchAssets(s.query, { role, exclude: [...used].map(objectKey), palette: tint ? TINT_PALETTES[tint].ods : PALETTE.value });
     if (best && best.score >= 3) {
       used.add(best.id);
       log.push({ where, source: "ods-search", query: s.query, id: best.id, score: best.score, alternatives: rest.slice(0, 3).map((r) => r.id) });
@@ -135,11 +141,14 @@ function resolveAsset(spec, { role, alt, used, log, where }) {
 }
 
 const PALETTE = { value: "GenuineBlue" };
+/** 짧은 텍스트 → 밀도 카드 판정: 모바일 2열 카드(167px) − 패딩 40 = 127px */
+const DENSE = { titleMaxPx: 127, bodyMaxPx: 127 * 2 };
 /** 표 2열 판정 — 모바일(360 사용폭) 2열 셀 폭 176 − 행 패딩 40 = 136px 안에 행 텍스트 1줄, 타이틀 바 17px */
 const TABLE_COMPACT = { rowFontPx: 16, rowMaxPx: 136, titleFontPx: 17, titleMaxPx: 150 };
 const ALLOW_GENERATED = { value: false };
 export function compileSpec(spec) {
   PALETTE.value = spec.assetPalette ?? "GenuineBlue";
+  const pageTint = TINT_NAMES.includes(spec.assetPalette) ? spec.assetPalette : (Object.entries(TINT_PALETTES).find(([, v]) => v.ods === PALETTE.value)?.[0] || "blue");
   ALLOW_GENERATED.value = spec.allowGeneratedAssets === true;
   // 타이틀 레이아웃: 페이지에 하나만. 섹션별 지정은 무시하고 notes 로 알린다 (validate 가 error 처리)
   const titleLayout = TITLE_LAYOUTS.includes(spec.titleLayout) ? spec.titleLayout : "split";
@@ -190,7 +199,7 @@ export function compileSpec(spec) {
       continue;
     }
     if (p === "hero") {
-      const asset = resolveAsset(s.asset, { role: "media", alt: s.title, used, log: assetLog, where: `${id}.background` });
+      const asset = resolveAsset(s.asset, { role: "media", alt: s.title, used, log: assetLog, where: `${id}.background`, tint: TINT_NAMES.includes(s.palette) ? s.palette : pageTint });
       const heroTitle = autoBreak(`${where[id]}.title`, s.title || "", { ...SLOT_METRICS.heroTitle[titleLayout], maxLines: SLOT_METRICS.heroTitle.maxLines }, { preferTwoLinesFrom: 12 });
       out.push({ ...base, props: { ...TL, eyebrow: s.eyebrow || "", title: heroTitle, subtitle: s.subtitle || "", primaryCtaLabel: s.cta || ctaLabel, secondaryCtaLabel: s.secondaryCta || "" }, assets: asset ? [{ slotName: "background", asset }] : [] });
       continue;
@@ -214,6 +223,9 @@ export function compileSpec(spec) {
     if (s.cardType && rule.cardTypes && !rule.cardTypes.includes(s.cardType)) notes.push(s.cardType === "bgfullimg" ? `${id}: 풀배경 카드(bgfullimg)는 사용하지 않음 (2026-10) → ${cardType} 으로 일괄 적용` : `${id}: cardType '${s.cardType}' 보정 → ${cardType}`);
 
     const secWhere = where[id];
+    // 같은 섹션 아이콘 팔레트 틴트: 섹션 palette > 페이지 assetPalette(ODS 명 → 계열) > blue
+    const secTint = TINT_NAMES.includes(s.palette) ? s.palette : pageTint;
+    if (s.palette && !TINT_NAMES.includes(s.palette)) notes.push(`${secWhere}: palette '${s.palette}' 는 ${TINT_NAMES.join(" | ")} 중 하나여야 함 → ${pageTint}`);
     // 리스트 타입 카드 배경: 조건·단순 나열 = gray 일괄 / 다양한 케이스 표시 = 베리언츠 (spec tone 우선, 없으면 제목·서브타이틀 신호)
     const pillTone = rule.usage === "pillcard" ? choosePillTone(s) : null;
     if (pillTone?.cases) notes.push(`${secWhere}: 리스트 타입 배경 베리언츠(mint·pink·yellow·sky) — ${pillTone.reason}`);
@@ -225,7 +237,7 @@ export function compileSpec(spec) {
         if (p === "process") {
           if ((it.asset || it.icon) && i === 0) notes.push(`${secWhere}: 프로세스는 넘버링 leading 으로만 구성 — 아이템의 asset/icon 은 무시됨`);
         } else {
-          const m = resolveAsset(it.asset, { role: "media", alt: it.title, used, log: assetLog, where });
+          const m = resolveAsset(it.asset || it.icon, { role: "media", alt: it.title, used, log: assetLog, where, tint: secTint });
           if (m) c.slots.media = { kind: "asset", asset: m };
         }
       } else if (rule.usage === "reviewcard") {
@@ -234,7 +246,7 @@ export function compileSpec(spec) {
       } else if (rule.usage === "listcard") {
         Object.assign(c.slots, { title: text(it.title), body: text(it.body) });
         // 리스트 leading icon 은 24 이하 → 아이콘(숏컷 SVG) 역할로 검색 (24 초과 슬롯만 3D 에셋)
-        const ic = resolveAsset(it.asset || it.icon, { role: "icon-small", alt: it.title, used, log: assetLog, where });
+        const ic = resolveAsset(it.asset || it.icon, { role: "icon-small", alt: it.title, used, log: assetLog, where, tint: secTint });
         if (ic) c.slots.icon = { kind: "asset", asset: ic };
         if (it.href || it.ctaLabel) c.slots.cta = { kind: "cta", label: it.ctaLabel || "보러가기", url: it.href || "#" };
       } else if (rule.usage === "tablecard") {
@@ -248,7 +260,7 @@ export function compileSpec(spec) {
       } else if (rule.usage === "pillcard") {
         Object.assign(c.slots, { title: text(it.title), body: text(it.body) });
         c.theme = pillTone.cases ? PILL_VARIANTS[i % PILL_VARIANTS.length] : "gray";
-        const ic = resolveAsset(it.asset || it.icon, { role: "icon-small", alt: it.title, used, log: assetLog, where });
+        const ic = resolveAsset(it.asset || it.icon, { role: "icon-small", alt: it.title, used, log: assetLog, where, tint: secTint });
         if (ic) c.slots.icon = { kind: "asset", asset: ic };
       } else if (rule.usage === "kvcard") {
         Object.assign(c.slots, { title: text(it.title), rows: { kind: "rows", items: (it.rows || []).map(splitKv).filter(Boolean) } });
@@ -258,7 +270,7 @@ export function compileSpec(spec) {
         if (p === "process") {
           if ((it.asset || it.icon) && i === 0) notes.push(`${secWhere}: 프로세스는 넘버링 leading 으로만 구성 — 아이템의 asset/icon 은 무시됨`);
         } else {
-          const ic = resolveAsset(it.icon || it.asset, { role: "icon-small", alt: it.title, used, log: assetLog, where });
+          const ic = resolveAsset(it.icon || it.asset, { role: "icon-small", alt: it.title, used, log: assetLog, where, tint: secTint });
           if (ic) c.slots.icon = { kind: "asset", asset: ic };
         }
       }
@@ -267,6 +279,13 @@ export function compileSpec(spec) {
     });
 
     const card = { id: `${id}-card`, preset: "card", props: { usage: rule.usage, layout: rule.layouts[layoutKey](cells.length), cells, cardType }, assets: [] };
+    // 밀도 그리드(짧은 텍스트 카드): 모바일도 2열
+    if (pick.dense && card.props.layout.type === "grid") { card.props.layout.settings.columns.mobile = 2; card.props.layout.settings.dense = true; }
+    // 2×n 그리드에서 홀수 개라 열이 안 맞으면 → 한 줄 가로 배치, 컨테이너를 넘치면 가로 스크롤(캐로셀 인터랙션)
+    if (card.props.layout.type === "grid" && ["imgcard", "listcard", "linkcard"].includes(rule.usage) && cells.length >= 3 && cells.length % 2 === 1) {
+      card.props.layout = ROW(rule.usage, !!pick.dense);
+      notes.push(`${secWhere}: 카드 ${cells.length}개(홀수) → 2열 그리드 대신 가로 한 줄 배치, 디바이스 폭을 넘으면 가로 스크롤`);
+    }
     // 테이블 2개의 행 텍스트가 좁으면(모바일 2열 셀 폭 안에 1줄) 모바일에서도 2열로 나란히 배치
     if (rule.usage === "tablecard" && cells.length >= 2 && card.props.layout.type === "grid") {
       const widest = Math.max(...cells.flatMap((c) => (c.slots.meta?.items || []).map((r) => textWidthPx(String(r), TABLE_COMPACT.rowFontPx))));
